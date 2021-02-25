@@ -20,3 +20,15 @@ def home():
         'msg':'Hello, This is a simple demo!'
     }
     return jsonify(response)
+    
+@bp.route('/getDataByCompanyID/<int:id>')
+def getDataByCompanyID(id):
+    response = {
+        # TODO: replace with the real data.
+        'name': "Sample Company name",
+        'companyID' : id,
+        'length': 5,
+        'xdata': [1,2,3,4,5],
+        'ydata': [11,22,33,44,55]
+    }
+    return jsonify(response)
