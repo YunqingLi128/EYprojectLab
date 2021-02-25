@@ -1,1 +1,4 @@
 /demo/backend/.vscode/
+/venv/
+.DS_Store
+.idea
