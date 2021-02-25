@@ -11,9 +11,9 @@
 * Flask_cors - pip install flask_cors
 
 我把前后端初步的框架写好了，在root（demo文件夹）下分了frontend 和 backend
-运行方法:
-1. 先跑server
-    * $cd backend
+运行方法: (在demo路径下)
+1. 运行server
+    * 安装配置：python/python3 dashboard.py install
     * $export FLASK_APP=backend
     * $export FLASK_ENV=development
     * flask run
