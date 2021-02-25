@@ -1,0 +1,13 @@
+import os
+
+from flask import Flask
+
+
+def create_app(test_config=None):
+    """Create and configure an instance of the Flask application."""
+    app = Flask(__name__, instance_relative_config=True)
+
+    from . import views
+    app.register_blueprint(views.bp)
+
+    return app
