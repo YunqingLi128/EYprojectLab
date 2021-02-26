@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 from flask import Blueprint
 import time
-from backend.data_process import init_data, data_preprocessing, download_csv,run
+from backend.data_process import init_data, data_preprocessing, download_csv
 
 
 from concurrent.futures import ThreadPoolExecutor
