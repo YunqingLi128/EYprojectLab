@@ -2,16 +2,22 @@ from flask import jsonify
 from flask_cors import CORS
 
 from flask import Blueprint
-from backend.data_process import init_data, data_preprocessing, download_csv
+import time
+from backend.data_process import init_data, data_preprocessing, download_csv,run
+
+
+from concurrent.futures import ThreadPoolExecutor
 
 bp = Blueprint("views", __name__)
 #cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
 CORS(bp, supports_credentials=True)
 
+executor = ThreadPoolExecutor()
+
 
 @bp.route('/', methods=('Get', 'Post'))
 def index():
-    init_data(False)
+    executor.submit(init_data, False)
     return "Hello Project Lab!"
 
 
