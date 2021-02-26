@@ -2,39 +2,27 @@
     "report": "FFIEC102", 
     "institutions": [
         {
-            "start_date": "20150331", 
             "Name": "Bank of America", 
-            "end_date": "20211231", 
             "RSSD_ID": "1073757"
         }, 
         {
-            "start_date": "20150331", 
             "Name": "Citigroup", 
-            "end_date": "20211231", 
             "RSSD_ID": "1951350"
         }, 
         {
-            "start_date": "20150331", 
             "Name": "Goldman Sachs", 
-            "end_date": "20211231", 
             "RSSD_ID": "2380443"
         }, 
         {
-            "start_date": "20150331", 
             "Name": "JP Morgan", 
-            "end_date": "20211231", 
             "RSSD_ID": "1039502"
         }, 
         {
-            "start_date": "20150331", 
             "Name": "Morgan Stanley", 
-            "end_date": "20211231", 
             "RSSD_ID": "2162966"
         }, 
         {
-            "start_date": "20150331", 
             "Name": "Wells Fargo", 
-            "end_date": "20211231", 
             "RSSD_ID": "1120754"
         }
     ]
