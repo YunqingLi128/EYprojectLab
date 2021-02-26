@@ -3,3 +3,7 @@
 .DS_Store
 .idea
 /demo/backend/data/
+/demo/build/
+/demo/dist/
+/demo/backend.egg-info/
+/demo/backend.data_setting.json
