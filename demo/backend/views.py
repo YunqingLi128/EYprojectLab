@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_cors import CORS
 
 from flask import Blueprint
-from backend.data_process import init_data, download_csv
+from backend.data_process import init_data, data_preprocessing, download_csv
 
 bp = Blueprint("views", __name__)
 cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
@@ -10,7 +10,7 @@ cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
 
 @bp.route('/', methods=('Get', 'Post'))
 def index():
-    init_data()
+    init_data(False)
     return "Hello Project Lab!"
 
 
