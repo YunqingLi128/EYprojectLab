@@ -1,10 +1,12 @@
 /demo/backend/.vscode/
-/venv/
-.DS_Store
-.idea
 /demo/backend/data/
+/demo/backend.egg-info/
+/demo/backend/data_setting.*
 /demo/build/
 /demo/dist/
-/demo/backend.egg-info/
+
+*.DS_Store
+*.idea
 *.pyc
-/demo/backend/data_setting.*
+
+/venv/
