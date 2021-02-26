@@ -5,7 +5,8 @@ from flask import Blueprint
 from backend.data_process import init_data, download_csv
 
 bp = Blueprint("views", __name__)
-cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
+#cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
+CORS(bp, supports_credentials=True)
 
 
 @bp.route('/', methods=('Get', 'Post'))
