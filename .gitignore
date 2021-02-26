@@ -7,4 +7,4 @@
 /demo/dist/
 /demo/backend.egg-info/
 *.pyc
-/demo/backend/data_setting.json
+/demo/backend/data_setting.*

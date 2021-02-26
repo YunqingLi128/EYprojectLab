@@ -4,26 +4,38 @@
         {
             "Name": "Bank of America",
             "RSSD_ID": "1073757",
+            "start_date": "20150331",
+            "end_date": "20201231"
         },
         {
             "Name": "Citigroup",
             "RSSD_ID": "1951350",
+            "start_date": "20150331",
+            "end_date": "20201231"
         },
         {
             "Name": "Goldman Sachs",
             "RSSD_ID": "2380443",
+            "start_date": "20150331",
+            "end_date": "20201231"
         },
         {
             "Name": "JP Morgan",
             "RSSD_ID": "1039502",
+            "start_date": "20150331",
+            "end_date": "20201231"
         },
         {
             "Name": "Morgan Stanley",
             "RSSD_ID": "2162966",
+            "start_date": "20150331",
+            "end_date": "20201231"
         },
         {
             "Name": "Wells Fargo",
             "RSSD_ID": "1120754",
+            "start_date": "20150331",
+            "end_date": "20201231"
         }
     ]
 }
