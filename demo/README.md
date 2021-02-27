@@ -20,7 +20,7 @@
     * 出现 Running on http://127.0.0.1:5000/ (Press CTRL+C to quit) 即为成功
 2. 然后跑client:
     * $cd frontend
-    * $cd projectlabdemo
+    * $cd projectlabdemp
     * $npm install
     * $npm run dev
     * 忽视所有的eslint的warning，光标闪烁没有且只有eslint的error即为成功
