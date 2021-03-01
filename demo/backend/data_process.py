@@ -36,9 +36,17 @@ def download_csv(report, RSSD_ID, date):
         print(e)
 
 
+def format_date(date):
+    quarter_map = {"0331": "Q1", "0630": "Q2", "0930": "Q3", "1231": "Q4"}
+    year, day = date[:4], date[4:]
+    quarter_date = year + quarter_map[day]
+    return quarter_date
+
+
 def raw_csv_consolidation(csv_path):
     _, csv_name = os.path.split(csv_path)
     report, institution, date = csv_name.split(".")[0].split("_")
+    date = format_date(date)
     df = pd.read_csv(csv_path, header=0)
     index_names = df[~df["ItemName"].str.startswith("M")].index  # drop the rows which ItemName is not "M*"
     df.drop(index_names, inplace=True)

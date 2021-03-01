@@ -5,12 +5,13 @@ from datetime import datetime
 import math
 
 ### clearing data
-raw_data = pd.read_csv(r'./data/FFIEC102.csv',parse_dates=[1])
-raw_data.columns = ['Company','Date','Item_ID','Item']
-raw_data['Quarter'] = pd.PeriodIndex(raw_data['Date'],freq='Q')
-raw_data = raw_data.drop(['Date'],axis = 1)
+raw_data = pd.read_csv(r'./data/FFIEC102.csv')
+raw_data.columns = ['Company','Quarter','Item_ID','Item']
+# raw_data['Quarter'] = pd.PeriodIndex(raw_data['Date'],freq='Q')
+# raw_data = raw_data.drop(['Date'],axis = 1)
 raw_data = raw_data.set_index(['Company','Quarter'])
 raw_data.sort_index(inplace=True)
+print(raw_data)
 
 ## Company dictionary capture
 Comp_dict = {'Bank of America': 1073757, 'Citigroup': 1951350, 'Goldman Sachs': 2380443, 'JP Morgan': 1039502, 'Morgan Stanley': 2162966, 'Wells Fargo': 1120754}
