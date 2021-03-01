@@ -5,7 +5,7 @@ from datetime import datetime
 import math
 
 ### clearing data
-raw_data = pd.read_csv(r'/Users/macbook/PycharmProjects/pythonProject2/FFIEC102.csv',parse_dates=[1])
+raw_data = pd.read_csv(r'./data/FFIEC102.csv',parse_dates=[1])
 raw_data.columns = ['Company','Date','Item_ID','Item']
 raw_data['Quarter'] = pd.PeriodIndex(raw_data['Date'],freq='Q')
 raw_data = raw_data.drop(['Date'],axis = 1)
