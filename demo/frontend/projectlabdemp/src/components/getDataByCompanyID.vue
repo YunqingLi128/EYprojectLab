@@ -2,7 +2,7 @@
   <div>
     <span>{{ serverResponse }} </span>
     <button @click="getData(); expand=!expand">GET DATA</button>
-    <section v-if="expand">
+    <!-- <section v-if="expand">
       <figure>
         <v-chart
           :option="bar"
@@ -10,8 +10,10 @@
           theme="ovilia-green"
         />
       </figure>
-    </section>
+    </section> -->
+    <div id='test' :style="{width: '100%', height: '600px'}"></div>
   </div>
+
 </template>
 
 <script>
@@ -24,27 +26,70 @@ import { BarChart } from 'echarts/charts';
 
 const { use } = echarts;
 
-use([
-  CanvasRenderer,
-  BarChart
-])
+
+// use([
+//   CanvasRenderer,
+//   BarChart
+// ])
 
 export default {
   name: 'bar-chart-test',
   components: {
     'v-chart': ECharts
   },
-  data() {
+  data: function() {
     return {
       expand: false,
-      bar: this.getBar()
+      // bar: this.getBar(),
+      serverResponse: 'TEST',
+      chartData: []
     }
   },
   methods: {
+    testDraw() {
+      var chartDom = document.getElementById('test');
+      var myChart = echarts.init(chartDom)
+      var option;
+      var that = this;
+
+      option = {
+          title: {
+            text: 'Company ID VS VaR and SVaR'
+          },
+          legend: {
+            data:['VaR', 'SVaR']
+          },
+          xAxis: {
+            type: 'category',
+            data: that.chartData[0]
+          },
+          yAxis: {
+              type: 'value'
+          },
+          tooltip: {
+            trigger:'axis'
+          },
+          series: [
+          {
+              name: 'VaR',
+              data: that.chartData[1],
+              type: 'bar'
+          },
+          {
+              name: 'SVaR',
+              data: that.chartData[2],
+              type: 'bar'
+          }
+          ]
+      }
+      myChart.setOption(option);
+    },
     getData() {
       var that = this;
+      that.chartData = [];
       // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
       const path = "http://127.0.0.1:5000/getDataByCompanyID/" + this.$route.params.id;
+      
       axios
         .get(path)
         .then(function(response) {
@@ -57,11 +102,18 @@ export default {
           // that.serverResponse = "Name of Company: " + response.data.name + "; X data:" + response.data.xdata + "; Ydata:" + response.data.ydata;
           let itemNames = response.data.item
           let data = response.data.data
+          console.log("TESTTESTTEST", data)
           let chartData = []
+          let x_data = []
+          let y1_data = []
+          let y2_data = []
           chartData.push(itemNames)
           for (let key in data) {
             let company = []
             if (data.hasOwnProperty(key)) {
+              x_data.push(key)
+              y1_data.push(data[key][0][1])
+              y2_data.push(data[key][1][1])
               company.push(key)
               console.log(data[key])
               for (const item of data[key]) {
@@ -72,6 +124,9 @@ export default {
             chartData.push(company)
           }
           console.log(chartData)
+          that.chartData.push(x_data,y1_data,y2_data)
+          console.log(that.chartData)
+          that.testDraw()
           return chartData
         })
         .catch(function(error) {
