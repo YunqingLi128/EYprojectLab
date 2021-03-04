@@ -14,10 +14,14 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "echarts": "^5.0.2",
+    "echarts-gl": "^2.0.2",
     "vue": "^2.5.2",
+    "vue-echarts": "^6.0.0-beta.6",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "@vue/composition-api": "^1.0.0-rc.3",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",

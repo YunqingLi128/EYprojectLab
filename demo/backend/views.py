@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask import Blueprint
 import time
 from backend.data_process import init_data, data_preprocessing, download_csv
-
+from backend.backend_analysis_plotting import test_VaR_sVarR_query
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -30,12 +30,17 @@ def home():
     
 @bp.route('/getDataByCompanyID/<int:id>')
 def getDataByCompanyID(id):
+    # response = {
+    #     # TODO: replace with the real data.
+    #     'name': "Sample Company name",
+    #     'companyID' : id,
+    #     'length': 5,
+    #     'xdata': [1,2,3,4,5],
+    #     'ydata': [11,22,33,44,55]
+    # }
+    data = test_VaR_sVarR_query('2017Q4')
     response = {
-        # TODO: replace with the real data.
-        'name': "Sample Company name",
-        'companyID' : id,
-        'length': 5,
-        'xdata': [1,2,3,4,5],
-        'ydata': [11,22,33,44,55]
+        'item': ['Company', 'VaR', 'SVaR'],
+        'data': data
     }
     return jsonify(response)
