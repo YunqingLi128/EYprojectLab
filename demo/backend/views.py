@@ -1,15 +1,16 @@
 from flask import jsonify
+from flask import request
 from flask_cors import CORS
 
 from flask import Blueprint
 import time
 from backend.data_process import init_data, data_preprocessing, download_csv
 from backend.backend_analysis_plotting import test_VaR_sVarR_query
-
+from backend.backend_analysis_plotting import advanced_market_risk_weighted_assets
 from concurrent.futures import ThreadPoolExecutor
 
 bp = Blueprint("views", __name__)
-#cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
+# cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
 CORS(bp, supports_credentials=True)
 
 executor = ThreadPoolExecutor()
@@ -44,3 +45,12 @@ def getDataByCompanyID(id):
         'data': data
     }
     return jsonify(response)
+
+
+@bp.route('/getAdvancedMarketRiskWeightedAssets', methods=['GET'])
+def getAdvancedMarketRiskWeightedAssets():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = advanced_market_risk_weighted_assets(start_quarter, end_quarter)
+    return jsonify(res)

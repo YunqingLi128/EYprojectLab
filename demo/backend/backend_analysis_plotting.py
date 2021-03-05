@@ -20,7 +20,7 @@ def get_data():
 
 # previous day's Value-at-risk (VaR)-based measure
 # IR, Debt, Equity, FX, Commodities
-# return JSON: {id: [{item_name_1: item_value_1}, {item_name_2: item_value_2}]
+# return JSON: {id: [{item_name_1: item_value_1}, {item_name_2: item_value_2}]}
 def test_asset_VaR_query(quarter_date):
     raw_data = get_data()
     asset_VaR_item_names = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
@@ -30,7 +30,6 @@ def test_asset_VaR_query(quarter_date):
     for k, v in asset_VaR_data.items():
         asset_VaR_data[k] = list(map(lambda x: {x[0]: x[1]}, v))
     res = json.dumps(asset_VaR_data)
-    print(res)
     # data.reset_index(inplace=True)
     # data.set_index(['Company', 'Quarter', 'Item_ID'], inplace=True)
     # result = data.to_json(orient="index", indent=4)
@@ -38,13 +37,33 @@ def test_asset_VaR_query(quarter_date):
 
 
 # Previous day's VaR-based measure and Most recent stressed VaR-based measure
-# return JSON: {id: [[item_name_1, item_value_1], [item_name_2: item_value_2]]
+# return JSON: {id: [[item_name_1, item_value_1], [item_name_2, item_value_2]]}
 def test_VaR_sVarR_query(quarter_date):
     raw_data = get_data()
     VaR_item_names = ['MRRRS298', 'MRRRS302']
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter == @quarter_date')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     return VaR_data
+
+
+# Advanced market risk-weighted assets
+# MRRRS347
+def advanced_market_risk_weighted_assets(quarter_date_from, quarter_date_to):
+    # TODO: Store this company map in a csv?
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    advanced_market_risk_weighted_assets_ID = ['MRRRS347']
+    data = raw_data.query('Item_ID in @advanced_market_risk_weighted_assets_ID and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    data = data.reset_index()
+    asset_data = data.groupby('Company')[['Quarter', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
+    return res
 
 
 # test_asset_VaR_query(date)

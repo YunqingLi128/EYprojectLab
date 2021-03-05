@@ -1,15 +1,16 @@
 <template>
   <div>
-    <span>{{ serverResponse }} </span>
-    <button @click="getData">GET DATA</button>
+    <line-chart></line-chart>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import LineChart from "./LineChart";
 
 export default {
   name: "my-first-vue",
+  components: {LineChart},
   data: function() {
     return {
       serverResponse: "Waiting for server response"
