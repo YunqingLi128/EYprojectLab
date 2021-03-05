@@ -65,6 +65,48 @@ def advanced_market_risk_weighted_assets(quarter_date_from, quarter_date_to):
     res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
     return res
 
+# VaR based measure overtime
+def VaR_based_measure_overtime(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    VaR_based_measure_overtime_ID = ['MRRRS298']
+    data = raw_data.query('Item_ID in @VaR_based_measure_overtime_ID and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    data = data.reset_index()
+    asset_data = data.groupby('Company')[['Quarter', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
+    return res
+
+# sVaR VaR ratio overtime
+def sVaR_VaR_ratio_overtime(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    VaR_based_measure_overtime_ID = ['MRRRS298']
+    sVaR_based_measure_overtime_ID = ['MRRRS302']
+    data = raw_data.query('Item_ID in @VaR_based_measure_overtime_ID and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+
+    data_2 = raw_data.query('Item_ID in @sVaR_based_measure_overtime_ID and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    data['Item_2'] = data_2['Item']
+    data['Ratio'] = data['Item_2'].astype(int)/data['Item'].astype(int)
+    data = data.drop(['Item','Item_2'], axis=1)
+    data['Item'] = data['Ratio']
+    data = data.drop(['Ratio'], axis=1)
+    data = data.reset_index()
+    asset_data = data.groupby('Company')[['Quarter', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
+    return res
 
 # test_asset_VaR_query(date)
 # test_VaR_sVarR_query(date)
