@@ -7,6 +7,9 @@ import time
 from backend.data_process import init_data, data_preprocessing, download_csv
 from backend.backend_analysis_plotting import test_VaR_sVarR_query
 from backend.backend_analysis_plotting import advanced_market_risk_weighted_assets
+from backend.backend_analysis_plotting import VaR_based_measure_overtime
+from backend.backend_analysis_plotting import sVaR_VaR_ratio_overtime
+
 from concurrent.futures import ThreadPoolExecutor
 
 bp = Blueprint("views", __name__)
@@ -53,4 +56,20 @@ def getAdvancedMarketRiskWeightedAssets():
     start_quarter = args['start']
     end_quarter = args['end']
     res = advanced_market_risk_weighted_assets(start_quarter, end_quarter)
+    return jsonify(res)
+
+@bp.route('/getChangeInVaRBasedMeasureOvertime', methods=['GET'])
+def getChangeInVaRBasedMeasureOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = VaR_based_measure_overtime(start_quarter, end_quarter)
+    return jsonify(res)
+
+@bp.route('/getVaRsVaRRatioOvertime', methods=['GET'])
+def getVaRsVaRRatioOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = sVaR_VaR_ratio_overtime(start_quarter, end_quarter)
     return jsonify(res)
