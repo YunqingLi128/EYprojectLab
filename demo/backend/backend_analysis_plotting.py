@@ -322,3 +322,46 @@ def analysis():
     plt.xticks(index,Company_list_new)
     plt.legend(loc="upper center",bbox_to_anchor=(0.5, 0))
     plt.show()
+
+# Yuyan's work
+def trend_analysis(Company_list=['Bank of America', 'Citigroup','Goldman Sachs','JP Morgan']):
+    # Data cleaning
+    raw_data = pd.read_csv(r'./data/FFIEC102.csv')
+    # quarter新的数据是2017Q4这种类型的，但是这个文件目前不是，2017Q4就可以后面再处理了
+    raw_data.columns = ['Company','Quarter','Item_ID','Item']
+    
+    #test
+    raw_data = raw_data[raw_data['Quarter'] >= 20191231]
+    raw_data = raw_data[raw_data['Quarter'] <= 20200930]
+    
+    # Company dictionary capture
+    Comp_dict = {'Bank of America': 1073757, 'Citigroup': 1951350, 'Goldman Sachs': 2380443, 'JP Morgan': 1039502, 'Morgan Stanley': 2162966, 'Wells Fargo': 1120754}
+    Inv_comp_dict = {v: k for k, v in Comp_dict.items()}
+    
+    ### Data Analysis
+    # MRRRS343 = De minimis
+    # MRRRH327 or MRRRH323 = Standardized comprehensive risk measure
+    # MRRRS313 = Incremental risk capital requirement
+    # MRRRS311 = Standardized measure of specific risk add-ons
+    # MRRRS302 = sVaR
+    # MRRRS298 = VaR
+    
+    # sVaR to VaR ratio
+    VaR = raw_data.loc[raw_data['Item_ID'] == 'MRRRS298'].reset_index()
+    sVaR = raw_data.loc[raw_data['Item_ID'] == 'MRRRS302'].reset_index()
+    plt.xlabel('Quarter')
+    plt.ylabel('Amount')
+    plt.title('sVaR to VaR ratio over time')
+    for comp in Company_list:
+        data_var = VaR.loc[VaR['Company']==Comp_dict[comp], ['Quarter', 'Item']]
+        data_var = data_var.rename(columns={'Item': 'VaR'})
+        data_svar = sVaR.loc[sVaR['Company']==Comp_dict[comp], ['Quarter', 'Item']]
+        data_svar = data_svar.rename(columns={'Item': 'sVaR'})
+        data = pd.merge(data_var, data_svar, on=['Quarter'])
+        data['Quarter'] = [str(x) for x in data['Quarter']]
+        data['VaR'] = [float(x) for x in data['VaR']]
+        data['sVaR'] = [float(x) for x in data['sVaR']]
+        data['ratio'] = data['sVaR'] / data['VaR']
+        plt.plot(data['Quarter'], data['ratio'], label=comp)
+    plt.legend();
+    plt.show();
