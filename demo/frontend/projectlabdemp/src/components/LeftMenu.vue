@@ -17,10 +17,10 @@
                     <el-menu-item-group title="3">
                     <el-menu-item index="/flaskTovue"> Other</el-menu-item>
                     </el-menu-item-group> -->
-                    <el-menu-item index="/flaskTovue">
+                    <el-menu-item index="/getDataByCompanyID/1234">
                         <span slot="title"> Quarterly Highlights</span>
                     </el-menu-item>
-                    <el-menu-item index="/getDataByCompanyID/1234">
+                    <el-menu-item index="/flaskTovue">
                         <span slot="title"> Overtime Analysis</span>
                     </el-menu-item>
                     <el-menu-item index="4">
