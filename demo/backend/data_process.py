@@ -1,12 +1,14 @@
 import itertools
 import os
 import requests
+import urllib.request
 import urllib3
 import json
 import pandas as pd
-from flask import current_app
-from datetime import datetime
 import logging
+import concurrent.futures
+from datetime import datetime
+
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -24,6 +26,7 @@ def create_dir(path, name):
     return dir_name
 
 
+# Old version
 def download_csv(path, report, RSSD_ID, date):
     csv_file_name = "_".join([report, RSSD_ID, date]) + ".csv"
     csv_file_path = os.path.join(path, csv_file_name)
@@ -53,6 +56,21 @@ def format_date(date):
     return quarter_date
 
 
+def generate_dates():
+    current_year = datetime.now().year
+    current_date = datetime.now().strftime('%m%d')
+    years = range(2015, current_year)
+    quarters = ["0331", "0630", "0930", "1231"]
+    all_dates = []
+    for r in itertools.product(years, quarters):
+        all_dates.append(str(r[0]) + r[1])
+    for q in quarters:
+        if q < current_date:
+            all_dates.append(str(current_year) + q)
+    logging.info("dates %s", all_dates)
+    return all_dates
+
+
 def parse_csv_path(csv_path):
     _, csv_name = os.path.split(csv_path)
     report, institution, date = csv_name.split(".")[0].split("_")
@@ -73,57 +91,31 @@ def raw_csv_consolidation(report, csv_path):
     return df
 
 
-def init_data(update_everytime):
-    # TODO: Store institution_list into the config file
-    current_year = datetime.now().year
-    years = range(2015, current_year + 1)
-    quarters = ["0331", "0630", "0930", "1231"]
-    all_dates = []
-    for r in itertools.product(years, quarters):
-        all_dates.append(str(r[0]) + r[1])
-
-    # create data folder
+def construct_urls(reports, institutions, dates):
+    """
+    :param reports:
+    :param institutions:
+    :param dates:
+    :return: (csv_file_path, web_url) pair list
+    """
     path = get_cur_path()
-    create_dir(path, "data/raw_data")
-
-    # load the data config file
-    json_file_path = os.path.join(path, "data_setting.json")
-    with open(json_file_path, 'r') as f:
-        data_info = json.loads(f.read())
-    report = data_info["report"]
-    institution_list = data_info["institutions"]
-
-    df_list = []
-    for institution_obj in institution_list:
-        if "end_date" not in institution_obj:
-            dates = all_dates
-            start_date = all_dates[0]
-            end_date = all_dates[-1]
-        else:
-            if not update_everytime:
-                continue
-            dates = list(filter(lambda x: x > institution_obj["end_date"], all_dates))
-            start_date = institution_obj["start_date"]
-            end_date = institution_obj["end_date"]
-        for i in range(len(dates)):
-            csv_file_path = download_csv(path, report, institution_obj["RSSD_ID"], dates[i])
-            if csv_file_path is not None:
-                end_date = dates[i]
-                df = raw_csv_consolidation("", csv_file_path)
-                df_list.append(df)
-        institution_obj["start_date"] = start_date
-        institution_obj["end_date"] = end_date
-
-    if len(df_list) > 0:
-        full_df = pd.concat(df_list)
-        full_csv_path = os.path.join(get_cur_path(), "data", report + ".csv")
-        full_df.to_csv(full_csv_path, mode='a', header=False, index=False)
-
-    with open(json_file_path, 'w') as f:
-        json.dump(data_info, f, indent=4)
+    data_dir_path = os.path.join(path, "data/raw_data")
+    urls = []
+    base_url = "https://www.ffiec.gov/npw/FinancialReport/ReturnFinancialReportCSV?rpt={}&id={}&dt={}"
+    for element in itertools.product(reports, institutions, dates):
+        csv_file_name = "_".join(element) + ".csv"
+        csv_file_path = os.path.join(data_dir_path, element[1], csv_file_name)
+        url = base_url.format(*element)
+        urls.append((csv_file_path, url))
+    return urls
 
 
-# TODO: multiple thread handling
+def load_url(url, timeout):
+    with urllib.request.urlopen(url, timeout=timeout) as conn:
+        return conn.read()
+
+
+# Old version
 def download_csv_for_institution(path, rssd_id, reports, dates):
     """
     :param path: Institution folder path
@@ -143,23 +135,75 @@ def download_csv_for_institution(path, rssd_id, reports, dates):
     return res
 
 
-def download_raw_csv_files():
+def download_raw_csv_files(reports, institutions, dates):
     """
-    Downloading raw csv files for institutions in the data_setting.json
+    Downloading raw csv files
+    """
+    # parallel downloading using threads
+    urls = construct_urls(reports, institutions, dates)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
+        # Start the load operations and mark each future with its URL
+        future_to_url = {executor.submit(load_url, pair[1], 60): pair for pair in urls}
+        for future in concurrent.futures.as_completed(future_to_url):
+            path, url = future_to_url[future]
+            try:
+                data = future.result().decode("utf-8")
+                if "<body>" not in data:
+                    with open(path, "w") as f:
+                        f.write(data)
+            except Exception as exc:
+                print('%r generated an exception: %s' % (url, exc))
+            else:
+                logging.info("%s is downloaded", path)
 
-    :return: Downloaded csv paths for each report
+
+def walk_through_files(reports, path):
     """
-    current_year = datetime.now().year
-    current_date = datetime.now().strftime('%m%d')
-    years = range(2015, current_year)
-    quarters = ["0331", "0630", "0930", "1231"]
-    all_dates = []
-    for r in itertools.product(years, quarters):
-        all_dates.append(str(r[0]) + r[1])
-    for q in quarters:
-        if q < current_date:
-            all_dates.append(str(current_year) + q)
-    logging.info("dates %s", all_dates)
+    Raw csv consolidation for downloaded csv files
+
+    :param path: raw csv data folder
+    :return: file_info: updated downloaded reports
+    """
+    file_info = {}
+    report_df_dict = {report: [] for report in reports}
+    for root, dirs, files in os.walk(path):
+        if len(dirs) == 0:  # institution folder
+            _, rssd_id = os.path.split(root)
+            report_info = {report: [] for report in reports}
+            sorted_files = sorted(files)
+            for file in sorted_files:
+                if file.endswith(".csv"):
+                    csv_file_path = os.path.join(root, file)
+                    report, institution, date = parse_csv_path(csv_file_path)
+                    df = raw_csv_consolidation(report, csv_file_path)
+                    report_df_dict[report].append(df)
+                    report_info[report].append(date)
+            # find start date and end date and update config object
+            for report, dates in report_info.items():
+                start_date, end_date = format_date(min(dates)), format_date(max(dates))
+                report_info[report] = {
+                    "start_quarter": start_date,
+                    "end_quarter": end_date
+                }
+            file_info[rssd_id] = report_info
+    logging.info("config file %s", file_info)
+
+    for report, df_list in report_df_dict.items():
+        if len(df_list) > 0:
+            full_df = pd.concat(df_list)
+            full_csv_path = os.path.join(get_cur_path(), "data", report + ".csv")
+            full_df.to_csv(full_csv_path, header=False, index=False)
+            logging.info("full csv for %s is constructed", report)
+
+    return file_info
+
+
+def data_preprocessing():
+    """
+    Starting initialization
+    :return:
+    """
+    dates = generate_dates()
 
     # create data folder
     path = get_cur_path()
@@ -172,51 +216,21 @@ def download_raw_csv_files():
     reports = data_info["reports"]
     institutions = data_info["institutions"]
 
-    file_info = {report: [] for report in reports}
+    # create institution folders
     for rssd_id in institutions:
-        institution = institutions[rssd_id]
-        institution_dir_path = create_dir(data_dir_path, rssd_id)
-        res = download_csv_for_institution(institution_dir_path, rssd_id, reports, all_dates)
-        for report in reports:
-            file_list = res[report]
-            if report not in institution:
-                institution[report] = {}
-            if len(file_list) > 0:
-                _, _, start_date = parse_csv_path(file_list[0])
-                _, _, end_date = parse_csv_path(file_list[-1])
-                institution[report]["start_date"] = start_date
-                institution[report]["end_date"] = end_date
-            file_info[report].extend(file_list)
+        create_dir(data_dir_path, rssd_id)
 
+    download_raw_csv_files(reports, institutions, dates)
+
+    # combine raw csv files to full csv file
+    path = get_cur_path()
+    data_dir_path = os.path.join(path, "data", "raw_data")
+    csv_file_info = walk_through_files(reports, data_dir_path)
+
+    # update the data config file
+    for rssd_id in institutions:
+        institutions[rssd_id]["data_status"] = csv_file_info[rssd_id]
     with open(json_file_path, 'w') as f:
         json.dump(data_info, f, indent=4)
-    return file_info
 
-
-def walk_through_files(file_info):
-    """
-    Raw csv consolidation for downloaded csv files
-
-    :param file_info: dict(): Downloaded csv paths for each report
-    :return: None
-    """
-    for report in file_info:
-        df_list = []
-        for csv_file_path in file_info[report]:
-            df = raw_csv_consolidation(report, csv_file_path)
-            df_list.append(df)
-
-        if len(df_list) > 0:
-            full_df = pd.concat(df_list)
-            full_csv_path = os.path.join(get_cur_path(), "data", report + ".csv")
-            full_df.to_csv(full_csv_path, mode='a', header=False, index=False)
-            logging.info("full csv for %s is constructed", report)
-
-
-def data_preprocessing():
-    """
-    Starting initialization
-    :return:
-    """
-    csv_file_info = download_raw_csv_files()
-    walk_through_files(csv_file_info)
+    return data_info

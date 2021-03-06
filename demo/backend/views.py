@@ -9,19 +9,15 @@ from backend.backend_analysis_plotting import advanced_market_risk_weighted_asse
 from backend.backend_analysis_plotting import VaR_based_measure_overtime
 from backend.backend_analysis_plotting import sVaR_VaR_ratio_overtime
 
-from concurrent.futures import ThreadPoolExecutor
-
 bp = Blueprint("views", __name__)
 # cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
 CORS(bp, supports_credentials=True)
 
-executor = ThreadPoolExecutor()
-
 
 @bp.route('/', methods=('Get', 'Post'))
 def index():
-    executor.submit(data_preprocessing)
-    return "Hello Project Lab!"
+    data_info = data_preprocessing()
+    return jsonify(data_info)
 
 
 @bp.route('/getMsg', methods=['GET','POST'])
@@ -30,7 +26,7 @@ def home():
         'msg':'Hello, This is a simple demo!'
     }
     return jsonify(response)
-    
+
 @bp.route('/getDataByCompanyID/<int:id>')
 def getDataByCompanyID(id):
     # response = {
