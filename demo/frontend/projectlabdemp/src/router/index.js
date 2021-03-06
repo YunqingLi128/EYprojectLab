@@ -17,17 +17,26 @@ export default new Router({
     {
       path: '/flaskTovue',
       name: 'flaskTovue',
-      component: flaskTovue
+      component: flaskTovue,
+      meta:{
+        keepalive:true
+      }
     },
     {
       path: '/Home',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta:{
+        keepalive:true
+      }
     },
     {
       path: '/getDataByCompanyID/:id',
       name: 'getDataByCompanyID',
-      component: getDataByCompanyID
+      component: getDataByCompanyID,
+      meta:{
+        keepalive:true
+      }
     }
   ]
 })
