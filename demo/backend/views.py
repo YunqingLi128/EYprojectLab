@@ -68,3 +68,14 @@ def getVaRsVaRRatioOvertime():
     end_quarter = args['end']
     res = sVaR_VaR_ratio_overtime(start_quarter, end_quarter)
     return jsonify(res)
+
+@bp.route('/getDiversificationVaROvertime', methods=['GET'])
+def diversification_of_var_overtime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = sVaR_VaR_ratio_overtime(start_quarter, end_quarter)
+    return jsonify(res)
+
+
+
