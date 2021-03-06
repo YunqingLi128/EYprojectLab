@@ -108,6 +108,42 @@ def sVaR_VaR_ratio_overtime(quarter_date_from, quarter_date_to):
     res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
     return res
 
+def var_by_assetclass_diversification(quarter_date):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    asset_classesID = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
+    # Previous day's VaR: IR='MRRRS348' Debt='MRRRS349' Equity='MRRRS350' FX='MRRRS351' Commodities='MRRRS352'
+
+    data_asset = raw_data.query('Item_ID in @asset_classesID and Quarter == @quarter_date')
+    data_asset = data_asset.reset_index()
+    data_asset['Item']=data_asset.Item.astype(int)
+    data_asset['total_asset_var']=data_asset.groupby('Company')['Item'].transform('sum')
+
+    varID = ['MRRRS298']
+    data_day_var = raw_data.query('Item_ID in @varID and Quarter == @quarter_date')
+    data_day_var = data_day_var.reset_index()
+    data_day_var['Item']=data_day_var.Item.astype(int)
+
+    data = data_asset.append(data_day_var)
+    data.update(data.groupby('Company').ffill())
+
+    data['total_asset_var'] = data.total_asset_var.astype(int)
+    data['asset_var_by_percentage'] = 100 * (data.Item / data.total_asset_var)
+    data.loc[data.Item_ID=='MRRRS298', 'asset_var_by_percentage'] =\
+        100 * \
+        (data.loc[data.Item_ID=='MRRRS298', 'Item']-data.loc[data.Item_ID=='MRRRS298', 'total_asset_var'])/ \
+        data.loc[data.Item_ID == 'MRRRS298', 'total_asset_var']
+    data.sort_values(by='Company', inplace=True)
+
+    output_data = data.groupby('Company')[['Item_ID', 'asset_var_by_percentage']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], output_data[key]) for key in output_data)  # change the id to name
+    return res
+
 # test_asset_VaR_query(date)
 # test_VaR_sVarR_query(date)
 
