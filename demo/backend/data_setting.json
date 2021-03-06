@@ -1,41 +1,32 @@
 {
-    "report": "FFIEC102",
-    "institutions": [
-        {
+    "reports": [
+        "FFIEC102",
+        "FRY9C"
+    ],
+    "institutions": {
+        "1073757": {
             "Name": "Bank of America",
-            "RSSD_ID": "1073757",
-            "start_date": "20150331",
-            "end_date": "20201231"
+            "Nick": "BAC"
         },
-        {
+        "1951350": {
             "Name": "Citigroup",
-            "RSSD_ID": "1951350",
-            "start_date": "20150331",
-            "end_date": "20201231"
+            "Nick": "CITI"
         },
-        {
+        "2380443": {
             "Name": "Goldman Sachs",
-            "RSSD_ID": "2380443",
-            "start_date": "20150331",
-            "end_date": "20201231"
+            "Nick": "GS"
         },
-        {
+        "1039502": {
             "Name": "JP Morgan",
-            "RSSD_ID": "1039502",
-            "start_date": "20150331",
-            "end_date": "20201231"
+            "Nick": "JPM"
         },
-        {
+        "2162966": {
             "Name": "Morgan Stanley",
-            "RSSD_ID": "2162966",
-            "start_date": "20150331",
-            "end_date": "20201231"
+            "Nick": "MS"
         },
-        {
+        "1120754": {
             "Name": "Wells Fargo",
-            "RSSD_ID": "1120754",
-            "start_date": "20150331",
-            "end_date": "20201231"
+            "Nick": "WF"
         }
-    ]
+    }
 }

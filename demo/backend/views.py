@@ -1,10 +1,9 @@
 from flask import jsonify
 from flask import request
 from flask_cors import CORS
-
 from flask import Blueprint
-import time
-from backend.data_process import init_data, data_preprocessing, download_csv
+
+from backend.data_process import data_preprocessing
 from backend.backend_analysis_plotting import test_VaR_sVarR_query
 from backend.backend_analysis_plotting import advanced_market_risk_weighted_assets
 from backend.backend_analysis_plotting import VaR_based_measure_overtime
@@ -21,7 +20,7 @@ executor = ThreadPoolExecutor()
 
 @bp.route('/', methods=('Get', 'Post'))
 def index():
-    executor.submit(init_data, False)
+    executor.submit(data_preprocessing)
     return "Hello Project Lab!"
 
 
