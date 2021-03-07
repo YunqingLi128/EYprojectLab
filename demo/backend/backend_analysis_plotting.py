@@ -7,7 +7,6 @@ import json
 import os
 from backend.data_process import get_cur_path
 
-# Yaoqi's test
 def get_data():
     path = get_cur_path()
     csv_path = os.path.join(path, "data/FFIEC102.csv")
@@ -254,8 +253,6 @@ def var_by_assetclass_diversification(quarter_date):
 # test_asset_VaR_query(date)
 # test_VaR_sVarR_query(date)
 
-
-# Yuyan's work
 def standardized_risk_weighted_assets(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
