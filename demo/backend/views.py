@@ -69,6 +69,31 @@ def getVaRsVarRComparisonQuery():
     }
     return jsonify(response)
 
+@bp.route('/getStandardizedRiskWeightedQuery', methods=['GET'])
+def getStandardizedRiskWeightedQuery():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = VaR_sVarR_comparison(start_quarter, end_quarter)
+    response = {
+        'item': ['Company', 'De minimis positions and other adjustment', 'Standardized comprehensive risk measure','Incremental risk capital requirement','Standardized measure of specific risk add-ons','VaR-based capital','sVaR-based capital'],
+        'data': res
+    }
+    return jsonify(response)
+
+@bp.route('/getVaRbyAssetandDiversificationQuery', methods=['GET'])
+def getVaRbyAssetandDiversificationQuery():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = VaR_sVarR_comparison(start_quarter, end_quarter)
+    response = {
+        'item': ['Company', 'IR', 'Debt','Equity','FX','Commodities','Diversification'],
+        'data': res
+    }
+    return jsonify(response)
+
+
 @bp.route('/getAdvancedMarketRiskWeightedAssets', methods=['GET'])
 def getAdvancedMarketRiskWeightedAssets():
     args = request.args
@@ -87,6 +112,14 @@ def getChangeInVaRBasedMeasureOvertime():
 
 @bp.route('/getVaRsVaRRatioOvertime', methods=['GET'])
 def getVaRsVaRRatioOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = sVaR_VaR_ratio_overtime(start_quarter, end_quarter)
+    return jsonify(res)
+
+@bp.route('/getChangeofVaRBreachesOvertime', methods=['GET'])
+def getChangeofVaRBreachesOvertime():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
