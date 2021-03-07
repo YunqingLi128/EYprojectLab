@@ -4,6 +4,7 @@
     <div id="Change In VaR Measure Overtime" :style="{width: '50%', height: '600px'}"></div>
     <div id="Market Risk-Weighted Assets Overtime" :style="{width: '50%', height: '600px'}"></div>
     <div id="sVaR-VaR Ratio Overtime" :style="{width: '50%', height: '600px'}"></div>
+    <div id="Change in Diversification as a Percentage of VaR over time" :style="{width: '50%', height: '600px'}"></div>
   </div>
 </template>
 
@@ -51,7 +52,8 @@ export default {
       let dict_base = {
         'Change In VaR Measure Overtime': 'getChangeInVaRBasedMeasureOvertime',
         'Market Risk-Weighted Assets Overtime': 'getAdvancedMarketRiskWeightedAssets',
-        'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime'
+        'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime',
+        'Change in Diversification as a Percentage of VaR over time':'diversification_of_var_overtime'
       };
       const start = '2015Q3';
       const end = '2016Q3';
