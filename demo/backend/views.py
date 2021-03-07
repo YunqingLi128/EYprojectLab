@@ -44,6 +44,29 @@ def getDataByCompanyID(id):
     }
     return jsonify(response)
 
+@bp.route('/getTradingAssetComparison', methods=['GET'])
+def getTradingAssetComparison():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = trading_asset_comparison(start_quarter, end_quarter)
+    response = {
+        'item': ['Company', 'Net Trading Asset', 'Gross Trading Asset'],
+        'data': res
+    }
+    return jsonify(response)
+
+@bp.route('/getVaRsVarRComparisonQuery', methods=['GET'])
+def getVaRsVarRComparisonQuery():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = VaR_sVarR_comparison(start_quarter, end_quarter)
+    response = {
+        'item': ['Company', 'VaR', 'SVaR'],
+        'data': res
+    }
+    return jsonify(response)
 
 @bp.route('/getAdvancedMarketRiskWeightedAssets', methods=['GET'])
 def getAdvancedMarketRiskWeightedAssets():
