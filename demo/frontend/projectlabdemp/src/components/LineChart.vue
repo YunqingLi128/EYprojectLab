@@ -55,7 +55,7 @@ export default {
       };
       const start = '2015Q3';
       const end = '2016Q3';
-      const base = 'http://127.0.0.1:5000/getChangeInVaRBasedMeasureOvertime';
+      const base = 'http://127.0.0.1:5000/' + dict_base[id];
       axios
         .get(base, {
           params: {
