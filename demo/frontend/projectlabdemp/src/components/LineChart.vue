@@ -53,7 +53,7 @@ export default {
         'Change In VaR Measure Overtime': 'getChangeInVaRBasedMeasureOvertime',
         'Market Risk-Weighted Assets Overtime': 'getAdvancedMarketRiskWeightedAssets',
         'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime',
-        'Change in Diversification as a Percentage of VaR over time':'diversification_of_var_overtime'
+        'Change in Diversification as a Percentage of VaR over time':'getDiversificationVaROvertime'
       };
       const start = '2015Q3';
       const end = '2016Q3';
