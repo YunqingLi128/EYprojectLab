@@ -17,6 +17,14 @@ def get_data():
     df.sort_index(inplace=True)
     return df
 
+def get_data_2():
+    path = get_cur_path()
+    csv_path = os.path.join(path, "data/FRY9C.csv")
+    df = pd.read_csv(csv_path, dtype=str)
+    df.columns = ['Company', 'Quarter', 'Item_ID', 'Item']
+    df = df.set_index(['Company', 'Quarter'])
+    df.sort_index(inplace=True)
+    return df
 
 # previous day's Value-at-risk (VaR)-based measure
 # IR, Debt, Equity, FX, Commodities
@@ -44,6 +52,65 @@ def test_VaR_sVarR_query(quarter_date):
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter == @quarter_date')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     return VaR_data
+
+# VaR sVaR Comparison
+# MRRRS298
+# MRRRS302
+def VaR_sVarR_comparison(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    VaR_item_names = ['MRRRS298', 'MRRRS302']
+    data = raw_data.query('Item_ID in @VaR_item_names and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    return VaR_data
+
+# Trading asset comparison
+# BHCK3545
+# BHCK3548
+def trading_asset_comparison(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data_2()
+    trading_asset_item_names_asset = ['BHCK3545']
+    trading_asset_item_names_liability = ['BHCK3548']
+    trading_asset_item_names = ['BHCK3545','BHCK3548']
+    data = raw_data.query('Item_ID in @trading_asset_item_names and Quarter <= @quarter_date_to and '
+                                'Quarter >= @quarter_date_from')
+    data_asset = raw_data.query('Item_ID in @trading_asset_item_names_asset and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    data_liability = raw_data.query('Item_ID in @trading_asset_item_names_liability and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+
+    data_asset['Item_2'] = data_liability['Item']
+    data_asset['Gross'] = data_asset['Item'].astype(int) + data_asset['Item_2'].astype(int)
+    data_asset['Net'] = data_asset['Item'].astype(int) - data_asset['Item_2'].astype(int)
+    data_asset = data_asset.drop(['Item','Item_2'], axis=1)
+    data_asset = data_asset.reset_index()
+    whole_val = []
+    Flag = 1
+    for index, row in data_asset.iterrows():
+        if Flag == 1:
+            whole_val.append(row['Gross'])
+            Flag = -1
+        if Flag == -1:
+            whole_val.append(row['Net'])
+            Flag = 1
+    new = pd.Series(whole_val)
+    data['New_Item'] = new.values
+    data['Item'] = data['New_Item']
+    data = data.drop(['New_Item'],axis=1)
+    trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    return trading_asset_data
 
 
 # Advanced market risk-weighted assets

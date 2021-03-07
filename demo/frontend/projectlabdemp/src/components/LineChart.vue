@@ -48,9 +48,14 @@ export default {
       let that = this;
       that.chartData = {};
       // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
+      let dict_base = {
+        'Change In VaR Measure Overtime': 'getChangeInVaRBasedMeasureOvertime',
+        'Market Risk-Weighted Assets Overtime': 'getAdvancedMarketRiskWeightedAssets',
+        'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime'
+      };
       const start = '2015Q3';
       const end = '2016Q3';
-      const base = 'http://127.0.0.1:5000/getChangeInVaRBasedMeasureOvertime';
+      const base = 'http://127.0.0.1:5000/' + dict_base[id];
       axios
         .get(base, {
           params: {

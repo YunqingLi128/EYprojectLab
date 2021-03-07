@@ -4,10 +4,11 @@ from flask_cors import CORS
 from flask import Blueprint
 
 from backend.data_process import data_preprocessing
-from backend.backend_analysis_plotting import test_VaR_sVarR_query
+from backend.backend_analysis_plotting import VaR_sVarR_comparison
 from backend.backend_analysis_plotting import advanced_market_risk_weighted_assets
 from backend.backend_analysis_plotting import VaR_based_measure_overtime
 from backend.backend_analysis_plotting import sVaR_VaR_ratio_overtime
+from backend.backend_analysis_plotting import trading_asset_comparison
 
 bp = Blueprint("views", __name__)
 # cors = CORS(bp, resources={r"/getMsg": {"origins": "*"}})
@@ -44,6 +45,29 @@ def getDataByCompanyID(id):
     }
     return jsonify(response)
 
+@bp.route('/getTradingAssetComparison', methods=['GET'])
+def getTradingAssetComparison():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = trading_asset_comparison(start_quarter, end_quarter)
+    response = {
+        'item': ['Company', 'Net Trading Asset', 'Gross Trading Asset'],
+        'data': res
+    }
+    return jsonify(response)
+
+@bp.route('/getVaRsVarRComparisonQuery', methods=['GET'])
+def getVaRsVarRComparisonQuery():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = VaR_sVarR_comparison(start_quarter, end_quarter)
+    response = {
+        'item': ['Company', 'VaR', 'SVaR'],
+        'data': res
+    }
+    return jsonify(response)
 
 @bp.route('/getAdvancedMarketRiskWeightedAssets', methods=['GET'])
 def getAdvancedMarketRiskWeightedAssets():

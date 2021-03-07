@@ -23,6 +23,14 @@ export default new Router({
       }
     },
     {
+      path: '/flaskTovue2',
+      name: 'flaskTovue2',
+      component: flaskTovue2,
+      meta:{
+        keepalive:true
+      }
+    },
+    {
       path: '/Home',
       name: 'Home',
       component: Home,
