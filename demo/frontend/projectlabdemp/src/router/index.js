@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import flaskTovue from '@/components/flaskTovue'
+import flaskTovue2 from '@/components/flaskTovue2'
 import Home from '@/components/Home'
 import getDataByCompanyID from '@/components/getDataByCompanyID'
 
