@@ -51,7 +51,8 @@ def test_VaR_sVarR_query(quarter_date):
     VaR_item_names = ['MRRRS298', 'MRRRS302']
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter == @quarter_date')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    return VaR_data
+    res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
+    return res
 
 # VaR sVaR Comparison
 # MRRRS298
@@ -68,7 +69,8 @@ def VaR_sVarR_comparison(quarter_date_from, quarter_date_to):
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    return VaR_data
+    res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
+    return res
 
 # Trading asset comparison
 # BHCK3545
@@ -110,7 +112,8 @@ def trading_asset_comparison(quarter_date_from, quarter_date_to):
     data['Item'] = data['New_Item']
     data = data.drop(['New_Item'],axis=1)
     trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    return trading_asset_data
+    res = dict((comp_dict[key], trading_asset_data[key]) for key in trading_asset_data)  # change the id to name
+    return res
 
 
 # Advanced market risk-weighted assets
@@ -250,6 +253,54 @@ def var_by_assetclass_diversification(quarter_date):
 
 # test_asset_VaR_query(date)
 # test_VaR_sVarR_query(date)
+
+
+# Yuyan's work
+def standardized_risk_weighted_assets(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    item_names = ['MRRRS343', 'MRRRH327', 'MRRRS313', 'MRRRS311', 'MRRRS302', 'MRRRS298']
+    data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    return total_data
+
+def num_var_breach_overtime(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data()
+    item_names = ['MRRRS362']
+    data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], total_data[key]) for key in total_data)
+    return res
+    
+# I don't know which item to use...
+def stress_window(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data = get_data_2()
+    item_names = ['BHCALE85']
+    data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], total_data[key]) for key in total_data)
+    return res
+
 
 # Wenzhou's work
 def analysis():
@@ -504,46 +555,3 @@ def analysis():
     plt.xticks(index,Company_list_new)
     plt.legend(loc="upper center",bbox_to_anchor=(0.5, 0))
     plt.show()
-
-# Yuyan's work
-def trend_analysis(Company_list=['Bank of America', 'Citigroup','Goldman Sachs','JP Morgan']):
-    # Data cleaning
-    raw_data = pd.read_csv(r'./data/FFIEC102.csv')
-    # quarter新的数据是2017Q4这种类型的，但是这个文件目前不是，2017Q4就可以后面再处理了
-    raw_data.columns = ['Company','Quarter','Item_ID','Item']
-    
-    #test
-    raw_data = raw_data[raw_data['Quarter'] >= 20191231]
-    raw_data = raw_data[raw_data['Quarter'] <= 20200930]
-    
-    # Company dictionary capture
-    Comp_dict = {'Bank of America': 1073757, 'Citigroup': 1951350, 'Goldman Sachs': 2380443, 'JP Morgan': 1039502, 'Morgan Stanley': 2162966, 'Wells Fargo': 1120754}
-    Inv_comp_dict = {v: k for k, v in Comp_dict.items()}
-    
-    ### Data Analysis
-    # MRRRS343 = De minimis
-    # MRRRH327 or MRRRH323 = Standardized comprehensive risk measure
-    # MRRRS313 = Incremental risk capital requirement
-    # MRRRS311 = Standardized measure of specific risk add-ons
-    # MRRRS302 = sVaR
-    # MRRRS298 = VaR
-    
-    # sVaR to VaR ratio
-    VaR = raw_data.loc[raw_data['Item_ID'] == 'MRRRS298'].reset_index()
-    sVaR = raw_data.loc[raw_data['Item_ID'] == 'MRRRS302'].reset_index()
-    plt.xlabel('Quarter')
-    plt.ylabel('Amount')
-    plt.title('sVaR to VaR ratio over time')
-    for comp in Company_list:
-        data_var = VaR.loc[VaR['Company']==Comp_dict[comp], ['Quarter', 'Item']]
-        data_var = data_var.rename(columns={'Item': 'VaR'})
-        data_svar = sVaR.loc[sVaR['Company']==Comp_dict[comp], ['Quarter', 'Item']]
-        data_svar = data_svar.rename(columns={'Item': 'sVaR'})
-        data = pd.merge(data_var, data_svar, on=['Quarter'])
-        data['Quarter'] = [str(x) for x in data['Quarter']]
-        data['VaR'] = [float(x) for x in data['VaR']]
-        data['sVaR'] = [float(x) for x in data['sVaR']]
-        data['ratio'] = data['sVaR'] / data['VaR']
-        plt.plot(data['Quarter'], data['ratio'], label=comp)
-    plt.legend();
-    plt.show();
