@@ -55,7 +55,8 @@ def test_VaR_sVarR_query(quarter_date):
 # VaR sVaR Comparison
 # MRRRS298
 # MRRRS302
-def VaR_sVarR_comparison(quarter_date_from, quarter_date_to):
+# VaR_sVaR_comparison, return the amount of VaR and sVaR at each quarter in specific quarters
+def get_var_svar_item_byquarter(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -72,7 +73,8 @@ def VaR_sVarR_comparison(quarter_date_from, quarter_date_to):
 # Trading asset comparison
 # BHCK3545
 # BHCK3548
-def trading_asset_comparison(quarter_date_from, quarter_date_to):
+# return the amount of net and gross trading asset at each quarter in specific quarters
+def get_trading_asset_item_byquarter(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -114,7 +116,8 @@ def trading_asset_comparison(quarter_date_from, quarter_date_to):
 
 # Advanced market risk-weighted assets
 # MRRRS347
-def advanced_market_risk_weighted_assets(quarter_date_from, quarter_date_to):
+# return the amount of advanced market risk weighted assets overtime
+def get_riskweighted_asset_item_overtime(quarter_date_from, quarter_date_to):
     # TODO: Store this company map in a csv?
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
@@ -132,7 +135,8 @@ def advanced_market_risk_weighted_assets(quarter_date_from, quarter_date_to):
     return res
 
 # VaR based measure overtime
-def VaR_based_measure_overtime(quarter_date_from, quarter_date_to):
+# return the amount of VaR-based measure overtime
+def get_var_measure_item_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -149,7 +153,8 @@ def VaR_based_measure_overtime(quarter_date_from, quarter_date_to):
     return res
 
 # sVaR VaR ratio overtime
-def sVaR_VaR_ratio_overtime(quarter_date_from, quarter_date_to):
+# return the ratio of sVaR and VaR overtime
+def get_ratio_item_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -175,7 +180,8 @@ def sVaR_VaR_ratio_overtime(quarter_date_from, quarter_date_to):
     return res
 
 # Diversification Overtime
-def diverse_of_var_overtime(quarter_date_from, quarter_date_to):
+# return the amount of diversification as a percentage of VaR overtime
+def get_var_diversification_item_overtime(quarter_date_from, quarter_date_to)
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -210,7 +216,8 @@ def diverse_of_var_overtime(quarter_date_from, quarter_date_to):
     return res
 
 # Asset Diversification Overtime
-def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
+# return VaR percentage in different asset classes and diversification effect of companies in specific quarters
+def get_asset_class_var_item_byquarter(quarter_date_from, quarter_date_to)
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -254,7 +261,8 @@ def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
     return res
 
 # Num of Breach overtime
-def num_var_breach_overtime(quarter_date_from, quarter_date_to):
+# return the amount of the number of VaR breaches overtime
+def get_num_var_breach_item_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -270,7 +278,9 @@ def num_var_breach_overtime(quarter_date_from, quarter_date_to):
     return res
 
 # Risk weighted assets
-def standardized_risk_weighted_assets(quarter_date_from, quarter_date_to):
+# return the amount of standardized market risk-weighted assets breakdown by bank in specific quarters
+#def standardized_risk_weighted_assets(quarter_date_from, quarter_date_to):
+def get_standardized_risk_weighted_assets_byquarter(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
