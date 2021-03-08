@@ -252,7 +252,6 @@ def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
     output_data = data.groupby('Item_ID')[['Company', 'asset_var_by_percentage']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((asset_dict[key], output_data[key]) for key in output_data)  # change the id to name
     return res
-a = var_by_assetclass_diversification('2017Q3','2017Q3')
 
 # Num of Breach overtime
 def num_var_breach_overtime(quarter_date_from, quarter_date_to):
