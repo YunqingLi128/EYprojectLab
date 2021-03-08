@@ -1,10 +1,11 @@
 <template>
   <div class="myDiv">
-    <button @click="getData('Change In VaR Measure Overtime');getData('Market Risk-Weighted Assets Overtime');getData('sVaR-VaR Ratio Overtime');">GET DATA</button>
+    <button @click="getData('Change In VaR Measure Overtime');getData('Market Risk-Weighted Assets Overtime');
+    getData('sVaR-VaR Ratio Overtime');getData('Diversification Overtime');">GET LINE TREND</button>
     <div id="Change In VaR Measure Overtime" :style="{width: '50%', height: '600px'}"></div>
     <div id="Market Risk-Weighted Assets Overtime" :style="{width: '50%', height: '600px'}"></div>
     <div id="sVaR-VaR Ratio Overtime" :style="{width: '50%', height: '600px'}"></div>
-    <div id="Change in Diversification as a Percentage of VaR over time" :style="{width: '50%', height: '600px'}"></div>
+    <div id="Diversification Overtime" :style="{width: '50%', height: '600px'}"></div>
   </div>
 </template>
 
@@ -31,6 +32,19 @@ export default {
           bottom: 0,
           data: that.lineChartData.legend
         },
+        toolbox: {
+          show: true,
+          orient: 'vertical',
+          left: 'right',
+          top: 'center',
+          feature: {
+            mark: {show: true},
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
         xAxis: {
           type: 'category',
           data: that.lineChartData.xAxisData
@@ -49,15 +63,15 @@ export default {
       let that = this;
       that.chartData = {};
       // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
-      let dict_base = {
+      let dictBase = {
         'Change In VaR Measure Overtime': 'getChangeInVaRBasedMeasureOvertime',
         'Market Risk-Weighted Assets Overtime': 'getAdvancedMarketRiskWeightedAssets',
         'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime',
-        'Change in Diversification as a Percentage of VaR over time':'getDiversificationVaROvertime'
+        'Diversification Overtime': 'getDiversificationVarOvertime'
       };
       const start = '2015Q3';
       const end = '2016Q3';
-      const base = 'http://127.0.0.1:5000/' + dict_base[id];
+      const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
           params: {
@@ -77,7 +91,7 @@ export default {
               chartItem.type = 'line'
               chartItem.data = []
               for (const item of data[key]) {
-                chartItem.data.push(item[1])
+                chartItem.data.push(Math.round(item[1]))
               }
               series.push(chartItem)
             }
@@ -97,4 +111,3 @@ export default {
 <style scoped>
 
 </style>
-
