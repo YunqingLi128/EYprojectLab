@@ -1,16 +1,18 @@
 <template>
   <div>
     <line-chart></line-chart>
+    <over-time-bar-chart></over-time-bar-chart>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import LineChart from "./LineChart";
+import OverTimeBarChart from "./OverTimeBarChart";
 
 export default {
   name: "my-first-vue",
-  components: {LineChart},
+  components: {LineChart,OverTimeBarChart},
   data: function() {
     return {
       serverResponse: "Waiting for server response"
