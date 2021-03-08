@@ -25,6 +25,33 @@ def get_data_2():
     df.sort_index(inplace=True)
     return df
 
+# previous day's Value-at-risk (VaR)-based measure
+# IR, Debt, Equity, FX, Commodities
+# return JSON: {id: [{item_name_1: item_value_1}, {item_name_2: item_value_2}]}
+def test_asset_VaR_query(quarter_date):
+    raw_data = get_data()
+    asset_VaR_item_names = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
+    data = raw_data.query('Item_ID in @asset_VaR_item_names and Quarter == @quarter_date')
+    # print(data)
+    asset_VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    for k, v in asset_VaR_data.items():
+        asset_VaR_data[k] = list(map(lambda x: {x[0]: x[1]}, v))
+    res = json.dumps(asset_VaR_data)
+    # data.reset_index(inplace=True)
+    # data.set_index(['Company', 'Quarter', 'Item_ID'], inplace=True)
+    # result = data.to_json(orient="index", indent=4)
+    # print(result)
+
+
+# Previous day's VaR-based measure and Most recent stressed VaR-based measure
+# return JSON: {id: [[item_name_1, item_value_1], [item_name_2, item_value_2]]}
+def test_VaR_sVarR_query(quarter_date):
+    raw_data = get_data()
+    VaR_item_names = ['MRRRS298', 'MRRRS302']
+    data = raw_data.query('Item_ID in @VaR_item_names and Quarter == @quarter_date')
+    VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    return VaR_data
+
 # VaR sVaR Comparison
 # MRRRS298
 # MRRRS302
