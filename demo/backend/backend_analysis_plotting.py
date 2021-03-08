@@ -7,29 +7,21 @@ import json
 import os
 from backend.data_process import get_cur_path
 
-def get_data():
+def get_data(report):
     path = get_cur_path()
-    csv_path = os.path.join(path, "data/FFIEC102.csv")
+    csv_path = os.path.join(path, "data", report + ".csv")
     df = pd.read_csv(csv_path, dtype=str)
     df.columns = ['Company', 'Quarter', 'Item_ID', 'Item']
     df = df.set_index(['Company', 'Quarter'])
     df.sort_index(inplace=True)
     return df
 
-def get_data_2():
-    path = get_cur_path()
-    csv_path = os.path.join(path, "data/FRY9C.csv")
-    df = pd.read_csv(csv_path, dtype=str)
-    df.columns = ['Company', 'Quarter', 'Item_ID', 'Item']
-    df = df.set_index(['Company', 'Quarter'])
-    df.sort_index(inplace=True)
-    return df
 
 # previous day's Value-at-risk (VaR)-based measure
 # IR, Debt, Equity, FX, Commodities
 # return JSON: {id: [{item_name_1: item_value_1}, {item_name_2: item_value_2}]}
 def test_asset_VaR_query(quarter_date):
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     asset_VaR_item_names = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
     data = raw_data.query('Item_ID in @asset_VaR_item_names and Quarter == @quarter_date')
     # print(data)
@@ -46,7 +38,7 @@ def test_asset_VaR_query(quarter_date):
 # Previous day's VaR-based measure and Most recent stressed VaR-based measure
 # return JSON: {id: [[item_name_1, item_value_1], [item_name_2, item_value_2]]}
 def test_VaR_sVarR_query(quarter_date):
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     VaR_item_names = ['MRRRS298', 'MRRRS302']
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter == @quarter_date')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
@@ -63,7 +55,7 @@ def get_var_svar_item_byquarter(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     VaR_item_names = ['MRRRS298', 'MRRRS302']
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
@@ -81,7 +73,7 @@ def get_trading_asset_item_byquarter(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data_2()
+    raw_data = get_data('FRY9C')
     trading_asset_item_names_asset = ['BHCK3545']
     trading_asset_item_names_liability = ['BHCK3548']
     trading_asset_item_names = ['BHCK3545','BHCK3548']
@@ -125,7 +117,7 @@ def get_riskweighted_asset_item_overtime(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     advanced_market_risk_weighted_assets_ID = ['MRRRS347']
     data = raw_data.query('Item_ID in @advanced_market_risk_weighted_assets_ID and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
@@ -143,7 +135,7 @@ def get_var_measure_item_overtime(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     VaR_based_measure_overtime_ID = ['MRRRS298']
     data = raw_data.query('Item_ID in @VaR_based_measure_overtime_ID and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
@@ -161,7 +153,7 @@ def get_ratio_item_overtime(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     VaR_based_measure_overtime_ID = ['MRRRS298']
     sVaR_based_measure_overtime_ID = ['MRRRS302']
     data = raw_data.query('Item_ID in @VaR_based_measure_overtime_ID and Quarter <= @quarter_date_to and '
@@ -181,14 +173,14 @@ def get_ratio_item_overtime(quarter_date_from, quarter_date_to):
 
 # Diversification Overtime
 # return the amount of diversification as a percentage of VaR overtime
-def get_var_diversification_item_overtime(quarter_date_from, quarter_date_to)
+def get_var_diversification_item_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     asset_classesID = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
 
     data_asset = raw_data.query('Item_ID in @asset_classesID and Quarter <= @quarter_date_to and '
@@ -217,14 +209,14 @@ def get_var_diversification_item_overtime(quarter_date_from, quarter_date_to)
 
 # Asset Diversification Overtime
 # return VaR percentage in different asset classes and diversification effect of companies in specific quarters
-def get_asset_class_var_item_byquarter(quarter_date_from, quarter_date_to)
+def get_asset_class_var_item_byquarter(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     asset_classesID = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
     # Previous day's VaR: IR='MRRRS348' Debt='MRRRS349' Equity='MRRRS350' FX='MRRRS351' Commodities='MRRRS352'
     asset_dict = {'MRRRS348': 'IR',
@@ -269,7 +261,7 @@ def get_num_var_breach_item_overtime(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     item_names = ['MRRRS362']
     data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
@@ -295,7 +287,7 @@ def get_standardized_risk_weighted_assets_byquarter(quarter_date_from, quarter_d
                   'MRRRS302': 'sVaR',
                   'MRRRS298': 'VaR'}
 
-    raw_data = get_data()
+    raw_data = get_data('FFIEC102')
     item_names = ['MRRRS343', 'MRRRH327', 'MRRRS313', 'MRRRS311', 'MRRRS302', 'MRRRS298']
     data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
@@ -312,7 +304,7 @@ def stress_window(quarter_date_from, quarter_date_to):
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data_2()
+    raw_data = get_data('FRY9C')
     item_names = ['BHCALE85']
     data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
