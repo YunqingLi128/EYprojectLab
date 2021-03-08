@@ -25,34 +25,6 @@ def get_data_2():
     df.sort_index(inplace=True)
     return df
 
-# previous day's Value-at-risk (VaR)-based measure
-# IR, Debt, Equity, FX, Commodities
-# return JSON: {id: [{item_name_1: item_value_1}, {item_name_2: item_value_2}]}
-def test_asset_VaR_query(quarter_date):
-    raw_data = get_data()
-    asset_VaR_item_names = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
-    data = raw_data.query('Item_ID in @asset_VaR_item_names and Quarter == @quarter_date')
-    # print(data)
-    asset_VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    for k, v in asset_VaR_data.items():
-        asset_VaR_data[k] = list(map(lambda x: {x[0]: x[1]}, v))
-    res = json.dumps(asset_VaR_data)
-    # data.reset_index(inplace=True)
-    # data.set_index(['Company', 'Quarter', 'Item_ID'], inplace=True)
-    # result = data.to_json(orient="index", indent=4)
-    # print(result)
-
-
-# Previous day's VaR-based measure and Most recent stressed VaR-based measure
-# return JSON: {id: [[item_name_1, item_value_1], [item_name_2, item_value_2]]}
-def test_VaR_sVarR_query(quarter_date):
-    raw_data = get_data()
-    VaR_item_names = ['MRRRS298', 'MRRRS302']
-    data = raw_data.query('Item_ID in @VaR_item_names and Quarter == @quarter_date')
-    VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
-    return res
-
 # VaR sVaR Comparison
 # MRRRS298
 # MRRRS302
@@ -68,8 +40,7 @@ def VaR_sVarR_comparison(quarter_date_from, quarter_date_to):
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
-    return res
+    return VaR_data
 
 # Trading asset comparison
 # BHCK3545
@@ -111,8 +82,7 @@ def trading_asset_comparison(quarter_date_from, quarter_date_to):
     data['Item'] = data['New_Item']
     data = data.drop(['New_Item'],axis=1)
     trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    res = dict((comp_dict[key], trading_asset_data[key]) for key in trading_asset_data)  # change the id to name
-    return res
+    return trading_asset_data
 
 
 # Advanced market risk-weighted assets
@@ -177,7 +147,8 @@ def sVaR_VaR_ratio_overtime(quarter_date_from, quarter_date_to):
     res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
     return res
 
-def diversification_of_var_overtime(quarter_date_from, quarter_date_to):
+# Diversification Overtime
+def diverse_of_var_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
@@ -211,6 +182,7 @@ def diversification_of_var_overtime(quarter_date_from, quarter_date_to):
     res = dict((comp_dict[key], output_data[key]) for key in output_data)  # change the id to name
     return res
 
+# Asset Diversification Overtime
 def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
@@ -221,6 +193,12 @@ def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
     raw_data = get_data()
     asset_classesID = ['MRRRS348', 'MRRRS349', 'MRRRS350', 'MRRRS351', 'MRRRS352']
     # Previous day's VaR: IR='MRRRS348' Debt='MRRRS349' Equity='MRRRS350' FX='MRRRS351' Commodities='MRRRS352'
+    asset_dict = {'MRRRS348': 'IR',
+                  'MRRRS349': 'Debt',
+                  'MRRRS350': 'Equity',
+                  'MRRRS351': 'FX',
+                  'MRRRS352': 'Commodities',
+                  'MRRRS298': 'Diversification'}
 
     data_asset = raw_data.query('Item_ID in @asset_classesID and Quarter <= @quarter_date_to and '
                                 'Quarter >= @quarter_date_from')
@@ -229,8 +207,8 @@ def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
     data_asset['total_asset_var']=data_asset.groupby('Company')['Item'].transform('sum')
 
     varID = ['MRRRS298']
-    data_day_var = raw_data.query('Item_ID in @varID and Quarter <= @quarter_date_to and '
-                                'Quarter >= @quarter_date_from')
+    data_day_var = raw_data.query('Item_ID in @varID and Quarter<= @quarter_date_to and '
+                                  'Quarter >= @quarter_date_from')
     data_day_var = data_day_var.reset_index()
     data_day_var['Item']=data_day_var.Item.astype(int)
 
@@ -244,28 +222,12 @@ def var_by_assetclass_diversification(quarter_date_from, quarter_date_to):
         (data.loc[data.Item_ID=='MRRRS298', 'Item']-data.loc[data.Item_ID=='MRRRS298', 'total_asset_var'])/ \
         data.loc[data.Item_ID == 'MRRRS298', 'total_asset_var']
     data.sort_values(by='Company', inplace=True)
-
-    output_data = data.groupby('Company')[['Item_ID', 'asset_var_by_percentage']].apply(lambda x: x.values.tolist()).to_dict()
-    res = dict((comp_dict[key], output_data[key]) for key in output_data)  # change the id to name
+    output_data = data.groupby('Item_ID')[['Company', 'asset_var_by_percentage']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((asset_dict[key], output_data[key]) for key in output_data)  # change the id to name
     return res
+a = var_by_assetclass_diversification('2017Q3','2017Q3')
 
-# test_asset_VaR_query(date)
-# test_VaR_sVarR_query(date)
-
-def standardized_risk_weighted_assets(quarter_date_from, quarter_date_to):
-    comp_dict = {'1073757': 'BAC',
-                 '1951350': 'CITI',
-                 '2380443': 'GS',
-                 '1039502': 'JPMC',
-                 '2162966': 'MS',
-                 '1120754': 'WF'}
-    raw_data = get_data()
-    item_names = ['MRRRS343', 'MRRRH327', 'MRRRS313', 'MRRRS311', 'MRRRS302', 'MRRRS298']
-    data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
-                          'Quarter >= @quarter_date_from')
-    total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    return total_data
-
+# Num of Breach overtime
 def num_var_breach_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
@@ -279,6 +241,31 @@ def num_var_breach_overtime(quarter_date_from, quarter_date_to):
                           'Quarter >= @quarter_date_from')
     total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
+    return res
+
+# Risk weighted assets
+def standardized_risk_weighted_assets(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+
+    asset_dict = {'MRRRS343': 'De Minimis',
+                  'MRRRH327': 'Std Comprehensive Risk',
+                  'MRRRS313': 'Incremental Risk',
+                  'MRRRS311': 'Add-Ons',
+                  'MRRRS302': 'sVaR',
+                  'MRRRS298': 'VaR'}
+
+    raw_data = get_data()
+    item_names = ['MRRRS343', 'MRRRH327', 'MRRRS313', 'MRRRS311', 'MRRRS302', 'MRRRS298']
+    data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from')
+    data = data.reset_index()
+    total_data = data.groupby('Item_ID')[['Company', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((asset_dict[key], total_data[key]) for key in total_data)
     return res
     
 # I don't know which item to use...
