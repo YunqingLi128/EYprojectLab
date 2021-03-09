@@ -113,5 +113,11 @@ def getDiversificationVarOvertime():
     res = get_var_diversification_item_overtime(start_quarter, end_quarter)
     return jsonify(res)
 
-
+@bp.route('/getStressWindowOvertime', methods=['GET'])
+def getStressWindowOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = get_stress_window_item_overtime(start_quarter, end_quarter)
+    return jsonify(res)
 

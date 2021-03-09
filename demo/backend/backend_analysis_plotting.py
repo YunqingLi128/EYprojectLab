@@ -296,18 +296,25 @@ def get_standardized_risk_weighted_assets_byquarter(quarter_date_from, quarter_d
     res = dict((asset_dict[key], total_data[key]) for key in total_data)
     return res
     
-# I don't know which item to use...
-def stress_window(quarter_date_from, quarter_date_to):
+# Stress window
+# return the classification of stress window under creteria: if year in 2007/2008, then it is 2008 Financial Crisis; if year in 2019, then it is Covid 19
+def get_stress_window_item_overtime(quarter_date_from, quarter_date_to):
     comp_dict = {'1073757': 'BAC',
                  '1951350': 'CITI',
                  '2380443': 'GS',
                  '1039502': 'JPMC',
                  '2162966': 'MS',
                  '1120754': 'WF'}
-    raw_data = get_data('FRY9C')
-    item_names = ['BHCALE85']
+    raw_data = get_data()
+    item_names = ['MRRRS366']
     data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
+    data = data.reset_index()
+    for i in range(len(data['Item'])):
+        if '2007' in data.loc[i, 'Item'] or '2008' in data.loc[i, 'Item']:
+            data.loc[i, 'Item'] = '2008 Financial Crisis'
+        if '2019' in data.loc[i, 'Item']:
+            data.loc[i, 'Item'] = 'Covid 19'
     total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
