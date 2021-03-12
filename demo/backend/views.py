@@ -3,7 +3,7 @@ from flask import request
 from flask_cors import CORS
 from flask import Blueprint
 
-from backend.data_process import data_preprocessing
+from backend.data_process import get_cur_path, load_data_config_file, init_data, add_data
 from backend.backend_analysis_plotting import *
 
 bp = Blueprint("views", __name__)
@@ -11,13 +11,24 @@ bp = Blueprint("views", __name__)
 CORS(bp, supports_credentials=True)
 
 
-@bp.route('/', methods=('Get', 'Post'))
+@bp.route('/', methods=('GET', 'POST'))
 def index():
-    data_info = data_preprocessing()
+    # TODO: check data config file, not updating each time
+    # need improvement
+    config_info = load_data_config_file()
+    institution_info = config_info["institutions"]
+    need_update = False
+    for rssd_id in institution_info:
+        if "data_status" not in institution_info[rssd_id]:
+            need_update = True
+    path = os.path.join(get_cur_path(), "data/raw_data")
+    if not os.path.exists(path):
+        need_update = True
+    data_info = init_data() if need_update else config_info
     return jsonify(data_info)
 
 
-@bp.route('/getMsg', methods=['GET','POST'])
+@bp.route('/getMsg', methods=['GET', 'POST'])
 def home():
     response = {
         'msg':'Hello, This is a simple demo!'
@@ -127,4 +138,12 @@ def getTradingAssetToRiskRatio():
     start_quarter = args['start']
     end_quarter = args['end']
     res = get_asset_to_var_ratio_item_byquarter(start_quarter, end_quarter)
+    return jsonify(res)
+
+
+@bp.route('/addDataByID', methods=['GET', 'POST'])
+def addData():
+    args = request.args
+    institutions = args.getlist('rssd_id')
+    res = add_data(institutions)
     return jsonify(res)
