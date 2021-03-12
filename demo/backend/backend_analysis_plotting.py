@@ -366,3 +366,35 @@ def get_asset_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to):
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
     
+# return trading revenue to VaR and sVaR ratios in specific quarters, the ratios order is: 'revenue/VaR', 'revenue/sVaR'
+def get_revenue_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to):
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data_var = get_data('FFIEC102')
+    raw_data_revenue = get_data('FRY9C')
+    var_item_names = ['MRRRS298', 'MRRRS302']
+    data_var = raw_data_var.query('Item_ID in @var_item_names and Quarter <= @quarter_date_to and '
+                          'Quarter >= @quarter_date_from').reset_index()
+    
+    data_var1 = data_var[data_var['Item_ID']=='MRRRS298'].rename(columns={'Item': 'VaR'}).drop(['Item_ID'], axis=1)
+    data_var2 = data_var[data_var['Item_ID']=='MRRRS302'].rename(columns={'Item': 'sVaR'}).drop(['Item_ID'], axis=1)
+    data_var = pd.merge(data_var1, data_var2, on=['Company', 'Quarter']).reset_index(drop=True)
+    data_var[['VaR', 'sVaR']] = data_var[['VaR', 'sVaR']].astype('int')
+    
+    trading_revenue_item_names = ['BHCKA220']
+    data_revenue = raw_data_revenue.query('Item_ID in @trading_revenue_item_names and Quarter <= @quarter_date_to and '
+                                'Quarter >= @quarter_date_from')
+    
+    tot_data = pd.merge(data_var, data_revenue, on=['Company', 'Quarter']).rename(columns={'Item': 'revenue'})
+    tot_data['revenue/VaR'] = tot_data['revenue'].astype(int) / tot_data['VaR']
+    tot_data['revenue/sVaR'] = tot_data['revenue'].astype(int) / tot_data['sVaR']
+    tot_data = tot_data.drop(['VaR', 'sVaR', 'revenue', 'Item_ID'], axis=1)
+    # You can just remember the name and order of these 2 things...
+    total_data = tot_data.groupby('Company')[['revenue/VaR', 'revenue/sVaR']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], total_data[key]) for key in total_data)
+    return res
+    

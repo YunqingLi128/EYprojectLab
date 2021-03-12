@@ -141,6 +141,15 @@ def getTradingAssetToRiskRatio():
     return jsonify(res)
 
 
+@bp.route('/getTradingRevenueToVarRatio', methods=['GET'])
+def getTradingRevenueToVarRatio():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = get_revenue_to_var_ratio_item_byquarter(start_quarter, end_quarter)
+    return jsonify(res)
+
+
 @bp.route('/addDataByID', methods=['GET', 'POST'])
 def addData():
     args = request.args
