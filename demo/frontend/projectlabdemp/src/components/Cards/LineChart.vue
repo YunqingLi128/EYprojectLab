@@ -98,6 +98,11 @@ export default {
           params: {
             'start': start,
             'end': end
+          },
+          withCredentials: true,
+          headers: {
+            'secret-key': 'super secret key',
+            'Access-Control-Allow-Origin': '*'
           }
         })
         .then(function (response) {

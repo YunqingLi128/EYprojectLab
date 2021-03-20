@@ -170,10 +170,16 @@ export default {
           params: {
             'start': start,
             'end': end
+          },
+          withCredentials: true,
+          headers: {
+            'secret-key': 'super secret key',
+            'Access-Control-Allow-Origin': '*'
           }
         })
         .then(function (response) {
           let data = response.data
+          console.log(data)
           let companies = []
           let series = []
           let flag = 0

@@ -59,13 +59,22 @@ def getDataByCompanyID(id):
     }
     return jsonify(response)
 
+
+def response_processing(result):
+    response = jsonify(result)
+    response.headers.add('Access-Control-Allow-Origin', current_app.config['FRONT_END_HOST'])
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
+
+
 @bp.route('/getTradingAssetComparison', methods=['GET'])
 def getTradingAssetComparison():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_trading_asset_item_byquarter(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_trading_asset_item_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getVaRsVarRComparisonQuery', methods=['GET'])
 def getVaRsVarRComparisonQuery():
@@ -74,66 +83,71 @@ def getVaRsVarRComparisonQuery():
     end_quarter = args['end']
     logging.info("getVaRsVarRComparisonQuery comp_dict: %s", session["comp_dict"])
     result = get_var_svar_item_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
-    response = jsonify(result)
-    response.headers.add('Access-Control-Allow-Origin', current_app.config['FRONT_END_HOST'])
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
+    return response_processing(result)
+
 
 @bp.route('/getAdvancedMarketRiskWeightedAssets', methods=['GET'])
 def getAdvancedMarketRiskWeightedAssets():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_riskweighted_asset_item_overtime(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_risk_weighted_asset_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getChangeInVaRBasedMeasureOvertime', methods=['GET'])
 def getChangeInVaRBasedMeasureOvertime():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_var_measure_item_overtime(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_var_measure_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getVaRsVaRRatioOvertime', methods=['GET'])
 def getVaRsVaRRatioOvertime():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_ratio_item_overtime(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_ratio_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getVaRBreachOvertime', methods=['GET'])
 def getVaRBreachOvertime():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_num_var_breach_item_overtime(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_num_var_breach_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getVaRByAssetClassDiversification', methods=['GET'])
 def getVaRByAssetClassDiversification():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_asset_class_var_item_byquarter(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_asset_class_var_item_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getStandardizedRiskWeightedAssets', methods=['GET'])
 def getStandardizedRiskWeightedAssets():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_standardized_risk_weighted_assets_byquarter(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_standardized_risk_weighted_assets_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getDiversificationVarOvertime', methods=['GET'])
 def getDiversificationVarOvertime():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_var_diversification_item_overtime(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_var_diversification_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
 
 @bp.route('/getStressWindowOvertime', methods=['GET'])
 def getStressWindowOvertime():
