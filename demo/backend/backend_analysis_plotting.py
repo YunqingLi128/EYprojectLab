@@ -6,6 +6,8 @@ import math
 import json
 import os
 from backend.data_process import get_cur_path
+from flask import session
+
 
 def get_data(report):
     path = get_cur_path()
@@ -48,19 +50,14 @@ def test_VaR_sVarR_query(quarter_date):
 # MRRRS298
 # MRRRS302
 # VaR_sVaR_comparison, return the amount of VaR and sVaR at each quarter in specific quarters
-def get_var_svar_item_byquarter(quarter_date_from, quarter_date_to):
-    comp_dict = {'1073757': 'BAC',
-                 '1951350': 'CITI',
-                 '2380443': 'GS',
-                 '1039502': 'JPMC',
-                 '2162966': 'MS',
-                 '1120754': 'WF'}
+def get_var_svar_item_byquarter(quarter_date_from, quarter_date_to, comp_dict):
     raw_data = get_data('FFIEC102')
     VaR_item_names = ['MRRRS298', 'MRRRS302']
     data = raw_data.query('Item_ID in @VaR_item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
-    return VaR_data
+    res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
+    return res
 
 # Trading asset comparison
 # BHCK3545

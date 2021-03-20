@@ -14,6 +14,11 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DB_SERVER = 'localhost'  # Not used currently
+    SESSION_COOKIE_PATH = '/'
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'None'
+    SECRET_KEY = 'super secret key'
     DEBUG = True
-
+    FRONT_END_HOST = 'http://localhost:8080'
 

@@ -16,6 +16,9 @@
                 <el-menu-item-group title="3">
                 <el-menu-item index="/flaskTovue"> Other</el-menu-item>
                 </el-menu-item-group> -->
+                <el-menu-item index="/home">
+                    <span slot="title"> Home</span>
+                </el-menu-item>
                 <el-menu-item index="/flaskTovue2">
                     <span slot="title"> Quarterly Highlights</span>
                 </el-menu-item>
