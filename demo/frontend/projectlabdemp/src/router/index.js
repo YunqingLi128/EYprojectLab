@@ -1,20 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import flaskTovue from '@/components/flaskTovue'
-import flaskTovue2 from '@/components/flaskTovue2'
-import Home from '@/components/Home'
-import getDataByCompanyID from '@/components/getDataByCompanyID'
+import flaskTovue from '@/components/Connectors/flaskTovue'
+import flaskTovue2 from '@/components/Connectors/flaskTovue2'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-    {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    },
     {
       path: '/flaskTovue',
       name: 'flaskTovue',
@@ -30,22 +22,7 @@ export default new Router({
       meta:{
         keepalive:true
       }
-    },
-    {
-      path: '/Home',
-      name: 'Home',
-      component: Home,
-      meta:{
-        keepalive:true
-      }
-    },
-    {
-      path: '/getDataByCompanyID/:id',
-      name: 'getDataByCompanyID',
-      component: getDataByCompanyID,
-      meta:{
-        keepalive:true
-      }
     }
   ]
 })
+
