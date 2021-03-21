@@ -1,18 +1,17 @@
 <template>
   <div class="StackBarChart">
-    <button @click="get_Data ('Standardized Market Risk-Weighted Assets Breakdown By Bank'); get_Data ('VaR by Asset Class and Diversification Effect');">GET STACK BAR</button>
     <b-card-group deck>
     <b-card
       title="Standardized Market Risk-Weighted Assets Breakdown By Bank"
       style="max-width: 60rem; max-height: 40rem;"
     >
-    <div id='Standardized Market Risk-Weighted Assets Breakdown By Bank' style="width: 100%; height: 35rem; display: inline-block;"></div>
+    <div id='standardized-market-risk-weighted-assets-breakdown-by-bank' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
     <b-card
       title="VaR by Asset Class and Diversification Effect"
       style="max-width: 60rem; max-height: 40rem;"
     >
-    <div id='VaR by Asset Class and Diversification Effect' style="width: 100%; height: 35rem; display: inline-block;"></div>
+    <div id='VaR-by-asset-class-and-diversification-effect' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
     </b-card-group>
   </div>
@@ -147,12 +146,12 @@ export default {
       }
       myChart.setOption(option);
     },
-    get_Data (id) {
+    getData (id, quarter) {
       let that = this;
       that.chartData = {};
       let dictBase = {
-        'Standardized Market Risk-Weighted Assets Breakdown By Bank': 'getStandardizedRiskWeightedAssets',
-        'VaR by Asset Class and Diversification Effect': 'getVaRByAssetClassDiversification'
+        'standardized-market-risk-weighted-assets-breakdown-by-bank': 'getStandardizedRiskWeightedAssets',
+        'VaR-by-asset-class-and-diversification-effect': 'getVaRByAssetClassDiversification'
       };
       let compDict = {
         '1073757': 'BAC',
@@ -162,8 +161,8 @@ export default {
         '2162966': 'MS',
         '1120754': 'WF'
       };
-      const start = '2020Q3';
-      const end = '2020Q3';
+      const start = quarter;
+      const end = quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {

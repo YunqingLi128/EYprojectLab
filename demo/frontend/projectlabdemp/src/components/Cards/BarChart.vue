@@ -1,21 +1,17 @@
 <template>
   <div class="barChart">
-    <label>
-      <b-form-input id="input-quarter" v-model.trim="quarter" placeholder="Enter the quarter"></b-form-input>
-      <button @click="get_Data('Company ID VS VaR and SVaR');get_Data('Company Trading Asset Comparison');">GET COMPARISON</button>
-    </label>
     <b-card-group deck>
     <b-card
       title="Company ID VS VaR and SVaR"
       style="max-width: 60rem; max-height: 40rem;"
     >
-      <div id='Company ID VS VaR and SVaR' style="width: 100%; height: 35rem; display: inline-block;"></div>
+      <div id='companyID-vs-VaR-SVaR' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
     <b-card
       title="Company Trading Asset Comparison"
       style="max-width: 60rem; max-height: 40rem;"
     >
-      <div id='Company Trading Asset Comparison' style="width: 100%; height: 35rem; display: inline-block;"></div>
+      <div id='company-trading-asset-comparison' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
     </b-card-group>
   </div>
@@ -44,7 +40,6 @@ export default {
       // };
       let option = {
         title: {
-          text: id,
           show: false
         },
         tooltip: {
@@ -86,15 +81,15 @@ export default {
       }
       myChart.setOption(option);
     },
-    get_Data (id) {
+    getData (id, quarter) {
       let that = this;
       that.chartData = {};
       let dictBase = {
-        'Company ID VS VaR and SVaR': 'getVaRsVarRComparisonQuery',
-        'Company Trading Asset Comparison': 'getTradingAssetComparison'
+        'companyID-vs-VaR-SVaR': 'getVaRsVarRComparisonQuery',
+        'company-trading-asset-comparison': 'getTradingAssetComparison'
       };
-      const start = this.quarter;
-      const end = this.quarter;
+      const start = quarter;
+      const end = quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
