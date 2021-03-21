@@ -2,16 +2,16 @@
   <div>
     <!-- <router-view/> -->
     <el-container v-if='$route.meta.keepalive'>
-      <el-header style="background-color:#323030; text-align: left">
+      <el-header style="background-color:#323030; width:100%; z-index:1; text-align: left; position:fixed; top:0; left:0">
         <img :src="logoURL" style="height:50px; padding-top:3px; padding-left:30px;">
-      </el-header>
-      <el-container>
-        <el-aside style="width:200px; height:860px">
+      </el-header >
+      <el-container style="margin-top: 60px">
+        <el-aside style="width:200px; height:100%; position: fixed;">
           <keep-alive>
             <v_leftmenu></v_leftmenu>
           </keep-alive>
         </el-aside>
-      <el-container>
+      <el-container style="margin-left: 200px;">
         <el-main>
             <router-view></router-view>
         </el-main>

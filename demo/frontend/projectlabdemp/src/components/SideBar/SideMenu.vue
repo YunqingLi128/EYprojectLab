@@ -1,6 +1,6 @@
 <template>
     <el-col :span="24">
-        <el-menu class="el-menu-vertical-demo" style="height: 860px" router @open="handelOpen" @close="handleClose" @select="menuSelect" background-color="#5A5858" text-color="#fff" active-text-color="#ffd04b">
+        <el-menu class="el-menu-vertical-demo" style="height: 100vh; width:200px;" router @open="handelOpen" @close="handleClose" @select="menuSelect" background-color="#5A5858" text-color="#fff" active-text-color="#ffd04b">
             <!-- <el-submenu v-for="item in menu" :index="item.id" :key="item.id">
                 <template slot="title">
                     <span v-text="item.name"></span>
@@ -31,3 +31,9 @@
         </el-menu>
     </el-col>
 </template>
+
+<style scoped>
+.el-aside{
+    overflow: visible;
+}
+</style>
