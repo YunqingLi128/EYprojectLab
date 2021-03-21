@@ -47,6 +47,14 @@ def test_VaR_sVarR_query(quarter_date):
     return VaR_data
 
 
+def item_name_mapping(x, mapping):
+    data_map = {}
+    data_list = x.values.tolist()
+    for item in data_list:
+        data_map[mapping[item[0]]] = item[1]
+    return data_map
+
+
 # VaR sVaR Comparison
 def get_var_svar_item_byquarter(quarter_date_from, quarter_date_to, comp_dict):
     """
@@ -55,10 +63,10 @@ def get_var_svar_item_byquarter(quarter_date_from, quarter_date_to, comp_dict):
     MRRRS302: Most recent stressed VaR-based measure
     """
     raw_data = get_data('FFIEC102')
-    VaR_item_names = ['MRRRS298', 'MRRRS302']
-    data = raw_data.query('Item_ID in @VaR_item_names and Quarter <= @quarter_date_to and '
+    VaR_comp_map = {'MRRRS298': 'VaR', 'MRRRS302': 'SVaR'}
+    data = raw_data.query('Item_ID in @VaR_comp_map.keys() and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
-    VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(item_name_mapping, mapping=VaR_comp_map).to_dict()
     res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
     return res
 
@@ -84,7 +92,7 @@ def get_trading_asset_item_byquarter(quarter_date_from, quarter_date_to, comp_di
     data_asset['Item_2'] = data_liability['Item']
     data_asset['Gross'] = data_asset['Item'].astype(int) + data_asset['Item_2'].astype(int)
     data_asset['Net'] = data_asset['Item'].astype(int) - data_asset['Item_2'].astype(int)
-    data_asset = data_asset.drop(['Item','Item_2'], axis=1)
+    data_asset = data_asset.drop(['Item', 'Item_2'], axis=1)
     data_asset = data_asset.reset_index()
     whole_val = []
     Flag = 1
@@ -98,8 +106,9 @@ def get_trading_asset_item_byquarter(quarter_date_from, quarter_date_to, comp_di
     new = pd.Series(whole_val)
     data['New_Item'] = new.values
     data['Item'] = data['New_Item']
-    data = data.drop(['New_Item'],axis=1)
-    trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
+    data = data.drop(['New_Item'], axis=1)
+    trading_asset_map = {'BHCK3545': 'Net Trading Asset', 'BHCK3548': 'Gross Trading Asset'}
+    trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(item_name_mapping, mapping=trading_asset_map).to_dict()
     res = dict((comp_dict[key], trading_asset_data[key]) for key in trading_asset_data)  # change the id to name
     return res
 

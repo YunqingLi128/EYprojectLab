@@ -1,18 +1,21 @@
 <template>
   <div class="barChart">
-    <button @click="get_Data('Company ID VS VaR and SVaR');get_Data('Company Trading Asset Comparison');">GET COMPARISON</button>
+    <label>
+      <b-form-input id="input-quarter" v-model.trim="quarter" placeholder="Enter the quarter"></b-form-input>
+      <button @click="get_Data('Company ID VS VaR and SVaR');get_Data('Company Trading Asset Comparison');">GET COMPARISON</button>
+    </label>
     <b-card-group deck>
     <b-card
-      title="Standardized Market Risk-Weighted Assets Breakdown By Bank"
+      title="Company ID VS VaR and SVaR"
       style="max-width: 60rem; max-height: 40rem;"
     >
-    <div id='Company ID VS VaR and SVaR' style="width: 100%; height: 35rem; display: inline-block;"></div>
+      <div id='Company ID VS VaR and SVaR' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
     <b-card
-      title="VaR by Asset Class and Diversification Effect"
+      title="Company Trading Asset Comparison"
       style="max-width: 60rem; max-height: 40rem;"
     >
-    <div id='Company Trading Asset Comparison'  style="width: 100%; height: 35rem; display: inline-block;"></div>
+      <div id='Company Trading Asset Comparison' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
     </b-card-group>
   </div>
@@ -24,8 +27,9 @@ import * as echarts from 'echarts';
 
 export default {
   name: 'BarChart_Comparison',
-  data: function() {
+  data: function () {
     return {
+      quarter: '',
       barChartData: {}
     }
   },
@@ -34,13 +38,14 @@ export default {
       let that = this;
       let chartDom = document.getElementById(id);
       let myChart = echarts.init(chartDom);
-      let dictName = {
-        'Company ID VS VaR and SVaR': ['VaR', 'sVaR'],
-        'Company Trading Asset Comparison': ['Gross', 'Net']
-      };
+      // let dictName = {
+      //   'Company ID VS VaR and SVaR': ['VaR', 'sVaR'],
+      //   'Company Trading Asset Comparison': ['Gross', 'Net']
+      // };
       let option = {
         title: {
-          text: id
+          text: id,
+          show: false
         },
         tooltip: {
           trigger: 'axis',
@@ -49,7 +54,8 @@ export default {
           }
         },
         legend: {
-          data: [dictName[id][0], dictName[id][1]]
+          data: that.barChartData.legendData,
+          y: 'bottom'
         },
         toolbox: {
           show: true,
@@ -76,26 +82,7 @@ export default {
             type: 'value'
           }
         ],
-        series: [
-          {
-            name: dictName[id][0],
-            type: that.barChartData.series[0].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[0].data
-          },
-          {
-            name: dictName[id][1],
-            type: that.barChartData.series[1].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[1].data
-          }
-        ]
+        series: that.barChartData.series
       }
       myChart.setOption(option);
     },
@@ -106,8 +93,8 @@ export default {
         'Company ID VS VaR and SVaR': 'getVaRsVarRComparisonQuery',
         'Company Trading Asset Comparison': 'getTradingAssetComparison'
       };
-      const start = '2015Q3';
-      const end = '2016Q3';
+      const start = this.quarter;
+      const end = this.quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
@@ -122,25 +109,35 @@ export default {
           }
         })
         .then(function (response) {
-          let data = response.data
-          let companies = []
-          let series = []
+          let data = response.data;
+          let companies = [];
+          let groups = {};
           for (let key in data) {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
-              let chartItem = {}
-              chartItem.name = key
-              chartItem.type = 'bar'
-              chartItem.data = []
-              for (const item of data[key]) {
-                chartItem.data.push(item[1])
+              for (let itemName in data[key]) {
+                if (data[key].hasOwnProperty(itemName)) {
+                  if (groups.hasOwnProperty(itemName)) {
+                    groups[itemName].push(data[key][itemName]);
+                  } else {
+                    groups[itemName] = [data[key][itemName]];
+                  }
+                }
               }
-              series.push(chartItem)
             }
+          }
+          let series = [];
+          for (let key in groups) {
+            let chartItem = {};
+            chartItem.name = key
+            chartItem.type = 'bar'
+            chartItem.data = groups[key]
+            series.push(chartItem)
           }
           console.log(companies)
           console.log(series)
-          that.barChartData.xAxisData = companies// TODO: write function
+          that.barChartData.legendData = Object.keys(groups)
+          that.barChartData.xAxisData = companies
           that.barChartData.series = series
           that.DrawBarChart(id)
         });
