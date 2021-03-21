@@ -127,19 +127,21 @@ export default {
             }
           }
           let series = [];
+          let legendList = [];
           for (let key in groups) {
             let chartItem = {};
-            chartItem.name = key
-            chartItem.type = 'bar'
-            chartItem.data = groups[key]
-            series.push(chartItem)
+            chartItem.name = key;
+            chartItem.type = 'bar';
+            chartItem.data = groups[key];
+            series.push(chartItem);
+            legendList.push(key);
           }
-          console.log(companies)
-          console.log(series)
-          that.barChartData.legendData = Object.keys(groups)
-          that.barChartData.xAxisData = companies
-          that.barChartData.series = series
-          that.DrawBarChart(id)
+          console.log(companies);
+          console.log(series);
+          that.barChartData.legendData = legendList;
+          that.barChartData.xAxisData = companies;
+          that.barChartData.series = series;
+          that.DrawBarChart(id);
         });
     }
   }
