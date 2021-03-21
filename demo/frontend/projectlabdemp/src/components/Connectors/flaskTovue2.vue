@@ -1,21 +1,12 @@
 <template>
   <div>
-    <b-container fluid>
-      <b-row class="my-1">
-        <b-col sm="2">
-          <label for="input-quarter">Please input the quarter:</label>
-        </b-col>
-        <b-col sm="10">
-          <b-form-input id="input-quarter" name="input-quarter"
-                        v-model.trim="quarter" maxlength=100 size="sm" type="text"
-                        placeholder="example: 2020Q3">
-          </b-form-input>
-        </b-col>
-      </b-row>
-    </b-container>
     <b-form>
-
-      <b-button @click="getData()" variant="primary">Search</b-button>
+      <b-form-group id="input-group" label="Please input the quarter:" label-for="input-quarter">
+        <b-form-input id="input-quarter" name="input-quarter" v-model.trim="quarter"
+                      placeholder="example: 2020Q3" required>
+        </b-form-input>
+      </b-form-group>
+      <b-button @click="getData()" variant="primary" style="margin-bottom: 25px">Search</b-button>
     </b-form>
     <bar-chart ref="barChart"></bar-chart>
     <stack-bar-chart ref="stackChart"></stack-bar-chart>
