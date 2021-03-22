@@ -396,3 +396,67 @@ def get_revenue_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to, 
     total_data = tot_data.groupby('Company')[['revenue/VaR', 'revenue/sVaR']].apply(func, keys=ratio_list).to_dict()
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
+
+def get_trading_assets_and_change_byquarter(quarter_date_from, quarter_date_to):
+    year_quarter = quarter_date_from.split('Q')
+    if year_quarter[1] == '1':
+        year = str(int(year_quarter[0])-1)
+        quarter = '4'
+    else:
+        year = year_quarter[0]
+        quarter = str(int(year_quarter[1])-1)
+    quarter_date_from = year + 'Q' + quarter
+
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data_asset = get_data('FRY9C')
+    trading_asset_item_names = ['BHCK3545']
+    data_last = raw_data_asset.query('Item_ID in @trading_asset_item_names and Quarter <= @quarter_date_from and '
+                                'Quarter >= @quarter_date_from').reset_index()
+    data_current = raw_data_asset.query('Item_ID in @trading_asset_item_names and Quarter <= @quarter_date_to and '
+                                'Quarter >= @quarter_date_to').reset_index()
+    data = pd.merge(data_last, data_current, on='Company', how='right', validate="one_to_one")
+    data['Item_x'] = data.Item_x.astype(float)
+    data['Item_y'] = data.Item_y.astype(float)
+    data['percentage_change'] = 100 * (data.Item_y - data.Item_x) / data.Item_x
+    data.rename(columns={'Item_y': 'Trading_Assets'}, inplace=True)
+
+    output_data = data.groupby('Company')[['Trading_Assets','percentage_change']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], output_data[key]) for key in output_data)
+    return res
+
+def get_trading_liabilities_and_change_byquarter(quarter_date_from, quarter_date_to):
+    year_quarter = quarter_date_from.split('Q')
+    if year_quarter[1] == '1':
+        year = str(int(year_quarter[0])-1)
+        quarter = '4'
+    else:
+        year = year_quarter[0]
+        quarter = str(int(year_quarter[1])-1)
+    quarter_date_from = year + 'Q' + quarter
+
+    comp_dict = {'1073757': 'BAC',
+                 '1951350': 'CITI',
+                 '2380443': 'GS',
+                 '1039502': 'JPMC',
+                 '2162966': 'MS',
+                 '1120754': 'WF'}
+    raw_data_asset = get_data('FRY9C')
+    trading_liabilities_item_names = ['BHCK3548']
+    data_last = raw_data_asset.query('Item_ID in @trading_liabilities_item_names and Quarter <= @quarter_date_from and '
+                                'Quarter >= @quarter_date_from').reset_index()
+    data_current = raw_data_asset.query('Item_ID in @trading_liabilities_item_names and Quarter <= @quarter_date_to and '
+                                'Quarter >= @quarter_date_to').reset_index()
+    data = pd.merge(data_last, data_current, on='Company', how='right', validate="one_to_one")
+    data['Item_x'] = data.Item_x.astype(float)
+    data['Item_y'] = data.Item_y.astype(float)
+    data['percentage_change'] = 100 * (data.Item_y - data.Item_x) / data.Item_x
+    data.rename(columns={'Item_y': 'Trading_Libilities'}, inplace=True)
+
+    output_data = data.groupby('Company')[['Trading_Libilities','percentage_change']].apply(lambda x: x.values.tolist()).to_dict()
+    res = dict((comp_dict[key], output_data[key]) for key in output_data)
+    return res

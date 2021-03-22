@@ -6,27 +6,87 @@
     "institutions": {
         "1073757": {
             "Name": "Bank of America",
-            "Nick": "BAC"
+            "Nick": "BAC",
+            "data_status": {
+                "FFIEC102": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                },
+                "FRY9C": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                }
+            }
         },
         "1951350": {
             "Name": "Citigroup",
-            "Nick": "CITI"
+            "Nick": "CITI",
+            "data_status": {
+                "FFIEC102": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                },
+                "FRY9C": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                }
+            }
         },
         "2380443": {
             "Name": "Goldman Sachs",
-            "Nick": "GS"
+            "Nick": "GS",
+            "data_status": {
+                "FFIEC102": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                },
+                "FRY9C": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                }
+            }
         },
         "1039502": {
             "Name": "JP Morgan",
-            "Nick": "JPM"
+            "Nick": "JPM",
+            "data_status": {
+                "FFIEC102": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                },
+                "FRY9C": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                }
+            }
         },
         "2162966": {
             "Name": "Morgan Stanley",
-            "Nick": "MS"
+            "Nick": "MS",
+            "data_status": {
+                "FFIEC102": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                },
+                "FRY9C": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                }
+            }
         },
         "1120754": {
             "Name": "Wells Fargo",
-            "Nick": "WF"
+            "Nick": "WF",
+            "data_status": {
+                "FFIEC102": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                },
+                "FRY9C": {
+                    "start_quarter": "2015Q3",
+                    "end_quarter": "2020Q4"
+                }
+            }
         }
     }
 }
