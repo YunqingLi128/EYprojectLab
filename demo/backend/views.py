@@ -175,6 +175,37 @@ def getTradingRevenueToVarRatio():
     result = get_revenue_to_var_ratio_item_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
     return response_processing(result)
 
+@bp.route('/getTradingAssetsAndChangeByQuarter', methods=['GET'])
+def getTradingAssetsAndChangeByQuarter():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    result = get_trading_assets_and_change_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
+@bp.route('/getTradingLiabilitiesAndChangeByQuarter', methods=['GET'])
+def getTradingLiabilitiesAndChangeByQuarter():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    result = get_trading_liabilities_and_change_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
+@bp.route('/getNetTradingAssetAndPercentChange', methods=['GET'])
+def getNetTradingAssetAndPercentChange():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    result = get_net_trading_asset_and_percent_change(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
+
+@bp.route('/getGrossTradingAssetAndPercentChange', methods=['GET'])
+def getGrossTradingAssetAndPercentChange():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    result = get_gross_trading_asset_and_percent_change(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
 
 @bp.route('/addDataByID', methods=['GET', 'POST'])
 def addData():
