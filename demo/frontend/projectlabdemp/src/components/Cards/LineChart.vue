@@ -1,7 +1,5 @@
 <template>
-  <div class="myDiv">
-    <button @click="getData('Change In VaR Measure Overtime');getData('Market Risk-Weighted Assets Overtime');
-    getData('sVaR-VaR Ratio Overtime');getData('Diversification Overtime');">GET LINE TREND</button>
+  <div class="lineChart">
     <b-card-group deck>
     <b-card
       title="Change In VaR Measure Overtime"
@@ -80,7 +78,7 @@ export default {
       }
       myChart.setOption(option);
     },
-    getData (id) {
+    getData (id, quarter1, quarter2) {
       let that = this;
       that.chartData = {};
       // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
@@ -90,9 +88,27 @@ export default {
         'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime',
         'Diversification Overtime': 'getDiversificationVarOvertime'
       };
-      const start = '2015Q3';
-      const end = '2016Q3';
+      const start = quarter1;
+      const end = quarter2;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      let listStart = [];
+      let listEnd = [];
+      listStart = start.split(/[Q]/);
+      listEnd = end.split(/[Q]/);
+      let quarters = parseInt(listStart[1]);
+      let years = parseInt(listStart[0]);
+      let xString = [];
+      while (years <= listEnd[0]) {
+        xString.push(years.toString() + 'Q' + quarters.toString())
+        if (years === parseInt(listEnd[0]) && quarters === parseInt(listEnd[1])) {
+          break
+        }
+        quarters += 1
+        if (quarters > 4) {
+          quarters = 1
+          years += 1
+        }
+      }
       axios
         .get(base, {
           params: {
@@ -125,7 +141,7 @@ export default {
           console.log(companies)
           console.log(series)
           that.chartData.legend = companies
-          that.lineChartData.xAxisData = ['2015Q3', '2015Q4', '2016Q1', '2016Q2', '2016Q3'] // TODO: write function
+          that.lineChartData.xAxisData = xString // TODO: write function
           that.lineChartData.series = series
           that.drawLineChart(id)
         });
