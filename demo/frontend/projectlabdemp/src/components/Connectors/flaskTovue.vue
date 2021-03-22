@@ -1,46 +1,44 @@
 <template>
   <div>
-    <line-chart></line-chart>
-    <over-time-bar-chart></over-time-bar-chart>
+    <b-form>
+      <b-form-group id="input-group-1" label="Please input the start quarter:" label-for="input-quarter-1">
+        <b-form-input id="input-quarter-1" name="input-quarter" v-model.trim="quarter1"
+                      placeholder="example: 2016Q3" required>
+        </b-form-input>
+      </b-form-group>
+      <b-form-group id="input-group-2" label="Please input the end quarter:" label-for="input-quarter-2">
+        <b-form-input id="input-quarter-2" name="input-quarter" v-model.trim="quarter2"
+                      placeholder="example: 2020Q3" required>
+        </b-form-input>
+      </b-form-group>
+      <b-button @click="getData()" variant="primary" style="margin-bottom: 25px">Search</b-button>
+    </b-form>
+    <line-chart ref="lineChart"></line-chart>
+    <over-time-bar-chart ref="overTimeBarChart"></over-time-bar-chart>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import LineChart from "@/components/Cards/LineChart"
-import OverTimeBarChart from "@/components/Cards/OverTimeBarChart"
+import LineChart from '@/components/Cards/LineChart'
+import OverTimeBarChart from '@/components/Cards/OverTimeBarChart'
 
 export default {
-  name: "my-first-vue",
+  name: 'overtime-charts',
   components: {LineChart,OverTimeBarChart},
-  data: function() {
+  data: function () {
     return {
-      serverResponse: "Waiting for server response"
-    };
+      quarter1: '',
+      quarter2: ''
+    }
   },
   methods: {
-    getData() {
-      var that = this;
-      // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
-      const path = "http://127.0.0.1:5000/getMsg";
-      axios
-        .get(path)
-        .then(function(response) {
-          // 这里服务器返回的 response 为一个 json object，可通过如下方法需要转成 json 字符串
-          // 可以直接通过 response.data 取key-value
-          // 坑一：这里不能直接使用 this 指针，不然找不到对象
-          var msg = response.data.msg;
-          // 坑二：这里直接按类型解析，若再通过 JSON.stringify(msg) 转，会得到带双引号的字串
-          that.serverResponse = msg;
-
-          alert(
-            "Success " + response.status + ", " + response.data + ", " + msg
-          );
-        })
-        .catch(function(error) {
-          alert("Error " + error);
-        });
+    getData () {
+      this.$refs.lineChart.getData('Change In VaR Measure Overtime', this.quarter1, this.quarter2)
+      this.$refs.lineChart.getData('Market Risk-Weighted Assets Overtime', this.quarter1, this.quarter2)
+      this.$refs.lineChart.getData('sVaR-VaR Ratio Overtime', this.quarter1, this.quarter2)
+      this.$refs.lineChart.getData('Diversification Overtime', this.quarter1, this.quarter2)
+      this.$refs.overTimeBarChart.getData('Num of VaR Breach', this.quarter1, this.quarter2)
     }
   }
-};
+}
 </script>
