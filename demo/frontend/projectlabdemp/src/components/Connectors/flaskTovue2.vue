@@ -27,8 +27,10 @@ export default {
   },
   methods: {
     getData () {
-      this.$refs.barChart.getData('companyID-vs-VaR-SVaR', this.quarter)
+      this.$refs.barChart.getData('VaR-SVaR-comparison', this.quarter)
       this.$refs.barChart.getData('company-trading-asset-comparison', this.quarter)
+      this.$refs.barChart.getAggData('trading-asset-to-risk-ratio', this.quarter)
+      this.$refs.barChart.getAggData('trading-revenue-to-VaR-ratio', this.quarter)
       this.$refs.stackChart.getData('standardized-market-risk-weighted-assets-breakdown-by-bank', this.quarter)
       this.$refs.stackChart.getData('VaR-by-asset-class-and-diversification-effect', this.quarter)
     }

@@ -308,28 +308,26 @@ def get_stress_window_item_overtime(quarter_date_from, quarter_date_to):
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
 
-# return trading asset to risk ratio in specific quarters, the ratios order is: 'Net/VaR', 'Gross/VaR', 'Net/sVaR', 'Gross/sVaR'
-def get_asset_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to):
-    comp_dict = {'1073757': 'BAC',
-                 '1951350': 'CITI',
-                 '2380443': 'GS',
-                 '1039502': 'JPMC',
-                 '2162966': 'MS',
-                 '1120754': 'WF'}
+
+def get_asset_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to, comp_dict):
+    """
+    return trading asset to risk ratio in specific quarters,
+    the ratios order is: 'Net/VaR', 'Gross/VaR', 'Net/sVaR', 'Gross/sVaR'
+    """
     raw_data_var = get_data('FFIEC102')
     raw_data_asset = get_data('FRY9C')
     var_item_names = ['MRRRS298', 'MRRRS302']
     data_var = raw_data_var.query('Item_ID in @var_item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from').reset_index()
     
-    data_var1 = data_var[data_var['Item_ID']=='MRRRS298'].rename(columns={'Item': 'VaR'}).drop(['Item_ID'], axis=1)
-    data_var2 = data_var[data_var['Item_ID']=='MRRRS302'].rename(columns={'Item': 'sVaR'}).drop(['Item_ID'], axis=1)
+    data_var1 = data_var[data_var['Item_ID'] == 'MRRRS298'].rename(columns={'Item': 'VaR'}).drop(['Item_ID'], axis=1)
+    data_var2 = data_var[data_var['Item_ID'] == 'MRRRS302'].rename(columns={'Item': 'sVaR'}).drop(['Item_ID'], axis=1)
     data_var = pd.merge(data_var1, data_var2, on=['Company', 'Quarter']).reset_index(drop=True)
     data_var[['VaR', 'sVaR']] = data_var[['VaR', 'sVaR']].astype('int')
     
     trading_asset_item_names_asset = ['BHCK3545']
     trading_asset_item_names_liability = ['BHCK3548']
-    trading_asset_item_names = ['BHCK3545','BHCK3548']
+    trading_asset_item_names = ['BHCK3545', 'BHCK3548']
     data = raw_data_asset.query('Item_ID in @trading_asset_item_names and Quarter <= @quarter_date_to and '
                                 'Quarter >= @quarter_date_from')
     data_asset = raw_data_asset.query('Item_ID in @trading_asset_item_names_asset and Quarter <= @quarter_date_to and '
@@ -339,38 +337,43 @@ def get_asset_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to):
     data_asset.loc[:, 'Item_2'] = data_liability.loc[:, 'Item']
     data_asset.loc[:, 'Gross'] = data_asset.loc[:, 'Item'].astype(int) + data_asset.loc[:, 'Item_2'].astype(int)
     data_asset.loc[:, 'Net'] = data_asset.loc[:, 'Item'].astype(int) - data_asset.loc[:, 'Item_2'].astype(int)
-    data_asset = data_asset.drop(['Item','Item_2', 'Item_ID'], axis=1)
+    data_asset = data_asset.drop(['Item', 'Item_2', 'Item_ID'], axis=1)
     data_asset = data_asset.reset_index()
     
     tot_data = pd.merge(data_var, data_asset, on=['Company', 'Quarter'])
-    
-    
+
     tot_data['Net/VaR'] = tot_data['Net'] / tot_data['VaR']
     tot_data['Gross/VaR'] = tot_data['Gross'] / tot_data['VaR']
     tot_data['Net/sVaR'] = tot_data['Net'] / tot_data['sVaR']
     tot_data['Gross/sVaR'] = tot_data['Gross'] / tot_data['sVaR']
     tot_data = tot_data.drop(['VaR', 'sVaR', 'Gross', 'Net'], axis=1)
     # You can just remember the name and order of this 4 things...
-    total_data = tot_data.groupby('Company')[['Net/VaR', 'Gross/VaR', 'Net/sVaR', 'Gross/sVaR']].apply(lambda x: x.values.tolist()).to_dict()
+
+    # return dict
+    def func(x, keys):
+        values = x.values.tolist()[0]
+        return dict(zip(keys, values))
+
+    ratio_list = ['Net Trading \nAsset / VaR', 'Gross Trading \nAsset / VaR',
+                  'Net Trading \nAsset / sVaR', 'Gross Trading \nAsset / sVaR']
+    total_data = tot_data.groupby('Company')[['Net/VaR', 'Gross/VaR', 'Net/sVaR', 'Gross/sVaR']].apply(func, keys=ratio_list).to_dict()
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
-    
-# return trading revenue to VaR and sVaR ratios in specific quarters, the ratios order is: 'revenue/VaR', 'revenue/sVaR'
-def get_revenue_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to):
-    comp_dict = {'1073757': 'BAC',
-                 '1951350': 'CITI',
-                 '2380443': 'GS',
-                 '1039502': 'JPMC',
-                 '2162966': 'MS',
-                 '1120754': 'WF'}
+
+
+def get_revenue_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to, comp_dict):
+    """
+    return trading revenue to VaR and sVaR ratios in specific quarters,
+    the ratios order is: 'revenue/VaR', 'revenue/sVaR'
+    """
     raw_data_var = get_data('FFIEC102')
     raw_data_revenue = get_data('FRY9C')
     var_item_names = ['MRRRS298', 'MRRRS302']
     data_var = raw_data_var.query('Item_ID in @var_item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from').reset_index()
     
-    data_var1 = data_var[data_var['Item_ID']=='MRRRS298'].rename(columns={'Item': 'VaR'}).drop(['Item_ID'], axis=1)
-    data_var2 = data_var[data_var['Item_ID']=='MRRRS302'].rename(columns={'Item': 'sVaR'}).drop(['Item_ID'], axis=1)
+    data_var1 = data_var[data_var['Item_ID'] == 'MRRRS298'].rename(columns={'Item': 'VaR'}).drop(['Item_ID'], axis=1)
+    data_var2 = data_var[data_var['Item_ID'] == 'MRRRS302'].rename(columns={'Item': 'sVaR'}).drop(['Item_ID'], axis=1)
     data_var = pd.merge(data_var1, data_var2, on=['Company', 'Quarter']).reset_index(drop=True)
     data_var[['VaR', 'sVaR']] = data_var[['VaR', 'sVaR']].astype('int')
     
@@ -382,8 +385,14 @@ def get_revenue_to_var_ratio_item_byquarter(quarter_date_from, quarter_date_to):
     tot_data['revenue/VaR'] = tot_data['revenue'].astype(int) / tot_data['VaR']
     tot_data['revenue/sVaR'] = tot_data['revenue'].astype(int) / tot_data['sVaR']
     tot_data = tot_data.drop(['VaR', 'sVaR', 'revenue', 'Item_ID'], axis=1)
+
+    # return dict
+    def func(x, keys):
+        values = x.values.tolist()[0]
+        return dict(zip(keys, values))
+
+    ratio_list = ['Trading Revenue / VaR', 'Trading Revenue / sVaR']
     # You can just remember the name and order of these 2 things...
-    total_data = tot_data.groupby('Company')[['revenue/VaR', 'revenue/sVaR']].apply(lambda x: x.values.tolist()).to_dict()
+    total_data = tot_data.groupby('Company')[['revenue/VaR', 'revenue/sVaR']].apply(func, keys=ratio_list).to_dict()
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
-    

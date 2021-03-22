@@ -157,13 +157,14 @@ def getStressWindowOvertime():
     res = get_stress_window_item_overtime(start_quarter, end_quarter)
     return jsonify(res)
 
+
 @bp.route('/getTradingAssetToRiskRatio', methods=['GET'])
 def getTradingAssetToRiskRatio():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_asset_to_var_ratio_item_byquarter(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_asset_to_var_ratio_item_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
 
 
 @bp.route('/getTradingRevenueToVarRatio', methods=['GET'])
@@ -171,8 +172,8 @@ def getTradingRevenueToVarRatio():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_revenue_to_var_ratio_item_byquarter(start_quarter, end_quarter)
-    return jsonify(res)
+    result = get_revenue_to_var_ratio_item_byquarter(start_quarter, end_quarter, session.get("comp_dict"))
+    return response_processing(result)
 
 
 @bp.route('/addDataByID', methods=['GET', 'POST'])

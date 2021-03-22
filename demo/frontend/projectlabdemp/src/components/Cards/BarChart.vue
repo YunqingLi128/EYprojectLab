@@ -1,18 +1,20 @@
 <template>
-  <div class="barChart">
+  <div class="barCharts">
     <b-card-group deck>
-    <b-card
-      title="Company ID VS VaR and SVaR"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-      <div id='companyID-vs-VaR-SVaR' style="width: 100%; height: 35rem; display: inline-block;"></div>
-    </b-card>
-    <b-card
-      title="Company Trading Asset Comparison"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-      <div id='company-trading-asset-comparison' style="width: 100%; height: 35rem; display: inline-block;"></div>
-    </b-card>
+      <b-card class="barChartCard" title="Company ID VS VaR and SVaR">
+        <div class="barChart" id="VaR-SVaR-comparison"></div>
+      </b-card>
+      <b-card class="barChartCard" title="Company Trading Asset Comparison">
+        <div class="barChart" id="company-trading-asset-comparison"></div>
+      </b-card>
+    </b-card-group>
+    <b-card-group deck>
+      <b-card class="barChartCard" title="Trading Asset to Risk Ratio">
+        <div class="barChart" id="trading-asset-to-risk-ratio"></div>
+      </b-card>
+      <b-card class="barChartCard" title="Trading Revenue to VaR Ratio">
+        <div class="barChart" id="trading-revenue-to-VaR-ratio"></div>
+      </b-card>
     </b-card-group>
   </div>
 </template>
@@ -85,7 +87,7 @@ export default {
       let that = this;
       that.chartData = {};
       let dictBase = {
-        'companyID-vs-VaR-SVaR': 'getVaRsVarRComparisonQuery',
+        'VaR-SVaR-comparison': 'getVaRsVarRComparisonQuery',
         'company-trading-asset-comparison': 'getTradingAssetComparison'
       };
       const start = quarter;
@@ -138,6 +140,60 @@ export default {
           that.barChartData.series = series;
           that.DrawBarChart(id);
         });
+    },
+    getAggData (id, quarter) {
+      let that = this;
+      let dictBase = {
+        'trading-asset-to-risk-ratio': 'getTradingAssetToRiskRatio',
+        'trading-revenue-to-VaR-ratio': 'getTradingRevenueToVarRatio'
+      };
+      const start = quarter;
+      const end = quarter;
+      const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      axios
+        .get(base, {
+          params: {
+            'start': start,
+            'end': end
+          },
+          withCredentials: true,
+          headers: {
+            'secret-key': 'super secret key',
+            'Access-Control-Allow-Origin': '*'
+          }
+        })
+        .then(function (response) {
+          let data = response.data;
+          let itemNames = [];
+          let itemSet = new Set();
+          let series = [];
+          let legendList = [];
+          for (let key in data) {
+            if (data.hasOwnProperty(key)) {
+              legendList.push(key)
+              let chartItem = {};
+              chartItem.name = key;
+              chartItem.type = 'bar';
+              chartItem.data = [];
+              for (let itemName in data[key]) {
+                if (data[key].hasOwnProperty(itemName)) {
+                  chartItem.data.push(data[key][itemName]);
+                  if (!itemSet.has(itemName)) {
+                    itemSet.add(itemName);
+                    itemNames.push(itemName);
+                  }
+                }
+              }
+              series.push(chartItem)
+            }
+          }
+          console.log(itemNames);
+          console.log(series);
+          that.barChartData.legendData = legendList;
+          that.barChartData.xAxisData = itemNames;
+          that.barChartData.series = series;
+          that.DrawBarChart(id);
+        })
     }
   }
 }
@@ -155,14 +211,28 @@ figure {
   padding: 1.5em 2em;
   min-width: calc(40vw + 4em);
 }
+
 .echarts {
   width: 100%;
   width: 40vw;
   min-width: 400px;
   height: 400px;
 }
+
 .chart {
   height: 400px;
+}
+
+.barChartCard {
+  max-width: 60rem;
+  max-height: 40rem;
+  margin-bottom: 20px;
+}
+
+.barChart {
+  width: 100%;
+  height: 35rem;
+  display: inline-block;
 }
 
 </style>
