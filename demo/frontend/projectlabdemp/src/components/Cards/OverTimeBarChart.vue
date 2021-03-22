@@ -1,10 +1,9 @@
 <template>
-  <div class="StackBarChart">
+  <div class="overTimeBarChart">
     <b-card
       title="Number of VaR Breach"
       style="max-width: 60rem; max-height: 40rem;"
     >
-    <button @click="get_Data ();">GET BAR TREND</button>
     <div id='Number of VaR Breach' style="width: 100%; height: 35rem; display: inline-block;"></div>
     </b-card>
   </div>
@@ -22,7 +21,7 @@ export default {
     }
   },
   methods: {
-    drawOverTimeBarChart () {
+    drawOverTimeBarChart (id) {
       let that = this;
       let chartDom = document.getElementById('Number of VaR Breach');
       let myChart = echarts.init(chartDom);
@@ -34,7 +33,8 @@ export default {
           }
         },
         legend: {
-          data: that.barChartData.legend
+          data: that.barChartData.legendData,
+          y: 'bottom'
         },
         toolbox: {
           show: true,
@@ -61,62 +61,37 @@ export default {
             type: 'value'
           }
         ],
-        series: [
-          {
-            name: that.barChartData.series[0].name,
-            type: that.barChartData.series[0].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[0].data
-          },
-          {
-            name: that.barChartData.series[1].name,
-            type: that.barChartData.series[1].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[1].data
-          },
-          {
-            name: that.barChartData.series[2].name,
-            type: that.barChartData.series[2].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[2].data
-          },
-          {
-            name: that.barChartData.series[3].name,
-            type: that.barChartData.series[3].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[3].data
-          },
-          {
-            name: that.barChartData.series[4].name,
-            type: that.barChartData.series[4].type,
-            barGap: 0,
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[4].data
-          }
-        ]
+        series: that.barChartData.series
       }
       myChart.setOption(option);
     },
-    get_Data () {
+    getData (id, quarter1, quarter2) {
       let that = this;
       that.chartData = {};
-      const start = '2015Q3';
-      const end = '2016Q3';
-      const base = 'http://127.0.0.1:5000/getVaRBreachOvertime';
+      let dictBase = {
+        'Num of VaR Breach': 'getVaRBreachOvertime'
+      };
+      const start = quarter1;
+      const end = quarter2;
+      const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      let listStart = [];
+      let listEnd = [];
+      listStart = start.split(/[Q]/);
+      listEnd = end.split(/[Q]/);
+      let quarters = parseInt(listStart[1]);
+      let years = parseInt(listStart[0]);
+      let xString = [];
+      while (years <= listEnd[0]) {
+        xString.push(years.toString() + 'Q' + quarters.toString())
+        if (years === parseInt(listEnd[0]) && quarters === parseInt(listEnd[1])) {
+          break
+        }
+        quarters += 1
+        if (quarters > 4) {
+          quarters = 1
+          years += 1
+        }
+      }
       axios
         .get(base, {
           params: {
@@ -149,7 +124,7 @@ export default {
           console.log(companies)
           console.log(series)
           that.chartData.legend = companies
-          that.barChartData.xAxisData = ['2015Q3', '2015Q4', '2016Q1', '2016Q2', '2016Q3'] // TODO: write function
+          that.barChartData.xAxisData = xString// TODO: write function
           that.barChartData.series = series
           that.drawOverTimeBarChart()
         });
@@ -162,3 +137,4 @@ export default {
 <style scoped>
 
 </style>
+
