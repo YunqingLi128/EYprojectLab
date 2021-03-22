@@ -10,16 +10,18 @@
     </b-form>
     <bar-chart ref="barChart"></bar-chart>
     <stack-bar-chart ref="stackChart"></stack-bar-chart>
+    <bar-line-charts ref="barLineChart"></bar-line-charts>
   </div>
 </template>
 
 <script>
 import BarChart from '@/components/Cards/BarChart';
 import StackBarChart from '@/components/Cards/StackBarChart';
+import BarLineCharts from '@/components/Cards/BarPlusLineChart';
 
 export default {
   name: 'quarter-charts',
-  components: {BarChart, StackBarChart},
+  components: {BarChart, StackBarChart, BarLineCharts},
   data: function () {
     return {
       quarter: ''
@@ -33,6 +35,10 @@ export default {
       this.$refs.barChart.getAggData('trading-revenue-to-VaR-ratio', this.quarter)
       this.$refs.stackChart.getData('standardized-market-risk-weighted-assets-breakdown-by-bank', this.quarter)
       this.$refs.stackChart.getData('VaR-by-asset-class-and-diversification-effect', this.quarter)
+      this.$refs.barLineChart.getData('trading-asset', this.quarter)
+      this.$refs.barLineChart.getData('trading-liabilities', this.quarter)
+      this.$refs.barLineChart.getData('net-trading-asset', this.quarter)
+      this.$refs.barLineChart.getData('gross-trading-asset', this.quarter)
     }
   }
 };
