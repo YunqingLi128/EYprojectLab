@@ -13,9 +13,9 @@
 我把前后端初步的框架写好了，在root（demo文件夹）下分了frontend 和 backend
 运行方法: (在demo路径下)
 1. 运行server
-    * 安装配置：python/python3 dashboard.py install
-    * $export FLASK_APP=backend
-    * $export FLASK_ENV=development
+    * 安装配置：python/python3 dashboard.py install (for Mac) / py -3 dashboard.py install (for Windows)
+    * $export FLASK_APP=backend (for Mac) / set FLASK_APP=backend (for Windows)
+    * $export FLASK_ENV=development (for Mac) / set FLASK_ENV=development (for Windows)
     * flask run
     * 出现 Running on http://127.0.0.1:5000/ (Press CTRL+C to quit) 即为成功
 2. 然后跑client:
