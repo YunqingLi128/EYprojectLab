@@ -33,6 +33,18 @@ def format_date(date):
     return quarter_date
 
 
+def get_previous_quarter(cur_quarter):
+    year_quarter = cur_quarter.split('Q')
+    if year_quarter[1] == '1':
+        year = str(int(year_quarter[0]) - 1)
+        quarter = '4'
+    else:
+        year = year_quarter[0]
+        quarter = str(int(year_quarter[1]) - 1)
+    pre_quarter = year + 'Q' + quarter
+    return pre_quarter
+
+
 def generate_dates():
     """
     Generate quarter dates from 2015 to current date
