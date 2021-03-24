@@ -74,7 +74,7 @@ export default {
       }
       myChart.setOption(option);
     },
-    getData (id, quarter) {
+    getData (id, quarter, selected) {
       let that = this;
       that.chartData = {};
       let dictBase = {
@@ -109,8 +109,8 @@ export default {
           let companies = [];
           let groupOne = [];
           let groupTwo = [];
-          for (let key in data){
-            if (data.hasOwnProperty(key)){
+          for (let key of selected) {
+            if (data.hasOwnProperty(key)) {
               companies.push(key)
               groupOne.push(data[key][0][0])
               groupTwo.push(data[key][0][1])
