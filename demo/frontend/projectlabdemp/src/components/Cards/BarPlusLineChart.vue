@@ -89,14 +89,11 @@ export default {
         'net-trading-asset': ['Net Trading Asset', 'Net Trading Asset Change from Last Quarter'],
         'gross-trading-asset': ['Gross Trading Asset', 'Gross Trading Asset Change from Last Quarter']
       }
-      const start = quarter;
-      const end = quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
           params: {
-            'start': start,
-            'end': end
+            'quarter': quarter
           },
           withCredentials: true,
           headers: {
@@ -175,7 +172,6 @@ figure {
 }
 
 .echarts {
-  width: 100%;
   width: 40vw;
   min-width: 400px;
   height: 400px;

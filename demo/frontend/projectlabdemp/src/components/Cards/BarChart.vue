@@ -1,11 +1,11 @@
 <template>
   <div class="barCharts">
     <b-card-group deck>
-      <b-card class="barChartCard" title="Company ID VS VaR and SVaR">
+      <b-card class="barChartCard" title="VaR and SVaR Comparison">
         <div class="barChart" id="VaR-SVaR-comparison"></div>
       </b-card>
-      <b-card class="barChartCard" title="Company Trading Asset Comparison">
-        <div class="barChart" id="company-trading-asset-comparison"></div>
+      <b-card class="barChartCard" title="Trading Asset Comparison">
+        <div class="barChart" id="trading-asset-comparison"></div>
       </b-card>
     </b-card-group>
     <b-card-group deck>
@@ -36,10 +36,6 @@ export default {
       let that = this;
       let chartDom = document.getElementById(id);
       let myChart = echarts.init(chartDom);
-      // let dictName = {
-      //   'Company ID VS VaR and SVaR': ['VaR', 'sVaR'],
-      //   'Company Trading Asset Comparison': ['Gross', 'Net']
-      // };
       let option = {
         title: {
           show: false
@@ -87,17 +83,14 @@ export default {
       let that = this;
       that.chartData = {};
       let dictBase = {
-        'VaR-SVaR-comparison': 'getVaRsVarRComparisonQuery',
-        'company-trading-asset-comparison': 'getTradingAssetComparison'
+        'VaR-SVaR-comparison': 'getVaRsVarRComparison',
+        'trading-asset-comparison': 'getTradingAssetComparison'
       };
-      const start = quarter;
-      const end = quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
           params: {
-            'start': start,
-            'end': end
+            'quarter': quarter
           },
           withCredentials: true,
           headers: {
@@ -147,14 +140,11 @@ export default {
         'trading-asset-to-risk-ratio': 'getTradingAssetToRiskRatio',
         'trading-revenue-to-VaR-ratio': 'getTradingRevenueToVarRatio'
       };
-      const start = quarter;
-      const end = quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
           params: {
-            'start': start,
-            'end': end
+            'quarter': quarter
           },
           withCredentials: true,
           headers: {
@@ -213,7 +203,6 @@ figure {
 }
 
 .echarts {
-  width: 100%;
   width: 40vw;
   min-width: 400px;
   height: 400px;
@@ -236,4 +225,3 @@ figure {
 }
 
 </style>
-

@@ -1,18 +1,12 @@
 <template>
   <div class="StackBarChart">
     <b-card-group deck>
-    <b-card
-      title="Standardized Market Risk-Weighted Assets Breakdown By Bank"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id='standardized-market-risk-weighted-assets-breakdown-by-bank' style="width: 100%; height: 35rem; display: inline-block;"></div>
-    </b-card>
-    <b-card
-      title="VaR by Asset Class and Diversification Effect"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id='VaR-by-asset-class-and-diversification-effect' style="width: 100%; height: 35rem; display: inline-block;"></div>
-    </b-card>
+      <b-card class="stackBarChartCard" title="Standardized Market Risk-Weighted Assets Breakdown By Bank">
+        <div class="stackBarChart" id="standardized-market-risk-weighted-assets-breakdown-by-bank"></div>
+      </b-card>
+      <b-card class="stackBarChartCard" title="VaR by Asset Class and Diversification Effect">
+        <div class="stackBarChart" id="VaR-by-asset-class-and-diversification-effect"></div>
+      </b-card>
     </b-card-group>
   </div>
 </template>
@@ -80,14 +74,11 @@ export default {
         'standardized-market-risk-weighted-assets-breakdown-by-bank': 'getStandardizedRiskWeightedAssets',
         'VaR-by-asset-class-and-diversification-effect': 'getVaRByAssetClassDiversification'
       };
-      const start = quarter;
-      const end = quarter;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
       axios
         .get(base, {
           params: {
-            'start': start,
-            'end': end
+            'quarter': quarter
           },
           withCredentials: true,
           headers: {
@@ -138,5 +129,17 @@ export default {
 </script>
 
 <style scoped>
+
+.stackBarChartCard {
+  max-width: 60rem;
+  max-height: 40rem;
+  margin-bottom: 20px;
+}
+
+.stackBarChart {
+  width: 100%;
+  height: 35rem;
+  display: inline-block;
+}
 
 </style>
