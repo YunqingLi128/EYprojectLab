@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
-import math
+import operator
 import json
 import os
 from backend.data_process import get_cur_path, get_previous_quarter
@@ -410,7 +410,6 @@ def get_trading_item_and_change_by_quarter(item_id, item_name, quarter, comp_dic
     data.rename(columns={'Item_y': item_name}, inplace=True)
     output_data = data.groupby('Company')[[item_name, 'percentage_change']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((comp_dict[key], output_data[key]) for key in output_data)
-    print(res)
     return res
 
 
@@ -418,124 +417,55 @@ def get_trading_assets_and_change_byquarter(quarter_date_from, quarter_date_to, 
     item_id, item_name = 'BHCK3545', 'Trading_Assets'
     res = get_trading_item_and_change_by_quarter(item_id, item_name, quarter_date_from, comp_dict)
     return res
-    # pre_quarter = get_previous_quarter(quarter_date_from)
-    #
-    # raw_data_asset = get_data('FRY9C')
-    # trading_asset_item_names = ['BHCK3545']
-    # data_last = raw_data_asset.query('Item_ID in @trading_asset_item_names and Quarter <= @pre_quarter and '
-    #                             'Quarter >= @pre_quarter').reset_index()
-    # data_current = raw_data_asset.query('Item_ID in @trading_asset_item_names and Quarter <= @quarter_date_to and '
-    #                             'Quarter >= @quarter_date_to').reset_index()
-    # data = pd.merge(data_last, data_current, on='Company', how='right', validate="one_to_one")
-    # data['Item_x'] = data.Item_x.astype(float)
-    # data['Item_y'] = data.Item_y.astype(float)
-    # data['percentage_change'] = 100 * (data.Item_y - data.Item_x) / data.Item_x
-    # data.rename(columns={'Item_y': 'Trading_Assets'}, inplace=True)
-    #
-    # output_data = data.groupby('Company')[['Trading_Assets', 'percentage_change']].apply(lambda x: x.values.tolist()).to_dict()
-    # res = dict((comp_dict[key], output_data[key]) for key in output_data)
-    # print(res)
-    # return res
 
 
 def get_trading_liabilities_and_change_byquarter(quarter_date_from, quarter_date_to, comp_dict):
     item_id, item_name = 'BHCK3548', 'Trading_Liabilities'
     res = get_trading_item_and_change_by_quarter(item_id, item_name, quarter_date_from, comp_dict)
     return res
-    # pre_quarter = get_previous_quarter(quarter_date_from)
-    #
-    # raw_data_asset = get_data('FRY9C')
-    # trading_liabilities_item_names = ['BHCK3548']
-    # data_last = raw_data_asset.query('Item_ID in @trading_liabilities_item_names and Quarter <= @pre_quarter and '
-    #                             'Quarter >= @pre_quarter').reset_index()
-    # data_current = raw_data_asset.query('Item_ID in @trading_liabilities_item_names and Quarter <= @quarter_date_to and '
-    #                             'Quarter >= @quarter_date_to').reset_index()
-    # data = pd.merge(data_last, data_current, on='Company', how='right', validate="one_to_one")
-    # data['Item_x'] = data.Item_x.astype(float)
-    # data['Item_y'] = data.Item_y.astype(float)
-    # data['percentage_change'] = 100 * (data.Item_y - data.Item_x) / data.Item_x
-    # data.rename(columns={'Item_y': 'Trading_Liabilities'}, inplace=True)
-    #
-    # output_data = data.groupby('Company')[['Trading_Liabilities', 'percentage_change']].apply(lambda x: x.values.tolist()).to_dict()
-    # res = dict((comp_dict[key], output_data[key]) for key in output_data)
-    # return res
 
 
-# return net trading asset by quarter (bar chart) and percent change from last quarter(line chart)
-def get_net_trading_asset_and_percent_change(quarter_date_from, quarter_date_to, comp_dict):
-    pre_quarter = get_previous_quarter(quarter_date_from)
-
+def calculate_trading_asset_and_percent_change(cal_type, quarter, comp_dict):
+    op_dict = {"Net": operator.sub, "Gross": operator.add}
+    op = op_dict[cal_type]
+    pre_quarter = get_previous_quarter(quarter)
     raw_data_asset = get_data('FRY9C')
-    trading_asset_item_names_asset = ['BHCK3545']
-    trading_asset_item_names_liability = ['BHCK3548']
-    data_asset_last = raw_data_asset.query('Item_ID in @trading_asset_item_names_asset and Quarter <= @pre_quarter and '
-                                     'Quarter >= @pre_quarter')
-    data_asset_current = raw_data_asset.query(
-        'Item_ID in @trading_asset_item_names_asset and Quarter <= @quarter_date_to and '
-        'Quarter >= @quarter_date_to')
-    data_liability_last = raw_data_asset.query(
-        'Item_ID in @trading_asset_item_names_liability and Quarter <= @pre_quarter and '
-        'Quarter >= @pre_quarter')
-    data_liability_current = raw_data_asset.query(
-        'Item_ID in @trading_asset_item_names_liability and Quarter <= @quarter_date_to and '
-        'Quarter >= @quarter_date_to')
+    trading_asset = 'BHCK3545'
+    trading_liability = 'BHCK3548'
+    data_asset_last = raw_data_asset.query('Item_ID == @trading_asset and Quarter == @pre_quarter')
+    data_asset_current = raw_data_asset.query('Item_ID == @trading_asset and Quarter == @quarter')
+    data_liability_last = raw_data_asset.query('Item_ID == @trading_liability and Quarter == @pre_quarter')
+    data_liability_current = raw_data_asset.query('Item_ID == @trading_liability and Quarter == @quarter')
 
     data_asset_last['Item_2'] = data_liability_last['Item']
-    data_asset_last['Net'] = data_asset_last['Item'].astype(int) - data_asset_last['Item_2'].astype(int)
+    data_asset_last[cal_type] = op(data_asset_last['Item'].astype(int), data_asset_last['Item_2'].astype(int))
     data_asset_current['Item_2'] = data_liability_current['Item']
-    data_asset_current['Net'] = data_asset_current['Item'].astype(int) - data_asset_current['Item_2'].astype(int)
+    data_asset_current[cal_type] = op(data_asset_current['Item'].astype(int), data_asset_current['Item_2'].astype(int))
     data_asset_current = data_asset_current.drop(['Item', 'Item_2'], axis=1)
     data_asset_current = data_asset_current.reset_index()
     data_asset_last = data_asset_last.drop(['Item', 'Item_2'], axis=1)
     data_asset_last = data_asset_last.reset_index()
 
     data = pd.merge(data_asset_last, data_asset_current, on='Company', how='right', validate='one_to_one')
-    data['Net_x'] = data.Net_x.astype(float)
-    data['Net_y'] = data.Net_y.astype(float)
-    data['percent_change'] = 100 * (data.Net_y - data.Net_x) / data.Net_x
-    data.rename(columns={'Net_y': 'Net_Trading_Assets'}, inplace=True)
-
-    net_data = data.groupby('Company')[['Net_Trading_Assets', 'percent_change']].apply(
+    pre_quarter_net, cur_quarter_net = cal_type + '_x', cal_type + '_y'
+    data[pre_quarter_net] = data[pre_quarter_net].astype(float)
+    data[cur_quarter_net] = data[cur_quarter_net].astype(float)
+    data['percent_change'] = 100 * (data[cur_quarter_net] - data[pre_quarter_net]) / data[pre_quarter_net]
+    trading_asset_item_name = cal_type + "_Trading_Assets"
+    data.rename(columns={cur_quarter_net: trading_asset_item_name}, inplace=True)
+    net_data = data.groupby('Company')[[trading_asset_item_name, 'percent_change']].apply(
         lambda x: x.values.tolist()).to_dict()
     res = dict((comp_dict[key], net_data[key]) for key in net_data)
     return res
 
 
+# return net trading asset by quarter (bar chart) and percent change from last quarter(line chart)
+def get_net_trading_asset_and_percent_change(quarter_date_from, quarter_date_to, comp_dict):
+    res = calculate_trading_asset_and_percent_change("Net", quarter_date_from, comp_dict)
+    return res
+
+
 # return gross trading asset by quarter (bar chart) and percent change from last quarter(line chart)
 def get_gross_trading_asset_and_percent_change(quarter_date_from, quarter_date_to, comp_dict):
-    pre_quarter = get_previous_quarter(quarter_date_from)
-
-    raw_data_asset = get_data('FRY9C')
-    trading_asset_item_names_asset = ['BHCK3545']
-    trading_asset_item_names_liability = ['BHCK3548']
-    data_asset_last = raw_data_asset.query('Item_ID in @trading_asset_item_names_asset and Quarter <= @pre_quarter and '
-                                     'Quarter >= @pre_quarter')
-    data_asset_current = raw_data_asset.query(
-        'Item_ID in @trading_asset_item_names_asset and Quarter <= @quarter_date_to and '
-        'Quarter >= @quarter_date_to')
-    data_liability_last = raw_data_asset.query(
-        'Item_ID in @trading_asset_item_names_liability and Quarter <= @pre_quarter and '
-        'Quarter >= @pre_quarter')
-    data_liability_current = raw_data_asset.query(
-        'Item_ID in @trading_asset_item_names_liability and Quarter <= @quarter_date_to and '
-        'Quarter >= @quarter_date_to')
-
-    data_asset_last['Item_2'] = data_liability_last['Item']
-    data_asset_last['gross'] = data_asset_last['Item'].astype(int) + data_asset_last['Item_2'].astype(int)
-    data_asset_current['Item_2'] = data_liability_current['Item']
-    data_asset_current['gross'] = data_asset_current['Item'].astype(int) + data_asset_current['Item_2'].astype(int)
-    data_asset_current = data_asset_current.drop(['Item', 'Item_2'], axis=1)
-    data_asset_current = data_asset_current.reset_index()
-    data_asset_last = data_asset_last.drop(['Item', 'Item_2'], axis=1)
-    data_asset_last = data_asset_last.reset_index()
-
-    data = pd.merge(data_asset_last, data_asset_current, on='Company', how='right', validate='one_to_one')
-    data['gross_x'] = data.gross_x.astype(float)
-    data['gross_y'] = data.gross_y.astype(float)
-    data['percent_change'] = 100 * (data.gross_y - data.gross_x) / data.gross_x
-    data.rename(columns={'gross_y': 'Gross_Trading_Assets'}, inplace=True)
-
-    gross_data = data.groupby('Company')[['Gross_Trading_Assets', 'percent_change']].apply(
-        lambda x: x.values.tolist()).to_dict()
-    res = dict((comp_dict[key], gross_data[key]) for key in gross_data)
+    res = calculate_trading_asset_and_percent_change("Gross", quarter_date_from, comp_dict)
     return res
