@@ -3,8 +3,14 @@
     <b-form inline>
       <b-form-group id="input-group" label="Please input the quarter:" label-for="input-quarter">
         <b-form-input id="input-quarter" name="input-quarter" v-model.trim="quarter"
-                      placeholder="example: 2020Q3" required>
+                      style="margin-left:10px;" placeholder="example: 2020Q3" required>
         </b-form-input>
+        <b-form-invalid-feedback :state="validationQ1">
+          Your Input should be at the form format like 2020Q4
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationQ1">
+          Your Input looks good.
+        </b-form-valid-feedback>
       </b-form-group>
     </b-form>
     <b-form-group label="Select Company:">
@@ -47,6 +53,12 @@ export default {
       }
     }
     this.options = options
+  },
+
+  computed: {
+    validationQ1(){
+      return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1)
+    }
   },
   name: 'quarter-charts',
   components: {BarChart, StackBarChart, BarLineCharts},

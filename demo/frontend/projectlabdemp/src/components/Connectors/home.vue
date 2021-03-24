@@ -50,6 +50,7 @@ export default {
         .then(function (response) {
           let data = response.data;
           console.log(data);
+          that.items = []
           that.getData();
         });
     },

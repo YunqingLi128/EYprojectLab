@@ -1,26 +1,46 @@
 <template>
   <div>
-    <b-form inline>
+    <b-form>
       <b-form-group id="input-group-1" label="Start Quarter: " label-for="input-quarter-1">
         <b-form-input id="input-quarter-1" name="input-quarter" v-model.trim="quarter1"
                       placeholder="example: 2016Q3" required>
         </b-form-input>
+        <b-form-invalid-feedback :state="validationQ1">
+          Your Input should be at the form format like 2020Q4
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationQ1">
+          Your Input looks good.
+        </b-form-valid-feedback>
       </b-form-group>
       <b-form-group id="input-group-2" label="End Quarter: " label-for="input-quarter-2">
         <b-form-input id="input-quarter-2" name="input-quarter" v-model.trim="quarter2"
                       placeholder="example: 2020Q3" required>
         </b-form-input>
+        <b-form-invalid-feedback :state="validationQ2">
+          Your Input should be at the form format like 2020Q4
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationQ2">
+          Your Input looks good.
+        </b-form-valid-feedback>
       </b-form-group>
+      <b-form-group label="Select Company:">
+        <b-form-checkbox-group
+          id="checkbox-group-1"
+          v-model="selected"
+          :options="options"
+          name="Company-Select"
+        ></b-form-checkbox-group>
+      </b-form-group>
+      <b-form-invalid-feedback :state="validationDate">
+        Your End Quater should be later than the Start Quater
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback :state="validationDate">
+        Your Input looks good.
+      </b-form-valid-feedback>
+      <b-button block @click="getData()" variant="primary">Search</b-button>
     </b-form>
-    <b-form-group label="Select Company:">
-      <b-form-checkbox-group
-        id="checkbox-group-1"
-        v-model="selected"
-        :options="options"
-        name="Company-Select"
-      ></b-form-checkbox-group>
-    </b-form-group>
-    <b-button @click="getData()" variant="primary">Search</b-button>
+
+
     <line-chart ref="lineChart"></line-chart>
     <over-time-bar-chart ref="overTimeBarChart"></over-time-bar-chart>
   </div>
@@ -50,6 +70,17 @@ export default {
       }
     }
     this.options = options
+  },
+  computed: {
+    validationQ1(){
+      return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1)
+    },
+    validationQ2(){
+      return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter2)
+    },
+    validationDate(){
+      return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1) && /^[0-9]{4}[Qq][1-4]$/.test(this.quarter2) && this.quarter1 < this.quarter2
+    }
   },
   name: 'overtime-charts',
   components: {LineChart,OverTimeBarChart},
