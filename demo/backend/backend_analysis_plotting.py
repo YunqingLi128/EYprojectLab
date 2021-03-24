@@ -104,9 +104,7 @@ def get_trading_asset_item_byquarter(quarter_date_from, quarter_date_to, comp_di
             whole_val.append(row['Net'])
             Flag = 1
     new = pd.Series(whole_val)
-    data['New_Item'] = new.values
-    data['Item'] = data['New_Item']
-    data = data.drop(['New_Item'], axis=1)
+    data['Item'] = new.values
     trading_asset_map = {'BHCK3545': 'Net Trading Asset', 'BHCK3548': 'Gross Trading Asset'}
     trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(item_name_mapping, mapping=trading_asset_map).to_dict()
     res = dict((comp_dict[key], trading_asset_data[key]) for key in trading_asset_data)  # change the id to name
@@ -162,9 +160,7 @@ def get_ratio_item_overtime(quarter_date_from, quarter_date_to, comp_dict):
                           'Quarter >= @quarter_date_from')
     data['Item_2'] = data_2['Item']
     data['Ratio'] = data['Item_2'].astype(int) / data['Item'].astype(int)
-    data = data.drop(['Item', 'Item_2'], axis=1)
-    data['Item'] = data['Ratio']
-    data = data.drop(['Ratio'], axis=1)
+    data = data.drop(['Item', 'Item_2'], axis=1).rename(columns={'Ratio': 'Item'})
     data = data.reset_index()
     asset_data = data.groupby('Company')[['Quarter', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((comp_dict[key], asset_data[key]) for key in asset_data)  # change the id to name
@@ -288,13 +284,7 @@ def get_standardized_risk_weighted_assets_byquarter(quarter_date_from, quarter_d
 
 # Stress window
 # return the classification of stress window under creteria: if year in 2007/2008, then it is 2008 Financial Crisis; if year in 2019, then it is Covid 19
-def get_stress_window_item_overtime(quarter_date_from, quarter_date_to):
-    comp_dict = {'1073757': 'BAC',
-                 '1951350': 'CITI',
-                 '2380443': 'GS',
-                 '1039502': 'JPMC',
-                 '2162966': 'MS',
-                 '1120754': 'WF'}
+def get_stress_window_item_overtime(quarter_date_from, quarter_date_to, comp_dict):
     raw_data = get_data('FFIEC102')
     item_names = ['MRRRS366']
     data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '

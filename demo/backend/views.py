@@ -154,7 +154,7 @@ def getStressWindowOvertime():
     args = request.args
     start_quarter = args['start']
     end_quarter = args['end']
-    res = get_stress_window_item_overtime(start_quarter, end_quarter)
+    res = get_stress_window_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
     return jsonify(res)
 
 
