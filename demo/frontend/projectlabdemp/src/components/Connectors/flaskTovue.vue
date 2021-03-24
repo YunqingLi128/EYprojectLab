@@ -30,14 +30,20 @@
           :options="options"
           name="Company-Select"
         ></b-form-checkbox-group>
+      <b-form-invalid-feedback :state="validationSelection">
+        You need to select at least one company
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback :state="validationSelection">
+        Your Input looks good.
+      </b-form-valid-feedback>
       </b-form-group>
       <b-form-invalid-feedback :state="validationDate">
         Your End Quater should be later than the Start Quater
       </b-form-invalid-feedback>
       <b-form-valid-feedback :state="validationDate">
-        Your Input looks good.
+        Your Quater period input looks good.
       </b-form-valid-feedback>
-      <b-button block @click="getData()" variant="primary">Search</b-button>
+      <b-button block @click="getData()" variant="primary" :disabled="!validationDate || !validationSelection">Search</b-button>
     </b-form>
 
 
@@ -80,6 +86,10 @@ export default {
     },
     validationDate(){
       return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1) && /^[0-9]{4}[Qq][1-4]$/.test(this.quarter2) && this.quarter1 < this.quarter2
+    },
+    validationSelection(){
+      console.log("1111111", this.selected.length)
+      return this.selected.length != 0
     }
   },
   name: 'overtime-charts',

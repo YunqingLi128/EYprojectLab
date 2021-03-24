@@ -20,8 +20,14 @@
           :options="options"
           name="Company-Select"
         ></b-form-checkbox-group>
+      <b-form-invalid-feedback :state="validationSelection">
+        You need to select at least one company
+      </b-form-invalid-feedback>
+      <b-form-valid-feedback :state="validationSelection">
+        Your Input looks good.
+      </b-form-valid-feedback>
     </b-form-group>
-    <b-button @click="getData()" variant="primary">Search</b-button>
+    <b-button @click="getData()" variant="primary" :disabled="!validationQ1 || !validationSelection">Search</b-button>
     <bar-chart ref="barChart"></bar-chart>
     <stack-bar-chart ref="stackChart"></stack-bar-chart>
     <bar-line-charts ref="barLineChart"></bar-line-charts>
@@ -57,7 +63,10 @@ export default {
 
   computed: {
     validationQ1(){
-      return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1)
+      return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter)
+    },
+    validationSelection(){
+      return this.selected.length != 0
     }
   },
   name: 'quarter-charts',
