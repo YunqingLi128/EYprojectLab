@@ -69,97 +69,16 @@ export default {
             type: 'value'
           }
         ],
-        series: [
-          {
-            name: that.barChartData.series[0].name,
-            type: that.barChartData.series[0].type,
-            stack: 'total',
-            label: {
-              show: true
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[0].data
-          },
-          {
-            name: that.barChartData.series[1].name,
-            type: that.barChartData.series[1].type,
-            stack: 'total',
-            label: {
-              show: true
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[1].data
-          },
-          {
-            name: that.barChartData.series[2].name,
-            type: that.barChartData.series[2].type,
-            stack: 'total',
-            label: {
-              show: true
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[2].data
-          },
-          {
-            name: that.barChartData.series[3].name,
-            type: that.barChartData.series[3].type,
-            stack: 'total',
-            label: {
-              show: true
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[3].data
-          },
-          {
-            name: that.barChartData.series[4].name,
-            type: that.barChartData.series[4].type,
-            stack: 'total',
-            label: {
-              show: true
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[4].data
-          },
-          {
-            name: that.barChartData.series[5].name,
-            type: that.barChartData.series[5].type,
-            stack: 'total',
-            label: {
-              show: true
-            },
-            emphasis: {
-              focus: 'series'
-            },
-            data: that.barChartData.series[5].data
-          }
-        ]
+        series: that.barChartData.series
       }
       myChart.setOption(option);
     },
-    getData (id, quarter) {
+    getData (id, quarter, selected) {
       let that = this;
       that.chartData = {};
       let dictBase = {
         'standardized-market-risk-weighted-assets-breakdown-by-bank': 'getStandardizedRiskWeightedAssets',
         'VaR-by-asset-class-and-diversification-effect': 'getVaRByAssetClassDiversification'
-      };
-      let compDict = {
-        '1073757': 'BAC',
-        '1951350': 'CITI',
-        '2380443': 'GS',
-        '1039502': 'JPMC',
-        '2162966': 'MS',
-        '1120754': 'WF'
       };
       const start = quarter;
       const end = quarter;
@@ -178,7 +97,6 @@ export default {
         })
         .then(function (response) {
           let data = response.data
-          console.log(data)
           let companies = []
           let series = []
           let flag = 0
@@ -188,14 +106,21 @@ export default {
               chartItem.name = key
               chartItem.type = 'bar'
               chartItem.data = []
+              chartItem.stack = 'total'
+              chartItem.label = {show: true}
+              chartItem.emphasis = {focus: 'series'}
               if (flag === 0) {
                 for (const item of data[key]) {
-                  companies.push(compDict[item[0]])
+                  if (selected.includes(item[0])) {
+                    companies.push(item[0])
+                  }
                 }
                 flag = 1
               }
               for (const item of data[key]) {
-                chartItem.data.push(Math.round(item[1]))
+                if (selected.includes(item[0])) {
+                  chartItem.data.push(Math.round(item[1]))
+                }
               }
               series.push(chartItem)
             }
