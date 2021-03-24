@@ -233,8 +233,8 @@ def get_asset_class_var_item_byquarter(quarter_date_from, quarter_date_to, comp_
     data_day_var['Item'] = data_day_var.Item.astype(int)
 
     data = data_asset.append(data_day_var)
+    data = data.replace({'Company': comp_dict})
     data.update(data.groupby('Company').ffill())
-
     data['total_asset_var'] = data.total_asset_var.astype(int)
     data['asset_var_by_percentage'] = 100 * (data.Item / data.total_asset_var)
     data.loc[data.Item_ID == 'MRRRS298', 'asset_var_by_percentage'] =\
@@ -280,6 +280,7 @@ def get_standardized_risk_weighted_assets_byquarter(quarter_date_from, quarter_d
     data = raw_data.query('Item_ID in @item_names and Quarter <= @quarter_date_to and '
                           'Quarter >= @quarter_date_from')
     data = data.reset_index()
+    data = data.replace({'Company': comp_dict})
     total_data = data.groupby('Item_ID')[['Company', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((asset_dict[key], total_data[key]) for key in total_data)
     return res
