@@ -65,7 +65,7 @@ export default {
       }
       myChart.setOption(option);
     },
-    getData (id, quarter1, quarter2) {
+    getData (id, quarter1, quarter2, selected) {
       let that = this;
       that.chartData = {};
       let dictBase = {
@@ -108,7 +108,7 @@ export default {
           let data = response.data
           let companies = []
           let series = []
-          for (let key in data) {
+          for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
               let chartItem = {}
@@ -137,4 +137,3 @@ export default {
 <style scoped>
 
 </style>
-
