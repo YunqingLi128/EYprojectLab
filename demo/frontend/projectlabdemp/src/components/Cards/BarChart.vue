@@ -83,7 +83,7 @@ export default {
       }
       myChart.setOption(option);
     },
-    getData (id, quarter) {
+    getData (id, quarter, selected) {
       let that = this;
       that.chartData = {};
       let dictBase = {
@@ -109,7 +109,7 @@ export default {
           let data = response.data;
           let companies = [];
           let groups = {};
-          for (let key in data) {
+          for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
               for (let itemName in data[key]) {
@@ -141,7 +141,7 @@ export default {
           that.DrawBarChart(id);
         });
     },
-    getAggData (id, quarter) {
+    getAggData (id, quarter, selected) {
       let that = this;
       let dictBase = {
         'trading-asset-to-risk-ratio': 'getTradingAssetToRiskRatio',
@@ -168,7 +168,7 @@ export default {
           let itemSet = new Set();
           let series = [];
           let legendList = [];
-          for (let key in data) {
+          for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               legendList.push(key)
               let chartItem = {};
@@ -236,3 +236,4 @@ figure {
 }
 
 </style>
+
