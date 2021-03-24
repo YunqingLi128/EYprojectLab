@@ -207,9 +207,12 @@ def getGrossTradingAssetAndPercentChange():
     result = get_gross_trading_asset_and_percent_change(start_quarter, end_quarter, session.get("comp_dict"))
     return response_processing(result)
 
+
 @bp.route('/addDataByID', methods=['GET', 'POST'])
 def addData():
     args = request.args
-    institutions = args.getlist('rssd_id')
-    res = add_data(institutions)
+    rssd_id = args['rssd_id']
+    name = args['name']
+    nick_name = args['nickName']
+    res = add_data(rssd_id, name, nick_name)
     return jsonify(res)

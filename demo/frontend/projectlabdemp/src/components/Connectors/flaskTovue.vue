@@ -38,15 +38,13 @@
       </b-form-valid-feedback>
       </b-form-group>
       <b-form-invalid-feedback :state="validationDate">
-        Your End Quater should be later than the Start Quater
+        Your End Quarter should be later than the Start Quarter
       </b-form-invalid-feedback>
       <b-form-valid-feedback :state="validationDate">
-        Your Quater period input looks good.
+        Your Quarter period input looks good.
       </b-form-valid-feedback>
       <b-button block @click="getData()" variant="primary" :disabled="!validationDate || !validationSelection">Search</b-button>
     </b-form>
-
-
     <line-chart ref="lineChart"></line-chart>
     <over-time-bar-chart ref="overTimeBarChart"></over-time-bar-chart>
   </div>

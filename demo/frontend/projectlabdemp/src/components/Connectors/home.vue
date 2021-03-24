@@ -2,8 +2,14 @@
   <div>
     <!-- {{dataInfo}} -->
     <b-form @submit="onSubmit">
-      <b-form-group id="input-group" label="New Company ID:" label-for="input1">
-        <b-form-input id="input1" v-model="compid" placeholder="Enter the new CompanyID" required></b-form-input>
+      <b-form-group id="id-input-group" label="New Company ID:" label-for="id-input">
+        <b-form-input id="id-input" v-model="compId" placeholder="Enter the new company RSSD ID" required></b-form-input>
+      </b-form-group>
+      <b-form-group id="name-input-group" label="New Company Name:" label-for="name-input">
+        <b-form-input id="name-input" v-model="compName" placeholder="Enter the new company Name" required></b-form-input>
+      </b-form-group>
+      <b-form-group id="nick-input-group" label="New Company Nick Name:" label-for="nick-input">
+        <b-form-input id="nick-input" v-model="compNickName" placeholder="Enter the new company Nick Name" required></b-form-input>
       </b-form-group>
       <b-button block type="submit" variant="primary">Submit</b-button>
     </b-form>
@@ -23,7 +29,9 @@ export default {
     return {
       dataInfo: {},
       items: [],
-      compid: ''
+      compId: '',
+      compName: '',
+      compNickName: ''
     }
   },
   mounted () {
@@ -34,12 +42,14 @@ export default {
     onSubmit(event){
       var that = this
       event.preventDefault()
-      alert(this.compid)
+      // alert(this.compId)
       const path = "http://127.0.0.1:5000/addDataByID";
       axios
         .get(path, {
           params: {
-            'rssd_id': this.compid
+            'rssd_id': this.compId,
+            'name': this.compName,
+            'nickName': this.compNickName
           },
           withCredentials: true,
           headers: {

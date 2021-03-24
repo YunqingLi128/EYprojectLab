@@ -211,15 +211,13 @@ def update_data_config_file(csv_file_info):
     save_data_config_file(data_info)
 
 
-def add_institutions_to_data_config_file(csv_file_info, institutions):
+def add_institution_to_data_config_file(csv_file_info, rssd_id, name, nick_name):
     data_info = load_data_config_file()
     institution_info = data_info["institutions"]
-    for rssd_id in institutions:
-        institution_info[rssd_id] = {}
-        # TODO: add update API for Name and Nick values?
-        institution_info[rssd_id]["Name"] = ""
-        institution_info[rssd_id]["Nick"] = ""
-        institution_info[rssd_id]["data_status"] = csv_file_info[rssd_id]
+    institution_info[rssd_id] = {}
+    institution_info[rssd_id]["Name"] = name
+    institution_info[rssd_id]["Nick"] = nick_name
+    institution_info[rssd_id]["data_status"] = csv_file_info[rssd_id]
     save_data_config_file(data_info)
 
 
@@ -250,12 +248,17 @@ def init_data():
     return csv_file_info
 
 
-def add_data(institutions):
+def add_data(rssd_id, name, nick_name):
     """
     Add new data of input institutions and update the data config file
 
-    :param institutions: institution RSSD ID list received from the user input
+    :param rssd_id: institution RSSD ID from user input
+    :param name: institution name from user input
+    :param nick_name: institution nick name from user input
     :return: operation status and message
+
+    testing example:
+    rssd_id: '2277860', name: 'Capital One', nick_name: 'COF'
     """
     # TODO: find a better way to check whether RSSD ID is valid
     # Maybe deal with:
@@ -265,18 +268,17 @@ def add_data(institutions):
     res = {"status": 500, "message": ""}
     try:
         # current logic: if any of institution raises exception, the function will return error
-        for rssd_id in institutions:
-            response = load_url(institution_check_base_url + rssd_id, 60)
-            if response is None:
-                raise Exception("The institution does not exist")
+        response = load_url(institution_check_base_url + rssd_id, 60)
+        if response is None:
+            raise Exception("The institution does not exist")
 
         data_info = load_data_config_file()
         reports = data_info["reports"]
-        for rssd_id in institutions:
-            if rssd_id in data_info["institutions"]:
-                raise Exception("The institution {} already exists".format(rssd_id))
+        if rssd_id in data_info["institutions"]:
+            raise Exception("The institution {} already exists".format(rssd_id))
+        institutions = [rssd_id]
         csv_file_info = get_preprocess_data(reports, institutions, mode='a')
-        add_institutions_to_data_config_file(csv_file_info, institutions)
+        add_institution_to_data_config_file(csv_file_info, rssd_id, name, nick_name)
         res["status"] = 200
         res["message"] = csv_file_info
     except Exception as e:
@@ -284,4 +286,4 @@ def add_data(institutions):
         res["message"] = str(e)
     return res
 
-# testing institutions = ['1069778']
+# testing institutions = '1069778'
