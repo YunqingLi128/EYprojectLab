@@ -1,11 +1,11 @@
 <template>
-  <div class="StackBarChart">
+  <div class="stack-bar-charts">
     <b-card-group deck>
-      <b-card class="stackBarChartCard" title="Standardized Market Risk-Weighted Assets Breakdown By Bank">
-        <div class="stackBarChart" id="standardized-market-risk-weighted-assets-breakdown-by-bank"></div>
+      <b-card class="stack-bar-chart-card" title="Standardized Market Risk-Weighted Assets Breakdown By Bank">
+        <div class="stack-bar-chart" id="standardized-market-risk-weighted-assets-breakdown-by-bank"></div>
       </b-card>
-      <b-card class="stackBarChartCard" title="VaR by Asset Class and Diversification Effect">
-        <div class="stackBarChart" id="VaR-by-asset-class-and-diversification-effect"></div>
+      <b-card class="stack-bar-chart-card" title="VaR by Asset Class and Diversification Effect">
+        <div class="stack-bar-chart" id="VaR-by-asset-class-and-diversification-effect"></div>
       </b-card>
     </b-card-group>
   </div>
@@ -130,13 +130,13 @@ export default {
 
 <style scoped>
 
-.stackBarChartCard {
+.stack-bar-chart-card {
   max-width: 60rem;
   max-height: 40rem;
   margin-bottom: 20px;
 }
 
-.stackBarChart {
+.stack-bar-chart {
   width: 100%;
   height: 35rem;
   display: inline-block;

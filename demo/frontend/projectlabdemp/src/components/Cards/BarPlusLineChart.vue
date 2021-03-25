@@ -1,19 +1,19 @@
 <template>
-  <div class="barLineCharts">
+  <div class="bar-line-charts">
     <b-card-group deck>
-      <b-card class="barLineChartsCard" title="Trading Asset">
-        <div class="barLineChart" id="trading-asset"></div>
+      <b-card class="bar-line-chart-card" title="Trading Asset">
+        <div class="bar-line-chart" id="trading-asset"></div>
       </b-card>
-      <b-card class="barLineChartsCard" title="Trading Liabilities">
-        <div class="barLineChart" id="trading-liabilities"></div>
+      <b-card class="bar-line-chart-card" title="Trading Liabilities">
+        <div class="bar-line-chart" id="trading-liabilities"></div>
       </b-card>
     </b-card-group>
     <b-card-group deck>
-      <b-card class="barLineChartsCard" title="Net Trading Asset">
-        <div class="barLineChart" id="net-trading-asset"></div>
+      <b-card class="bar-line-chart-card" title="Net Trading Asset">
+        <div class="bar-line-chart" id="net-trading-asset"></div>
       </b-card>
-      <b-card class="barLineChartsCard" title="Gross Trading Asset">
-        <div class="barLineChart" id="gross-trading-asset"></div>
+      <b-card class="bar-line-chart-card" title="Gross Trading Asset">
+        <div class="bar-line-chart" id="gross-trading-asset"></div>
       </b-card>
     </b-card-group>
   </div>
@@ -181,13 +181,13 @@ figure {
   height: 400px;
 }
 
-.barLineChartsCard {
+.bar-line-chart-card {
   max-width: 60rem;
   max-height: 40rem;
   margin-bottom: 20px;
 }
 
-.barLineChart {
+.bar-line-chart {
   width: 100%;
   height: 35rem;
   display: inline-block;

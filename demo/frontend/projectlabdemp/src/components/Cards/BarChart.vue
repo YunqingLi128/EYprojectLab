@@ -1,19 +1,19 @@
 <template>
-  <div class="barCharts">
+  <div class="bar-charts">
     <b-card-group deck>
-      <b-card class="barChartCard" title="VaR and SVaR Comparison">
-        <div class="barChart" id="VaR-SVaR-comparison"></div>
+      <b-card class="bar-chart-card" title="VaR and SVaR Comparison">
+        <div class="bar-chart" id="VaR-SVaR-comparison"></div>
       </b-card>
-      <b-card class="barChartCard" title="Trading Asset Comparison">
-        <div class="barChart" id="trading-asset-comparison"></div>
+      <b-card class="bar-chart-card" title="Trading Asset Comparison">
+        <div class="bar-chart" id="trading-asset-comparison"></div>
       </b-card>
     </b-card-group>
     <b-card-group deck>
-      <b-card class="barChartCard" title="Trading Asset to Risk Ratio">
-        <div class="barChart" id="trading-asset-to-risk-ratio"></div>
+      <b-card class="bar-chart-card" title="Trading Asset to Risk Ratio">
+        <div class="bar-chart" id="trading-asset-to-risk-ratio"></div>
       </b-card>
-      <b-card class="barChartCard" title="Trading Revenue to VaR Ratio">
-        <div class="barChart" id="trading-revenue-to-VaR-ratio"></div>
+      <b-card class="bar-chart-card" title="Trading Revenue to VaR Ratio">
+        <div class="bar-chart" id="trading-revenue-to-VaR-ratio"></div>
       </b-card>
     </b-card-group>
   </div>
@@ -212,13 +212,13 @@ figure {
   height: 400px;
 }
 
-.barChartCard {
+.bar-chart-card {
   max-width: 60rem;
   max-height: 40rem;
   margin-bottom: 20px;
 }
 
-.barChart {
+.bar-chart {
   width: 100%;
   height: 35rem;
   display: inline-block;
