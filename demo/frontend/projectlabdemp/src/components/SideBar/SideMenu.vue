@@ -25,9 +25,6 @@
                 <el-menu-item index="/flaskTovue">
                     <span slot="title"> Overtime Analysis</span>
                 </el-menu-item>
-                <el-menu-item index="4">
-                    <span slot="title"> Other</span>
-                </el-menu-item>
         </el-menu>
     </el-col>
 </template>
