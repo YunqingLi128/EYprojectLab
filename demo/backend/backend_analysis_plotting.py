@@ -92,9 +92,9 @@ def get_trading_asset_item_by_quarter(quarter, comp_dict):
     data_asset = raw_data.query('Item_ID in @trading_asset_item_names_asset and Quarter == @quarter')
     data_liability = raw_data.query('Item_ID in @trading_asset_item_names_liability and Quarter == @quarter')
 
-    data_asset['Item_2'] = data_liability['Item']
-    data_asset['Gross'] = data_asset['Item'].astype(int) + data_asset['Item_2'].astype(int)
-    data_asset['Net'] = data_asset['Item'].astype(int) - data_asset['Item_2'].astype(int)
+    data_asset.loc[:, 'Item_2'] = data_liability.loc[:, 'Item']
+    data_asset.loc[:, 'Gross'] = data_asset.loc[:, 'Item'].astype(int) + data_asset.loc[:, 'Item_2'].astype(int)
+    data_asset.loc[:, 'Net'] = data_asset.loc[:, 'Item'].astype(int) - data_asset.loc[:, 'Item_2'].astype(int)
     data_asset = data_asset.drop(['Item', 'Item_2'], axis=1)
     data_asset = data_asset.reset_index()
     whole_val = []
@@ -107,7 +107,7 @@ def get_trading_asset_item_by_quarter(quarter, comp_dict):
             whole_val.append(row['Net'])
             Flag = 1
     new = pd.Series(whole_val)
-    data['Item'] = new.values
+    data.loc[:, 'Item'] = new.values
     trading_asset_map = {'BHCK3545': 'Net Trading Asset', 'BHCK3548': 'Gross Trading Asset'}
     trading_asset_data = data.groupby('Company')[['Item_ID', 'Item']].apply(item_name_mapping, mapping=trading_asset_map).to_dict()
     res = dict((comp_dict[key], trading_asset_data[key]) for key in trading_asset_data)  # change the id to name
@@ -181,8 +181,8 @@ def get_revenue_to_var_ratio_item_by_quarter(quarter, comp_dict):
     data_revenue = raw_data_revenue.query('Item_ID in @trading_revenue_item_names and Quarter == @quarter')
 
     tot_data = pd.merge(data_var, data_revenue, on=['Company', 'Quarter']).rename(columns={'Item': 'revenue'})
-    tot_data['revenue/VaR'] = tot_data['revenue'].astype(int) / tot_data['VaR']
-    tot_data['revenue/sVaR'] = tot_data['revenue'].astype(int) / tot_data['sVaR']
+    tot_data.loc[:, 'revenue/VaR'] = tot_data.loc[:, 'revenue'].astype(int) / tot_data.loc[:, 'VaR']
+    tot_data.loc[:, 'revenue/sVaR'] = tot_data.loc[:, 'revenue'].astype(int) / tot_data.loc[:, 'sVaR']
     tot_data = tot_data.drop(['VaR', 'sVaR', 'revenue', 'Item_ID'], axis=1)
 
     # You can just remember the name and order of these 2 things...
@@ -308,10 +308,10 @@ def calculate_trading_asset_and_percent_change(cal_type, quarter, comp_dict):
     data_liability_last = raw_data_asset.query('Item_ID == @trading_liability and Quarter == @pre_quarter')
     data_liability_current = raw_data_asset.query('Item_ID == @trading_liability and Quarter == @quarter')
 
-    data_asset_last['Item_2'] = data_liability_last['Item']
-    data_asset_last[cal_type] = op(data_asset_last['Item'].astype(int), data_asset_last['Item_2'].astype(int))
-    data_asset_current['Item_2'] = data_liability_current['Item']
-    data_asset_current[cal_type] = op(data_asset_current['Item'].astype(int), data_asset_current['Item_2'].astype(int))
+    data_asset_last.loc[:, 'Item_2'] = data_liability_last.loc[:, 'Item']
+    data_asset_last.loc[:, cal_type] = op(data_asset_last.loc[:, 'Item'].astype(int), data_asset_last.loc[:, 'Item_2'].astype(int))
+    data_asset_current.loc[:, 'Item_2'] = data_liability_current.loc[:, 'Item']
+    data_asset_current.loc[:, cal_type] = op(data_asset_current.loc[:, 'Item'].astype(int), data_asset_current.loc[:, 'Item_2'].astype(int))
     data_asset_current = data_asset_current.drop(['Item', 'Item_2'], axis=1)
     data_asset_current = data_asset_current.reset_index()
     data_asset_last = data_asset_last.drop(['Item', 'Item_2'], axis=1)
@@ -400,8 +400,8 @@ def get_ratio_item_overtime(quarter_from, quarter_to, comp_dict):
 
     data_2 = raw_data.query('Item_ID == @sVaR_based_measure_overtime_ID and Quarter <= @quarter_to and '
                             'Quarter >= @quarter_from')
-    data['Item_2'] = data_2['Item']
-    data['Ratio'] = data['Item_2'].astype(int) / data['Item'].astype(int)
+    data.loc[:, 'Item_2'] = data_2.loc[:, 'Item']
+    data.loc[:, 'Ratio'] = data.loc[:, 'Item_2'].astype(int) / data.loc[:, 'Item'].astype(int)
     data = data.drop(['Item', 'Item_2'], axis=1).rename(columns={'Ratio': 'Item'})
     data = data.reset_index()
     asset_data = data.groupby('Company')[['Quarter', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
