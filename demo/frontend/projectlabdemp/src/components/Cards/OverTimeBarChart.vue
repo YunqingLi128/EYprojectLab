@@ -1,10 +1,7 @@
 <template>
-  <div class="overTimeBarChart">
-    <b-card
-      title="Number of VaR Breach"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id='Number of VaR Breach' style="width: 100%; height: 35rem; display: inline-block;"></div>
+  <div>
+    <b-card class="over-time-bar-chart-card" title="Number of VaR Breach">
+      <div class="over-time-bar-chart" id="number-of-VaR-breach"></div>
     </b-card>
   </div>
 </template>
@@ -23,7 +20,7 @@ export default {
   methods: {
     drawOverTimeBarChart (id) {
       let that = this;
-      let chartDom = document.getElementById('Number of VaR Breach');
+      let chartDom = document.getElementById(id);
       let myChart = echarts.init(chartDom);
       let option = {
         tooltip: {
@@ -69,7 +66,7 @@ export default {
       let that = this;
       that.chartData = {};
       let dictBase = {
-        'Num of VaR Breach': 'getVaRBreachOvertime'
+        'number-of-VaR-breach': 'getVaRBreachOvertime'
       };
       const start = quarter1;
       const end = quarter2;
@@ -126,7 +123,7 @@ export default {
           that.chartData.legend = companies
           that.barChartData.xAxisData = xString// TODO: write function
           that.barChartData.series = series
-          that.drawOverTimeBarChart()
+          that.drawOverTimeBarChart(id)
         });
     }
   }
@@ -135,5 +132,15 @@ export default {
 </script>
 
 <style scoped>
+.over-time-bar-chart-card {
+  max-width: 60rem;
+  max-height: 40rem;
+  margin-bottom: 20px;
+}
 
+.over-time-bar-chart {
+  width: 100%;
+  height: 35rem;
+  display: inline-block;
+}
 </style>

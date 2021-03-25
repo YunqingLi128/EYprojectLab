@@ -103,11 +103,11 @@ export default {
   methods: {
     getData () {
       console.log(this.selected)
-      this.$refs.lineChart.getData('Change In VaR Measure Overtime', this.quarter1, this.quarter2, this.selected)
-      this.$refs.lineChart.getData('Market Risk-Weighted Assets Overtime', this.quarter1, this.quarter2, this.selected)
-      this.$refs.lineChart.getData('sVaR-VaR Ratio Overtime', this.quarter1, this.quarter2, this.selected)
-      this.$refs.lineChart.getData('Diversification Overtime', this.quarter1, this.quarter2, this.selected)
-      this.$refs.overTimeBarChart.getData('Num of VaR Breach', this.quarter1, this.quarter2, this.selected)
+      this.$refs.lineChart.getData('change-in-VaR-measure-overtime', this.quarter1, this.quarter2, this.selected)
+      this.$refs.lineChart.getData('market-risk-weighted-assets-overtime', this.quarter1, this.quarter2, this.selected)
+      this.$refs.lineChart.getData('sVaR-VaR-ratio-overtime', this.quarter1, this.quarter2, this.selected)
+      this.$refs.lineChart.getData('diversification-overtime', this.quarter1, this.quarter2, this.selected)
+      this.$refs.overTimeBarChart.getData('number-of-VaR-breach', this.quarter1, this.quarter2, this.selected)
     }
   }
 }

@@ -1,31 +1,19 @@
 <template>
   <div class="lineChart">
     <b-card-group deck>
-    <b-card
-      title="Change In VaR Measure Overtime"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id="Change In VaR Measure Overtime" style="width: 100%; height: 35rem; display: inline-block;"></div>
+    <b-card class="line-chart-card" title="Change In VaR Measure Overtime">
+      <div class="line-chart" id="change-in-VaR-measure-overtime"></div>
     </b-card>
-    <b-card
-      title="Market Risk-Weighted Assets Overtime"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id="Market Risk-Weighted Assets Overtime" style="width: 100%; height: 35rem; display: inline-block;"></div>
+    <b-card class="line-chart-card" title="Market Risk-Weighted Assets Overtime">
+      <div class="line-chart" id="market-risk-weighted-assets-overtime"></div>
     </b-card>
     </b-card-group>
     <b-card-group deck>
-    <b-card
-      title="sVaR-VaR Ratio Overtime"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id="sVaR-VaR Ratio Overtime" :style="{width: '100%', height: '35rem'}"></div>
+    <b-card class="line-chart-card" title="sVaR-VaR Ratio Overtime">
+      <div class="line-chart" id="sVaR-VaR-ratio-overtime"></div>
     </b-card>
-    <b-card
-      title="Diversification Overtime"
-      style="max-width: 60rem; max-height: 40rem;"
-    >
-    <div id="Diversification Overtime" :style="{width: '100%', height: '35rem'}"></div>
+    <b-card class="line-chart-card" title="Diversification Overtime">
+      <div class="line-chart" id="diversification-overtime"></div>
     </b-card>
     </b-card-group>
   </div>
@@ -83,10 +71,10 @@ export default {
       that.chartData = {};
       // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
       let dictBase = {
-        'Change In VaR Measure Overtime': 'getChangeInVaRBasedMeasureOvertime',
-        'Market Risk-Weighted Assets Overtime': 'getAdvancedMarketRiskWeightedAssets',
-        'sVaR-VaR Ratio Overtime': 'getVaRsVaRRatioOvertime',
-        'Diversification Overtime': 'getDiversificationVarOvertime'
+        'change-in-VaR-measure-overtime': 'getChangeInVaRBasedMeasureOvertime',
+        'market-risk-weighted-assets-overtime': 'getAdvancedMarketRiskWeightedAssets',
+        'sVaR-VaR-ratio-overtime': 'getVaRsVaRRatioOvertime',
+        'diversification-overtime': 'getDiversificationVarOvertime'
       };
       const start = quarter1;
       const end = quarter2;
@@ -229,6 +217,18 @@ export default {
     width: 100%;
     text-align: center;
   }
+}
+
+.line-chart-card {
+  max-width: 60rem;
+  max-height: 40rem;
+  margin-bottom: 20px;
+}
+
+.line-chart {
+  width: 100%;
+  height: 35rem;
+  display: inline-block;
 }
 
 </style>
