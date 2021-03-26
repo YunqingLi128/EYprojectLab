@@ -56,9 +56,7 @@ export default {
           type: 'category',
           data: that.lineChartData.xAxisData
         },
-        yAxis: {
-          type: 'value'
-        },
+        yAxis: that.lineChartData.yAxis,
         tooltip: {
           trigger: 'axis'
         },
@@ -111,6 +109,7 @@ export default {
         })
         .then(function (response) {
           let data = response.data
+          console.log(data)
           let companies = []
           let series = []
           for (let key of selected) {
@@ -121,15 +120,51 @@ export default {
               chartItem.type = 'line'
               chartItem.data = []
               for (const item of data[key]) {
-                chartItem.data.push(Math.round(item[1]))
+                chartItem.data.push(Number(item[1]).toFixed(2))
               }
               series.push(chartItem)
             }
           }
           console.log(companies)
           console.log(series)
+          let millionYAxis = [
+            {
+              type: 'value',
+              name: 'Millions',
+              axisLabel: {
+                formatter: function (value) {
+                  // Original Amount: Dollar Amounts in Thousands
+                  // show tick with comma
+                  return (value / 1000).toLocaleString()
+                }
+              }
+            }
+          ]
+          let yAxisMap = {
+            'change-in-VaR-measure-overtime': millionYAxis,
+            'market-risk-weighted-assets-overtime': millionYAxis,
+            'sVaR-VaR-ratio-overtime': [
+              {
+                type: 'value',
+                axisLabel: {
+                  formatter: function (value) {
+                    return value.toFixed(2) // show two decimals for ratio
+                  }
+                }
+              }
+            ],
+            'diversification-overtime': [
+              {
+                type: 'value',
+                axisLabel: {
+                  formatter: '{value} %'
+                }
+              }
+            ]
+          }
           that.chartData.legend = companies
           that.lineChartData.xAxisData = xString
+          that.lineChartData.yAxis = yAxisMap[id]
           that.lineChartData.series = series
           that.drawLineChart(id)
         });

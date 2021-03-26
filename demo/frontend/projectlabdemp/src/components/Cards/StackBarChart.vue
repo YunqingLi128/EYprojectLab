@@ -58,11 +58,7 @@ export default {
             data: that.barChartData.xAxisData
           }
         ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
+        yAxis: that.barChartData.yAxis,
         series: that.barChartData.series
       }
       myChart.setOption(option);
@@ -118,7 +114,31 @@ export default {
           }
           console.log(companies)
           console.log(series)
-          that.barChartData.xAxisData = companies // TODO: write function
+          let yAxisMap = {
+            'standardized-market-risk-weighted-assets-breakdown-by-bank': [
+              {
+                type: 'value',
+                name: 'Millions',
+                axisLabel: {
+                  formatter: function (value) {
+                    // Original Amount: Dollar Amounts in Thousands
+                    // show tick with comma
+                    return (value / 1000).toLocaleString()
+                  }
+                }
+              }
+            ],
+            'VaR-by-asset-class-and-diversification-effect': [
+              {
+                type: 'value',
+                axisLabel: {
+                  formatter: '{value} %'
+                }
+              }
+            ]
+          };
+          that.barChartData.xAxisData = companies
+          that.barChartData.yAxis = yAxisMap[id]
           that.barChartData.series = series
           that.drawStackBarChart(id)
         });

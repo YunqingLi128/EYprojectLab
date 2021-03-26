@@ -70,11 +70,7 @@ export default {
             data: that.barChartData.xAxisData
           }
         ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
+        yAxis: that.barChartData.yAxis,
         series: that.barChartData.series
       }
       myChart.setOption(option);
@@ -130,6 +126,19 @@ export default {
           console.log(series);
           that.barChartData.legendData = legendList;
           that.barChartData.xAxisData = companies;
+          that.barChartData.yAxis = [
+            {
+              type: 'value',
+              name: 'Millions',
+              axisLabel: {
+                formatter: function (value) {
+                  // Original Amount: Dollar Amounts in Thousands
+                  // show tick with comma
+                  return (value / 1000).toLocaleString()
+                }
+              }
+            }
+          ]
           that.barChartData.series = series;
           that.DrawBarChart(id);
         });
@@ -181,6 +190,16 @@ export default {
           console.log(series);
           that.barChartData.legendData = legendList;
           that.barChartData.xAxisData = itemNames;
+          that.barChartData.yAxis = [
+            {
+              type: 'value',
+              axisLabel: {
+                formatter: function (value) {
+                  return value.toFixed(2) // show two decimals for ratio
+                }
+              }
+            }
+          ]
           that.barChartData.series = series;
           that.DrawBarChart(id);
         })

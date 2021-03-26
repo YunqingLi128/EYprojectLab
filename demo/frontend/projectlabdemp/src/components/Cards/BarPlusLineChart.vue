@@ -130,17 +130,27 @@ export default {
           chartItemTwo.data = groupTwo;
           chartItemTwo.yAxisIndex = 1;
 
-          yAxisOne.name = legendBase[id][0];
+          yAxisOne.name = 'Millions';
           yAxisOne.scale = true;
           yAxisOne.type = 'value';
-          yAxisOne.max = Math.max.apply(Math,groupOne) + 50000000;
+          yAxisOne.max = Math.max.apply(Math, groupOne) + 50000000;
           yAxisOne.min = 0;
+          yAxisOne.axisLabel = {
+            formatter: function (value) {
+              // Original Amount: Dollar Amounts in Thousands
+              // show tick with comma
+              return (value / 1000).toLocaleString()
+            }
+          }
 
           yAxisTwo.name = 'Percentage';
           yAxisTwo.scale = true;
           yAxisTwo.type = 'value';
           yAxisTwo.max = Math.round(Math.max.apply(Math,groupTwo) + 20);
           yAxisTwo.min = Math.round(Math.min.apply(Math,groupTwo) - 20);
+          yAxisTwo.axisLabel = {
+            formatter: '{value} %'
+          }
 
           series = [chartItemOne, chartItemTwo];
           legendList = legendBase[id];

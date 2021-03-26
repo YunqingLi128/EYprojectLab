@@ -11,7 +11,7 @@
             <v_leftmenu></v_leftmenu>
           </keep-alive>
         </el-aside>
-      <el-container style="margin-left: 200px; z-index: -1">
+      <el-container style="margin-left: 200px; position: relative; z-index: 0">
         <el-main>
             <router-view></router-view>
         </el-main>
