@@ -86,7 +86,7 @@ export default {
           let data = response.data
           let companies = []
           let series = []
-          let flag = 0
+          let checker = 0
           for (let key in data) {
             if (data.hasOwnProperty(key)) {
               let chartItem = {}
@@ -96,19 +96,26 @@ export default {
               chartItem.stack = 'total'
               chartItem.label = {show: true}
               chartItem.emphasis = {focus: 'series'}
-              if (flag === 0) {
+              for (let selectComp of selected) {
+                let flag = 0
+                for (const item of data[key]) {
+                  if (selectComp === item[0]) {
+                    chartItem.data.push(Math.round(item[1]))
+                    flag = 1
+                  }
+                }
+                if (flag === 0) {
+                  chartItem.data.push(0)
+                }
+              }
+              if (checker === 0) {
                 for (const item of data[key]) {
                   if (selected.includes(item[0])) {
                     companies.push(item[0])
                   }
                 }
-                flag = 1
               }
-              for (const item of data[key]) {
-                if (selected.includes(item[0])) {
-                  chartItem.data.push(Math.round(item[1]))
-                }
-              }
+              checker = 1
               series.push(chartItem)
             }
           }
