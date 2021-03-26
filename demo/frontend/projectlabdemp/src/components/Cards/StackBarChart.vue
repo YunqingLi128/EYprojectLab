@@ -101,21 +101,15 @@ export default {
                 for (const item of data[key]) {
                   if (selectComp === item[0]) {
                     chartItem.data.push(Math.round(item[1]))
+                    companies.push(item[0])
                     flag = 1
                   }
                 }
+                checker = 1
                 if (flag === 0) {
                   chartItem.data.push(0)
                 }
               }
-              if (checker === 0) {
-                for (const item of data[key]) {
-                  if (selected.includes(item[0])) {
-                    companies.push(item[0])
-                  }
-                }
-              }
-              checker = 1
               series.push(chartItem)
             }
           }
@@ -144,7 +138,7 @@ export default {
               }
             ]
           };
-          that.barChartData.xAxisData = companies
+          that.barChartData.xAxisData = selected
           that.barChartData.yAxis = yAxisMap[id]
           that.barChartData.series = series
           that.drawStackBarChart(id)
