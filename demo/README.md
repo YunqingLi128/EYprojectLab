@@ -23,6 +23,7 @@
     * $cd projectlabdemp
     * $npm install
     * $npm install bootstrap@4.6.0 bootstrap-vue@2.21.2 (安装bootstrap for Vue）
+    * $npm install jquery (安装jQuery)
     * $npm run dev
     * 忽视所有的eslint的warning，光标闪烁没有且只有eslint的error即为成功
     * 然后打开browser，输入localhost:8080，能看到Welcome to Your Vue.js App 即为成功
