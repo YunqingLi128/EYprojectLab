@@ -192,7 +192,7 @@ figure {
 }
 
 .bar-line-chart-card {
-  max-width: 60rem;
+  max-width: 80rem;
   max-height: 40rem;
   margin-bottom: 20px;
 }
