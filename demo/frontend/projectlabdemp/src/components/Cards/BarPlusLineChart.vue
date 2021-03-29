@@ -62,6 +62,7 @@ export default {
             saveAsImage: {show: true}
           }
         },
+        grid: {show: false},
         xAxis: [
           {
             type: 'category',
@@ -133,8 +134,14 @@ export default {
           yAxisOne.name = 'Millions';
           yAxisOne.scale = true;
           yAxisOne.type = 'value';
-          yAxisOne.max = Math.max.apply(Math, groupOne) + 50000000;
+          // yAxisOne.max = Math.max.apply(Math, groupOne) + 50000000;
+          let curMax = Math.max.apply(Math, groupOne).toString()
+          let highestDigit = parseInt(curMax[0])
+          yAxisOne.max = (highestDigit + 1) * (10 ** (curMax.length - 1))
           yAxisOne.min = 0;
+          yAxisOne.splitLine = {
+            show: false
+          }
           yAxisOne.axisLabel = {
             formatter: function (value) {
               // Original Amount: Dollar Amounts in Thousands
@@ -146,8 +153,20 @@ export default {
           yAxisTwo.name = 'Percentage';
           yAxisTwo.scale = true;
           yAxisTwo.type = 'value';
-          yAxisTwo.max = Math.round(Math.max.apply(Math,groupTwo) + 20);
-          yAxisTwo.min = Math.round(Math.min.apply(Math,groupTwo) - 20);
+          // yAxisTwo.max = Math.round(Math.max.apply(Math,groupTwo) + 20);
+          // yAxisTwo.min = Math.round(Math.min.apply(Math,groupTwo) - 20);
+          curMax = Math.ceil(Math.max.apply(Math, groupTwo))
+          highestDigit = parseInt(curMax / 10)
+          let curMin = Math.floor(Math.min.apply(Math, groupTwo))
+          let minValue = -10;
+          while (minValue > curMin) {
+            minValue -= 10;
+          }
+          yAxisTwo.max = (highestDigit + 1) * 10 + 20;
+          yAxisTwo.min = minValue - 20;
+          yAxisTwo.splitLine = {
+            show: false
+          }
           yAxisTwo.axisLabel = {
             formatter: '{value} %'
           }
