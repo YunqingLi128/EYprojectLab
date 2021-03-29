@@ -1,6 +1,6 @@
 <template>
   <div>
-    <headers />
+    <side-menu></side-menu>
   </div>
 </template>
 <script>

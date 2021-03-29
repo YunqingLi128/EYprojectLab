@@ -1,49 +1,53 @@
 <template>
   <div>
-    <b-form>
-      <b-form-group id="input-group-1" label="Start Quarter: " label-for="input-quarter-1">
+    <b-form id="main-input" inline>
+      <b-form-group inline id="input-group-1" label="Start Quarter: " label-for="input-quarter-1">
         <b-form-input id="input-quarter-1" name="input-quarter" v-model.trim="quarter1"
                       placeholder="example: 2016Q3" required>
         </b-form-input>
-        <b-form-invalid-feedback :state="validationQ1">
-          Your Input should be at the form format like 2020Q4
-        </b-form-invalid-feedback>
-        <b-form-valid-feedback :state="validationQ1">
-          Your Input looks good.
-        </b-form-valid-feedback>
       </b-form-group>
-      <b-form-group id="input-group-2" label="End Quarter: " label-for="input-quarter-2">
+      <b-form-group inline id="input-group-2" label="End Quarter: " label-for="input-quarter-2">
         <b-form-input id="input-quarter-2" name="input-quarter" v-model.trim="quarter2"
                       placeholder="example: 2020Q3" required>
         </b-form-input>
-        <b-form-invalid-feedback :state="validationQ2">
-          Your Input should be at the form format like 2020Q4
-        </b-form-invalid-feedback>
-        <b-form-valid-feedback :state="validationQ2">
-          Your Input looks good.
-        </b-form-valid-feedback>
       </b-form-group>
-      <b-form-group label="Select Company:">
-        <b-form-checkbox-group
+      <b-form-group inline id="select-group" label="Select Company:">
+      </b-form-group>
+      <b-form-checkbox-group
           id="checkbox-group-1"
           v-model="selected"
           :options="options"
           name="Company-Select"
-        ></b-form-checkbox-group>
-      <b-form-invalid-feedback :state="validationSelection">
-        You need to select at least one company
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :state="validationSelection">
-        Your Input looks good.
-      </b-form-valid-feedback>
+      ></b-form-checkbox-group>
+      <b-button @click="getData()" variant="primary" :disabled="!validationDate || !validationSelection">Search</b-button>
+    </b-form>
+    <b-form id="error-catcher">
+      <b-form-group id="error-catcher-box" label="You may have following errors:">
+        <b-form-invalid-feedback :state="validationQ1">
+          Your start quarter input should be at the form format like 2016Q4
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationQ1">
+          Your start quarter input format looks good.
+        </b-form-valid-feedback>
+        <b-form-invalid-feedback :state="validationQ2">
+          Your end quarter input should be at the form format like 2020Q4
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationQ2">
+          Your end quarter input format looks good.
+        </b-form-valid-feedback>
+        <b-form-invalid-feedback :state="validationSelection">
+          You need to select at least one company
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationSelection">
+          Your selection of companies looks good.
+        </b-form-valid-feedback>
+        <b-form-invalid-feedback :state="validationDate">
+          Your end quarter should be later than the start quarter
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationDate">
+          Your quarter sequence input looks good.
+        </b-form-valid-feedback>
       </b-form-group>
-      <b-form-invalid-feedback :state="validationDate">
-        Your End Quarter should be later than the Start Quarter
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :state="validationDate">
-        Your Quarter period input looks good.
-      </b-form-valid-feedback>
-      <b-button block @click="getData()" variant="primary" :disabled="!validationDate || !validationSelection">Search</b-button>
     </b-form>
     <line-chart ref="lineChart"></line-chart>
     <b-card-group deck>
@@ -95,7 +99,7 @@ export default {
     }
   },
   name: 'overtime-charts',
-  components: {OverTimeTable, LineChart,OverTimeBarChart},
+  components: {OverTimeTable, LineChart, OverTimeBarChart},
   data: function () {
     return {
       selected: [],
@@ -117,3 +121,31 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#input-group-1 {
+  margin: 5px;
+}
+#input-quarter-1{
+  margin: 10px;
+  width: 200px;
+}
+#input-group-2 {
+  margin: 5px;
+}
+#input-quarter-2{
+  margin: 10px;
+  width: 200px;
+}
+#select-group {
+  margin: 5px;
+}
+#checkbox-group-1{
+  margin: 10px;
+}
+
+#error-catcher {
+  margin: 5px;
+}
+
+</style>
