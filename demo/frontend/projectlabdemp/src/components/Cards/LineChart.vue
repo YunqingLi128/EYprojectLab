@@ -101,7 +101,6 @@ export default {
       //   }
       // }
       let xString = that.getQuarterList(start, end)
-      console.log(xString)
       axios
         .get(base, {
           params: {
@@ -127,7 +126,7 @@ export default {
               chartItem.type = 'line'
               chartItem.data = []
               for (const item of data[key]) {
-                chartItem.data.push(Number(item[1]).toFixed(2))
+                chartItem.data.push(item[1].toFixed(2))
               }
               series.push(chartItem)
             }

@@ -72,6 +72,7 @@ def get_VaR_sVaR_item_by_quarter(quarter, comp_dict):
     raw_data = get_data('FFIEC102')
     VaR_comp_map = {'MRRRS298': 'VaR', 'MRRRS302': 'SVaR'}
     data = raw_data.query('Item_ID in @VaR_comp_map.keys() and Quarter == @quarter')
+    data['Item'] = pd.to_numeric(data['Item'])
     VaR_data = data.groupby('Company')[['Item_ID', 'Item']].apply(item_name_mapping, mapping=VaR_comp_map).to_dict()
     res = dict((comp_dict[key], VaR_data[key]) for key in VaR_data)  # change the id to name
     return res
@@ -359,6 +360,7 @@ def get_item_overtime(item_id, quarter_from, quarter_to):
     raw_data = get_data('FFIEC102')
     data = raw_data.query('Item_ID == @item_id and Quarter <= @quarter_to and Quarter >= @quarter_from')
     data = data.reset_index()
+    data['Item'] = pd.to_numeric(data['Item'])
     item_data = data.groupby('Company')[['Quarter', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     return item_data
 
