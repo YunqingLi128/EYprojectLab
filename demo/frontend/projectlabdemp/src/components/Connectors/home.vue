@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="home">
     <!-- {{dataInfo}} -->
-    <b-form @submit="onSubmit">
+    <b-form id = 'homeBForm' inline @submit="onSubmit">
       <b-form-group id="id-input-group" label="New Company ID:" label-for="id-input">
         <b-form-input id="id-input" v-model="compId" placeholder="Enter the new company RSSD ID" required></b-form-input>
       </b-form-group>
@@ -11,13 +11,12 @@
       <b-form-group id="nick-input-group" label="New Company Nick Name:" label-for="nick-input">
         <b-form-input id="nick-input" v-model="compNickName" placeholder="Enter the new company Nick Name" required></b-form-input>
       </b-form-group>
-      <b-button block type="submit" variant="primary">Submit</b-button>
+      <b-button type="submit" variant="primary">Submit</b-button>
     </b-form>
     <div>
     <b-table striped hover :items="items"></b-table>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -92,5 +91,28 @@ export default {
 </script>
 
 <style scoped>
+#id-input-group {
+  margin: 5px;
+}
+#id-input{
+  margin: 10px;
+  width: 280px;
+}
+
+#name-input-group {
+  margin: 5px;
+}
+#name-input{
+  margin: 10px;
+  width: 280px;
+}
+
+#nick-input-group {
+  margin: 5px;
+}
+#nick-input{
+  margin: 10px;
+  width: 280px;
+}
 
 </style>
