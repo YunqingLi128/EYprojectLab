@@ -46,13 +46,17 @@
       <b-button block @click="getData()" variant="primary" :disabled="!validationDate || !validationSelection">Search</b-button>
     </b-form>
     <line-chart ref="lineChart"></line-chart>
-    <over-time-bar-chart ref="overTimeBarChart"></over-time-bar-chart>
+    <b-card-group deck>
+      <over-time-bar-chart ref="overTimeBarChart"></over-time-bar-chart>
+      <over-time-table ref="overTimeTable"></over-time-table>
+    </b-card-group>
   </div>
 </template>
 
 <script>
 import LineChart from '@/components/Cards/LineChart'
 import OverTimeBarChart from '@/components/Cards/OverTimeBarChart'
+import OverTimeTable from '@/components/Cards/OverTimeTable';
 import DataSetting from '../../../../../backend/data_setting.json'
 
 export default {
@@ -91,7 +95,7 @@ export default {
     }
   },
   name: 'overtime-charts',
-  components: {LineChart,OverTimeBarChart},
+  components: {OverTimeTable, LineChart,OverTimeBarChart},
   data: function () {
     return {
       selected: [],
@@ -108,6 +112,7 @@ export default {
       this.$refs.lineChart.getData('sVaR-VaR-ratio-overtime', this.quarter1, this.quarter2, this.selected)
       this.$refs.lineChart.getData('diversification-overtime', this.quarter1, this.quarter2, this.selected)
       this.$refs.overTimeBarChart.getData('number-of-VaR-breach', this.quarter1, this.quarter2, this.selected)
+      this.$refs.overTimeTable.getData('stress-window-table', this.quarter1, this.quarter2, this.selected)
     }
   }
 }

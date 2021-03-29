@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <b-card class="over-time-bar-chart-card" title="Number of VaR Breach">
-      <div class="over-time-bar-chart" id="number-of-VaR-breach"></div>
-    </b-card>
-  </div>
+  <b-card class="over-time-bar-chart-card" title="Number of VaR Breach">
+    <div class="over-time-bar-chart" id="number-of-VaR-breach"></div>
+  </b-card>
 </template>
 
 <script>
 import axios from 'axios';
 import * as echarts from 'echarts';
+import helper from '@/helper';
 
 export default {
   name: 'OverTimeBarChart',
+  created () {
+    this.getQuarterList = helper.getQuarterList
+  },
   data: function () {
     return {
       barChartData: {}
@@ -71,24 +73,25 @@ export default {
       const start = quarter1;
       const end = quarter2;
       const base = 'http://127.0.0.1:5000/' + dictBase[id];
-      let listStart = [];
-      let listEnd = [];
-      listStart = start.split(/[Q]/);
-      listEnd = end.split(/[Q]/);
-      let quarters = parseInt(listStart[1]);
-      let years = parseInt(listStart[0]);
-      let xString = [];
-      while (years <= listEnd[0]) {
-        xString.push(years.toString() + 'Q' + quarters.toString())
-        if (years === parseInt(listEnd[0]) && quarters === parseInt(listEnd[1])) {
-          break
-        }
-        quarters += 1
-        if (quarters > 4) {
-          quarters = 1
-          years += 1
-        }
-      }
+      // let listStart = [];
+      // let listEnd = [];
+      // listStart = start.split(/[Q]/);
+      // listEnd = end.split(/[Q]/);
+      // let quarters = parseInt(listStart[1]);
+      // let years = parseInt(listStart[0]);
+      // let xString = [];
+      // while (years <= listEnd[0]) {
+      //   xString.push(years.toString() + 'Q' + quarters.toString())
+      //   if (years === parseInt(listEnd[0]) && quarters === parseInt(listEnd[1])) {
+      //     break
+      //   }
+      //   quarters += 1
+      //   if (quarters > 4) {
+      //     quarters = 1
+      //     years += 1
+      //   }
+      // }
+      let xString = that.getQuarterList(quarter1, quarter2)
       axios
         .get(base, {
           params: {
@@ -132,6 +135,7 @@ export default {
 </script>
 
 <style scoped>
+
 .over-time-bar-chart-card {
   max-width: 60rem;
   max-height: 40rem;
@@ -143,4 +147,5 @@ export default {
   height: 35rem;
   display: inline-block;
 }
+
 </style>
