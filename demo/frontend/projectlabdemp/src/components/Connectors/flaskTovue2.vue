@@ -1,33 +1,37 @@
 <template>
   <div>
-    <b-form inline>
-      <b-form-group id="input-group" label="Please input the quarter:" label-for="input-quarter">
+    <b-form id="main-input" inline>
+      <b-form-group inline id="input-group" label="Please input the quarter:" label-for="input-quarter">
         <b-form-input id="input-quarter" name="input-quarter" v-model.trim="quarter"
                       style="margin-left:10px;" placeholder="example: 2020Q3" required>
         </b-form-input>
+      </b-form-group>
+      <b-form-group inline id="select-group" label="Select Company:">
+      </b-form-group>
+      <b-form-checkbox-group
+            id="checkbox-group-1"
+            v-model="selected"
+            :options="options"
+            name="Company-Select"
+      ></b-form-checkbox-group>
+      <b-button @click="getData()" variant="primary" :disabled="!validationQ1 || !validationSelection">Search</b-button>
+    </b-form>
+    <b-form id="error-catcher">
+      <b-form-group id="error-catcher-box" label="You may have following errors:">
         <b-form-invalid-feedback :state="validationQ1">
-          Your Input should be at the form format like 2020Q4
+            Your input should be at the form format like 2020Q4
         </b-form-invalid-feedback>
         <b-form-valid-feedback :state="validationQ1">
-          Your Input looks good.
+          Your input quarter format looks good.
+        </b-form-valid-feedback>
+        <b-form-invalid-feedback :state="validationSelection">
+        You need to select at least one company
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validationSelection">
+          Your selection of companies looks good.
         </b-form-valid-feedback>
       </b-form-group>
     </b-form>
-    <b-form-group label="Select Company:">
-        <b-form-checkbox-group
-          id="checkbox-group-1"
-          v-model="selected"
-          :options="options"
-          name="Company-Select"
-        ></b-form-checkbox-group>
-      <b-form-invalid-feedback :state="validationSelection">
-        You need to select at least one company
-      </b-form-invalid-feedback>
-      <b-form-valid-feedback :state="validationSelection">
-        Your Input looks good.
-      </b-form-valid-feedback>
-    </b-form-group>
-    <b-button @click="getData()" variant="primary" :disabled="!validationQ1 || !validationSelection">Search</b-button>
     <bar-chart ref="barChart"></bar-chart>
     <stack-bar-chart ref="stackChart"></stack-bar-chart>
     <bar-line-charts ref="barLineChart"></bar-line-charts>
@@ -94,3 +98,25 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+#input-group {
+  margin: 5px;
+}
+#input-quarter{
+  margin: 10px;
+  width: 200px;
+}
+
+#select-group {
+  margin: 5px;
+}
+#checkbox-group-1{
+  margin: 10px;
+}
+
+#error-catcher {
+  margin: 5px;
+}
+
+</style>
