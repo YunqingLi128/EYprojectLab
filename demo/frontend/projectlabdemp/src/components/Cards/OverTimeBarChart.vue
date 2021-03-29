@@ -137,7 +137,7 @@ export default {
 <style scoped>
 
 .over-time-bar-chart-card {
-  max-width: 60rem;
+  max-width: 80rem;
   max-height: 40rem;
   margin-bottom: 20px;
 }
