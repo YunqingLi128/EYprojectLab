@@ -7,8 +7,33 @@
 * vue
     * npm install -g @vue/cli
     * yarn global add vue-cli
-* Flask - pip install flask
-* Flask_cors - pip install flask_cors
+
+
+First time Flask backend setup:
+1. cd EYProjectLab/demo
+2. Creating and Activating virtual environment
+    * On macOS and Linux:
+        * python3 -m venv env
+        * source env/bin/activate
+    * On Windows:
+        * py -m venv env
+        * .\env\Scripts\activate
+2. Install dependencies:
+
+    python3 -m pip install . --upgrade
+
+Start the backend:
+* On macOS and Linux:
+    * Reactivating virtual environment: source env/bin/activate
+    * export FLASK_APP=backend
+    * export FLASK_ENV=development
+    * flask run
+* On Windows:
+    * Reactivating virtual environment: .\env\Scripts\activate
+    * set FLASK_APP=backend
+    * set FLASK_ENV=development
+    * flask run
+
 
 我把前后端初步的框架写好了，在root（demo文件夹）下分了frontend 和 backend
 运行方法: (在demo路径下)

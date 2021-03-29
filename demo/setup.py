@@ -8,6 +8,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    setup_requires=["Flask", "flask-cors", "numpy", "pandas"],
-    install_requires=["Flask", "flask-cors", "numpy", "pandas", "requests", "urllib3", "matplotlib"],
+    setup_requires=["wheel", "Flask", "flask-cors", "numpy", "pandas"],
+    install_requires=["wheel", "Flask", "flask-cors", "numpy", "pandas", "requests", "urllib3", "matplotlib"],
 )
