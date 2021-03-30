@@ -2,7 +2,7 @@
   <div id="home">
     <!-- {{dataInfo}} -->
     <div v-if="loading">
-      <b-spinner small type="grow" label="Loading..."></b-spinner> <strong>Data In Loading</strong>
+      <b-spinner small label="Loading..."></b-spinner> <strong>Data In Loading</strong>
     </div>
     <b-form id = 'homeBForm' inline @submit="onSubmit">
       <b-form-group id="id-input-group" label="New Company ID:" label-for="id-input">
