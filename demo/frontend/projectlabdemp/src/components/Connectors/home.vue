@@ -4,6 +4,14 @@
     <div v-if="loading">
       <b-spinner small label="Loading..."></b-spinner> <strong>Data In Loading</strong>
     </div>
+    <b-modal id="bv-modal" ref="loadingModal" hide-footer hide-header-close no-close-on-backdrop title="Data is Loading">
+      <div class="d-flex justify-content-center mb-3">
+        <b-spinner label="Loading..."></b-spinner>
+      </div>
+      <div class="d-block text-center">
+        <strong>It may cost about several seconds...</strong>
+      </div>
+    </b-modal>
     <b-form id = 'homeBForm' inline @submit="onSubmit">
       <b-form-group id="id-input-group" label="New Company ID:" label-for="id-input">
         <b-form-input id="id-input" v-model="compId" placeholder="Enter the new company RSSD ID" required></b-form-input>
@@ -45,6 +53,7 @@ export default {
     onSubmit(event){
       var that = this
       that.loading = true
+      that.$refs["loadingModal"].show()
       event.preventDefault()
       // alert(this.compId)
       const path = "http://127.0.0.1:5000/addDataByID";
@@ -67,11 +76,15 @@ export default {
           that.items = []
           that.getData();
         })
-        .finally(()=>(that.loading = false));
+        .finally(function(){
+          that.loading = false;
+          that.$refs["loadingModal"].hide()
+        });
     },
     getData () {
       var that = this;
       that.loading = true
+      that.$refs["loadingModal"].show()
       // root route to init data
       const path = "http://127.0.0.1:5000/home";
       axios
@@ -92,7 +105,10 @@ export default {
         .catch(function (error) {
           alert("Error " + error);
         })
-        .finally(()=>(that.loading = false));
+        .finally(function(){
+          that.loading = false;
+          that.$refs["loadingModal"].hide()
+        });
     }
   }
 }
