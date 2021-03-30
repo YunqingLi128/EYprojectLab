@@ -1,30 +1,29 @@
 <template>
   <div class="wrapper">
-    <nav id="sidebar" class>
-      <div class="sidebar-header">
-        <img :src="logoURL" style="height:50px; padding-top:3px; padding-left:30px;">
-      </div>
-      <ul class="list-unstyled components">
-        <p>NAVIGATION</p>
-        <li>
-          <a href= "http://localhost:8080/#/home" data-toggle="collapse" aria-expanded="false">Home</a>
-        </li>
-        <li>
-          <a href= "http://localhost:8080/#/flaskTovue2" data-toggle="collapse" aria-expanded="false">Quarterly Highlights</a>
-        </li>
-        <li>
-          <a href= "http://localhost:8080/#/flaskTovue" data-toggle="collapse" aria-expanded="false">Overtime Analysis</a>
-        </li>
-      </ul>
-    </nav>
+      <nav id="sidebar" class>
+        <div class="sidebar-header">
+          <img :src="logoURL" style="height:50px; padding-top:3px; padding-left:30px;">
+        </div>
+        <ul class="list-unstyled components">
+          <p>NAVIGATION</p>
+          <li>
+            <a href= "http://localhost:8080/#/home" data-toggle="collapse" aria-expanded="false">Home</a>
+          </li>
+          <li>
+            <a href= "http://localhost:8080/#/flaskTovue2" data-toggle="collapse" aria-expanded="false">Quarterly Highlights</a>
+          </li>
+          <li>
+            <a href= "http://localhost:8080/#/flaskTovue" data-toggle="collapse" aria-expanded="false">Overtime Analysis</a>
+          </li>
+        </ul>
+      </nav>
     <div id="content">
       <nav>
         <div class="container-fluid">
-          <button type="button" id="sidebarCollapse" class="navbar-btn">
+          <b-button squared @click="changeStatus()" id="sidebarCollapse" class="navbar-btn" size='sm'>{{toggleStatus}}</b-button>
             <span></span>
             <span></span>
             <span></span>
-          </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="nav navbar-nav ml-auto">
               <li></li>
@@ -52,19 +51,30 @@ export default {
   name: 'SideMenu',
   data () {
     return {
-      logoURL: require("@/assets/EY.png")
+      logoURL: require("@/assets/EY.png"),
+      toggleStatus: '<'
     }
   },
   components: {
   },
+
+  methods: {
+    changeStatus(){
+      if(this.toggleStatus == '<'){
+        this.toggleStatus = '>'
+      }else{
+        this.toggleStatus = '<'
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
 #sidebarCollapse {
-    width: 40px;
-    height: 40px;
-    background: #f5f5f5;
+    background: #5A5858;
+    margin-left: -35px;
+    margin-top:-36px;
 }
 #sidebarCollapse span {
     width: 80%;
