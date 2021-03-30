@@ -14,7 +14,7 @@
       <b-form-group id="nick-input-group" label="New Company Nick Name:" label-for="nick-input">
         <b-form-input id="nick-input" v-model="compNickName" placeholder="Enter the new company Nick Name" required></b-form-input>
       </b-form-group>
-      <b-button type="submit" variant="primary">Submit</b-button>
+      <b-button type="submit" variant="primary" :disabled="loading">Submit</b-button>
     </b-form>
     <div>
     <b-table striped hover :items="items"></b-table>
