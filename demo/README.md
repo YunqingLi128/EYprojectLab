@@ -8,7 +8,7 @@
     * npm install -g @vue/cli
     * yarn global add vue-cli
 
-
+新版readme:
 First time Flask backend setup:
 1. cd EYProjectLab/demo
 2. Creating and Activating virtual environment
@@ -19,8 +19,10 @@ First time Flask backend setup:
         * py -m venv env
         * .\env\Scripts\activate
 2. Install dependencies:
-
-    python3 -m pip install . --upgrade
+    * On macOS and Linux:
+        * python3 -m pip install . --upgrade
+    * On Windows:
+        * py -3 -m pip install . --upgrade 
 
 Start the backend:
 * On macOS and Linux:
@@ -33,8 +35,15 @@ Start the backend:
     * set FLASK_APP=backend
     * set FLASK_ENV=development
     * flask run
+ 
+Start the frontend:
+    * cd frontend
+    * cd projectlabdemp
+    * npm install
+    * npm run dev
+    * go to page http://localhost:8080/#/home, initial data for six major banks will be automatically download if first use.
 
-
+老版readme:
 我把前后端初步的框架写好了，在root（demo文件夹）下分了frontend 和 backend
 运行方法: (在demo路径下)
 1. 运行server
