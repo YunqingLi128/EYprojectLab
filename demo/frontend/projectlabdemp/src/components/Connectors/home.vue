@@ -44,6 +44,7 @@ export default {
   methods: {
     onSubmit(event){
       var that = this
+      that.loading = true
       event.preventDefault()
       // alert(this.compId)
       const path = "http://127.0.0.1:5000/addDataByID";
@@ -65,7 +66,8 @@ export default {
           console.log(data);
           that.items = []
           that.getData();
-        });
+        })
+        .finally(()=>(that.loading = false));
     },
     getData () {
       var that = this;
