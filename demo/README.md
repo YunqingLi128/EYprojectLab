@@ -48,6 +48,8 @@ Start the frontend:
  * npm run dev
  * go to page http://localhost:8080/#/home, initial data for six major banks will be automatically download if first use.
 
+Shortcut starting:
+ * On macOS and Linux: bash dashboardRun
 
 老版readme:
 我把前后端初步的框架写好了，在root（demo文件夹）下分了frontend 和 backend
