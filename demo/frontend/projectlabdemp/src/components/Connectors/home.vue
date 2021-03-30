@@ -1,6 +1,9 @@
 <template>
   <div id="home">
     <!-- {{dataInfo}} -->
+    <div v-if="loading">
+      <b-spinner small type="grow" label="Loading..."></b-spinner> <strong>Data In Loading</strong>
+    </div>
     <b-form id = 'homeBForm' inline @submit="onSubmit">
       <b-form-group id="id-input-group" label="New Company ID:" label-for="id-input">
         <b-form-input id="id-input" v-model="compId" placeholder="Enter the new company RSSD ID" required></b-form-input>
@@ -30,7 +33,8 @@ export default {
       items: [],
       compId: '',
       compName: '',
-      compNickName: ''
+      compNickName: '',
+      loading: false
     }
   },
   mounted () {
@@ -65,6 +69,7 @@ export default {
     },
     getData () {
       var that = this;
+      that.loading = true
       // root route to init data
       const path = "http://127.0.0.1:5000/home";
       axios
@@ -84,7 +89,8 @@ export default {
         })
         .catch(function (error) {
           alert("Error " + error);
-        });
+        })
+        .finally(()=>(that.loading = false));
     }
   }
 }
