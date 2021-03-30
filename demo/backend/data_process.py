@@ -209,6 +209,8 @@ def update_data_config_file(csv_file_info):
     for rssd_id in institutions:
         institutions[rssd_id]["data_status"] = csv_file_info[rssd_id]
     save_data_config_file(data_info)
+    logging.info("updated data config info: %s", data_info)
+    return data_info
 
 
 def add_institution_to_data_config_file(csv_file_info, rssd_id, name, nick_name):
@@ -244,8 +246,7 @@ def init_data():
     data_info = load_data_config_file()
     reports, institutions = data_info["reports"], data_info["institutions"].keys()
     csv_file_info = get_preprocess_data(reports, institutions, mode='w')
-    update_data_config_file(csv_file_info)
-    return csv_file_info
+    return update_data_config_file(csv_file_info)
 
 
 def add_data(rssd_id, name, nick_name):
