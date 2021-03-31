@@ -8,5 +8,5 @@ flask run & pids=$!
 cd frontend/projectlabdemp || exit
 npm run dev & pids+=" $!"
 
-trap "kill $pids" SIGTERM SIGINT
+trap "kill $pids" SIGTERM SIGINT SIGHUP
 wait $pids
