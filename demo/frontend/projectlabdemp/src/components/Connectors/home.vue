@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 
 export default {
-  name: "home",
+  name: 'home',
   data: function () {
     return {
       dataInfo: {},
@@ -50,13 +50,13 @@ export default {
     this.getData()
   },
   methods: {
-    onSubmit(event){
+    onSubmit (event) {
       var that = this
       that.loading = true
-      that.$refs["loadingModal"].show()
+      that.$refs['loadingModal'].show()
       event.preventDefault()
       // alert(this.compId)
-      const path = "http://127.0.0.1:5000/addDataByID";
+      const path = 'http://127.0.0.1:5000/addDataByID'
       axios
         .get(path, {
           params: {
@@ -71,22 +71,22 @@ export default {
           }
         })
         .then(function (response) {
-          let data = response.data;
-          console.log(data);
+          let data = response.data
+          console.log(data)
           that.items = []
-          that.getData();
+          that.getData()
         })
-        .finally(function(){
-          that.loading = false;
-          that.$refs["loadingModal"].hide()
-        });
+        .finally(function () {
+          that.loading = false
+          that.$refs['loadingModal'].hide()
+        })
     },
     getData () {
-      var that = this;
+      var that = this
       that.loading = true
-      that.$refs["loadingModal"].show()
+      that.$refs['loadingModal'].show()
       // root route to init data
-      const path = "http://127.0.0.1:5000/home";
+      const path = 'http://127.0.0.1:5000/home'
       axios
         .get(path, {
           withCredentials: true,
@@ -96,19 +96,19 @@ export default {
           }
         })
         .then(function (response) {
-          that.dataInfo = response.data;
-          for (let key in that.dataInfo["institutions"]){
-            let temp = {"ID":key, "Name":that.dataInfo["institutions"][key]["Name"], "Nickname":that.dataInfo["institutions"][key]["Nick"]}
+          that.dataInfo = response.data
+          for (let key in that.dataInfo['institutions']) {
+            let temp = {'ID': key, 'Name': that.dataInfo['institutions'][key]['Name'], 'Nickname': that.dataInfo['institutions'][key]['Nick']}
             that.items.push(temp)
           }
         })
         .catch(function (error) {
-          alert("Error " + error);
+          alert('Error ' + error)
         })
-        .finally(function(){
-          that.loading = false;
-          that.$refs["loadingModal"].hide()
-        });
+        .finally(function () {
+          that.loading = false
+          that.$refs['loadingModal'].hide()
+        })
     }
   }
 }
@@ -140,3 +140,4 @@ export default {
 }
 
 </style>
+
