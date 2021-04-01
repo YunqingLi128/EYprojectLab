@@ -39,17 +39,17 @@
 </template>
 
 <script>
-import BarChart from '@/components/Cards/BarChart';
-import StackBarChart from '@/components/Cards/StackBarChart';
-import BarLineCharts from '@/components/Cards/BarPlusLineChart';
+import BarChart from '@/components/Cards/BarChart'
+import StackBarChart from '@/components/Cards/StackBarChart'
+import BarLineCharts from '@/components/Cards/BarPlusLineChart'
 import DataSetting from '../../../../../backend/data_setting.json'
 
 export default {
   created () {
     let keylist = []
-    let optionCatcher = DataSetting['institutions'];
+    let optionCatcher = DataSetting['institutions']
     for (let instituions in optionCatcher) {
-      if (optionCatcher.hasOwnProperty(instituions)){
+      if (optionCatcher.hasOwnProperty(instituions)) {
         keylist.push(instituions)
       }
     }
@@ -66,11 +66,11 @@ export default {
   },
 
   computed: {
-    validationQ1(){
+    validationQ1 () {
       return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter)
     },
-    validationSelection(){
-      return this.selected.length != 0
+    validationSelection () {
+      return this.selected.length !== 0
     }
   },
   name: 'quarter-charts',
@@ -80,7 +80,7 @@ export default {
       selected: [],
       options: [],
       quarter: ''
-    };
+    }
   },
   methods: {
     getData () {
@@ -96,7 +96,7 @@ export default {
       this.$refs.barLineChart.getData('gross-trading-asset', this.quarter, this.selected)
     }
   }
-};
+}
 </script>
 
 <style scoped>
