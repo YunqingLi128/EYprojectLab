@@ -24,13 +24,13 @@
 
 <script>
 
-import SideMenu from "@/components/SideBar/SideMenu"
+import SideMenu from '@/components/SideBar/SideMenu'
 
 export default {
   name: 'Headers',
   data () {
     return {
-      logoURL: require("@/assets/EY.png")
+      logoURL: require('@/assets/EY.png')
     }
   },
   components: {
