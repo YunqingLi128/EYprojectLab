@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import * as echarts from 'echarts';
+import axios from 'axios'
+import * as echarts from 'echarts'
 
 export default {
   name: 'BarLineCharts',
@@ -32,9 +32,9 @@ export default {
   },
   methods: {
     DrawBarLineChart (id) {
-      let that = this;
-      let chartDom = document.getElementById(id);
-      let myChart = echarts.init(chartDom);
+      let that = this
+      let chartDom = document.getElementById(id)
+      let myChart = echarts.init(chartDom)
       let option = {
         title: {
           show: false
@@ -73,24 +73,24 @@ export default {
         yAxis: that.barLineChartsData.yAxisData,
         series: that.barLineChartsData.series
       }
-      myChart.setOption(option);
+      myChart.setOption(option)
     },
     getData (id, quarter, selected) {
-      let that = this;
-      that.chartData = {};
+      let that = this
+      that.chartData = {}
       let dictBase = {
         'trading-asset': 'getTradingAssetsAndChangeByQuarter',
         'trading-liabilities': 'getTradingLiabilitiesAndChangeByQuarter',
         'net-trading-asset': 'getNetTradingAssetAndPercentChange',
         'gross-trading-asset': 'getGrossTradingAssetAndPercentChange'
-      };
+      }
       let legendBase = {
         'trading-asset': ['Trading Asset', 'Trading Asset Change from Last Quarter'],
         'trading-liabilities': ['Trading Liability', 'Trading Liability Change from Last Quarter'],
         'net-trading-asset': ['Net Trading Asset', 'Net Trading Asset Change from Last Quarter'],
         'gross-trading-asset': ['Gross Trading Asset', 'Gross Trading Asset Change from Last Quarter']
       }
-      const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      const base = 'http://127.0.0.1:5000/' + dictBase[id]
       axios
         .get(base, {
           params: {
@@ -103,10 +103,10 @@ export default {
           }
         })
         .then(function (response) {
-          let data = response.data;
-          let companies = [];
-          let groupOne = [];
-          let groupTwo = [];
+          let data = response.data
+          let companies = []
+          let groupOne = []
+          let groupTwo = []
           for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
@@ -114,31 +114,31 @@ export default {
               groupTwo.push(data[key][0][1])
             }
           }
-          let series = [];
-          let legendList = [];
-          let chartItemOne = {};
-          let chartItemTwo = {};
-          let yAxisOne = {};
-          let yAxisTwo = {};
-          let yAxis = [];
+          let series = []
+          let legendList = []
+          let chartItemOne = {}
+          let chartItemTwo = {}
+          let yAxisOne = {}
+          let yAxisTwo = {}
+          let yAxis = []
 
-          chartItemOne.name = legendBase[id][0];
-          chartItemOne.type = 'bar';
-          chartItemOne.data = groupOne;
+          chartItemOne.name = legendBase[id][0]
+          chartItemOne.type = 'bar'
+          chartItemOne.data = groupOne
 
-          chartItemTwo.name = legendBase[id][1];
-          chartItemTwo.type = 'line';
-          chartItemTwo.data = groupTwo;
-          chartItemTwo.yAxisIndex = 1;
+          chartItemTwo.name = legendBase[id][1]
+          chartItemTwo.type = 'line'
+          chartItemTwo.data = groupTwo
+          chartItemTwo.yAxisIndex = 1
 
-          yAxisOne.name = 'Millions';
-          yAxisOne.scale = true;
-          yAxisOne.type = 'value';
+          yAxisOne.name = 'Millions'
+          yAxisOne.scale = true
+          yAxisOne.type = 'value'
           // yAxisOne.max = Math.max.apply(Math, groupOne) + 50000000;
           let curMax = Math.max.apply(Math, groupOne).toString()
           let highestDigit = parseInt(curMax[0])
           yAxisOne.max = (highestDigit + 1) * (10 ** (curMax.length - 1))
-          yAxisOne.min = 0;
+          yAxisOne.min = 0
           yAxisOne.splitLine = {
             show: false
           }
@@ -150,20 +150,20 @@ export default {
             }
           }
 
-          yAxisTwo.name = 'Percentage';
-          yAxisTwo.scale = true;
-          yAxisTwo.type = 'value';
+          yAxisTwo.name = 'Percentage'
+          yAxisTwo.scale = true
+          yAxisTwo.type = 'value'
           // yAxisTwo.max = Math.round(Math.max.apply(Math,groupTwo) + 20);
           // yAxisTwo.min = Math.round(Math.min.apply(Math,groupTwo) - 20);
           curMax = Math.ceil(Math.max.apply(Math, groupTwo))
           highestDigit = parseInt(curMax / 10)
           let curMin = Math.floor(Math.min.apply(Math, groupTwo))
-          let minValue = -10;
+          let minValue = -10
           while (minValue > curMin) {
-            minValue -= 10;
+            minValue -= 10
           }
-          yAxisTwo.max = (highestDigit + 1) * 10 + 20;
-          yAxisTwo.min = minValue - 20;
+          yAxisTwo.max = (highestDigit + 1) * 10 + 20
+          yAxisTwo.min = minValue - 20
           yAxisTwo.splitLine = {
             show: false
           }
@@ -171,18 +171,18 @@ export default {
             formatter: '{value} %'
           }
 
-          series = [chartItemOne, chartItemTwo];
-          legendList = legendBase[id];
+          series = [chartItemOne, chartItemTwo]
+          legendList = legendBase[id]
           yAxis = [yAxisOne, yAxisTwo]
-          console.log(companies);
-          console.log(series);
-          that.barLineChartsData.legendData = legendList;
-          that.barLineChartsData.xAxisData = companies;
-          that.barLineChartsData.yAxisData = yAxis;
-          that.barLineChartsData.series = series;
-          that.DrawBarLineChart(id);
-        });
-    },
+          console.log(companies)
+          console.log(series)
+          that.barLineChartsData.legendData = legendList
+          that.barLineChartsData.xAxisData = companies
+          that.barLineChartsData.yAxisData = yAxis
+          that.barLineChartsData.series = series
+          that.DrawBarLineChart(id)
+        })
+    }
   }
 }
 </script>
@@ -223,3 +223,4 @@ figure {
 }
 
 </style>
+
