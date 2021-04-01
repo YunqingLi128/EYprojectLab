@@ -43,15 +43,15 @@
 var $ = require('jquery')
 $(document).ready(function () {
   $('#sidebarCollapse').on('click', function () {
-    $('#sidebar').toggleClass('active');
-    $(this).toggleClass('active');
-  });
-});
+    $('#sidebar').toggleClass('active')
+    $(this).toggleClass('active')
+  })
+})
 export default {
   name: 'SideMenu',
   data () {
     return {
-      logoURL: require("@/assets/EY.png"),
+      logoURL: require('@/assets/EY.png'),
       toggleStatus: '<'
     }
   },
@@ -59,15 +59,15 @@ export default {
   },
 
   methods: {
-    changeStatus(){
-      if(this.toggleStatus == '<'){
+    changeStatus () {
+      if (this.toggleStatus === '<') {
         this.toggleStatus = '>'
-      }else{
+      } else {
         this.toggleStatus = '<'
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>
@@ -203,3 +203,4 @@ ul ul a {
   transition: all 0.3s;
 }
 </style>
+
