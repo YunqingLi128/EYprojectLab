@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import helper from '@/helper';
+import axios from 'axios'
+import helper from '@/helper'
 
 export default {
   name: 'OverTimeTable',
@@ -21,8 +21,8 @@ export default {
   },
   methods: {
     getData (id, quarterStart, quarterEnd, selected) {
-      let that = this;
-      const url = 'http://127.0.0.1:5000/getStressWindowOvertime';
+      let that = this
+      const url = 'http://127.0.0.1:5000/getStressWindowOvertime'
       axios
         .get(url, {
           params: {
@@ -37,27 +37,27 @@ export default {
         })
         .then(function (response) {
           let data = response.data
-          let quarterList = that.getQuarterList(quarterStart, quarterEnd);
+          let quarterList = that.getQuarterList(quarterStart, quarterEnd)
           console.log(quarterList)
           let items = []
           for (const quarter of quarterList) {
-            items.push({'Quarter': quarter});
+            items.push({'Quarter': quarter})
           }
           let fields = ['Quarter']
           for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               fields.push(key)
               for (let i = 0; i < data[key].length; ++i) {
-                items[i][key] = data[key][i][1];
+                items[i][key] = data[key][i][1]
               }
             }
           }
-          items.reverse();
+          items.reverse()
           console.log(fields)
           console.log(items)
           that.fields = fields
           that.items = items
-        });
+        })
     }
   }
 }
