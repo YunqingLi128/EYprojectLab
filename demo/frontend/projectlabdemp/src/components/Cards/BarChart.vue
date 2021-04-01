@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import * as echarts from 'echarts';
+import axios from 'axios'
+import * as echarts from 'echarts'
 
 export default {
   name: 'BarChart_Comparison',
@@ -33,9 +33,9 @@ export default {
   },
   methods: {
     DrawBarChart (id) {
-      let that = this;
-      let chartDom = document.getElementById(id);
-      let myChart = echarts.init(chartDom);
+      let that = this
+      let chartDom = document.getElementById(id)
+      let myChart = echarts.init(chartDom)
       let option = {
         title: {
           show: false
@@ -73,16 +73,16 @@ export default {
         yAxis: that.barChartData.yAxis,
         series: that.barChartData.series
       }
-      myChart.setOption(option);
+      myChart.setOption(option)
     },
     getData (id, quarter, selected) {
-      let that = this;
-      that.chartData = {};
+      let that = this
+      that.chartData = {}
       let dictBase = {
         'VaR-SVaR-comparison': 'getVaRsVarRComparison',
         'trading-asset-comparison': 'getTradingAssetComparison'
-      };
-      const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      }
+      const base = 'http://127.0.0.1:5000/' + dictBase[id]
       axios
         .get(base, {
           params: {
@@ -95,37 +95,37 @@ export default {
           }
         })
         .then(function (response) {
-          let data = response.data;
-          let companies = [];
-          let groups = {};
+          let data = response.data
+          let companies = []
+          let groups = {}
           for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
               for (let itemName in data[key]) {
                 if (data[key].hasOwnProperty(itemName)) {
                   if (groups.hasOwnProperty(itemName)) {
-                    groups[itemName].push(data[key][itemName]);
+                    groups[itemName].push(data[key][itemName])
                   } else {
-                    groups[itemName] = [data[key][itemName]];
+                    groups[itemName] = [data[key][itemName]]
                   }
                 }
               }
             }
           }
-          let series = [];
-          let legendList = [];
+          let series = []
+          let legendList = []
           for (let key in groups) {
-            let chartItem = {};
-            chartItem.name = key;
-            chartItem.type = 'bar';
-            chartItem.data = groups[key];
-            series.push(chartItem);
-            legendList.push(key);
+            let chartItem = {}
+            chartItem.name = key
+            chartItem.type = 'bar'
+            chartItem.data = groups[key]
+            series.push(chartItem)
+            legendList.push(key)
           }
-          console.log(companies);
-          console.log(series);
-          that.barChartData.legendData = legendList;
-          that.barChartData.xAxisData = companies;
+          console.log(companies)
+          console.log(series)
+          that.barChartData.legendData = legendList
+          that.barChartData.xAxisData = companies
           that.barChartData.yAxis = [
             {
               type: 'value',
@@ -139,17 +139,17 @@ export default {
               }
             }
           ]
-          that.barChartData.series = series;
-          that.DrawBarChart(id);
-        });
+          that.barChartData.series = series
+          that.DrawBarChart(id)
+        })
     },
     getAggData (id, quarter, selected) {
-      let that = this;
+      let that = this
       let dictBase = {
         'trading-asset-to-risk-ratio': 'getTradingAssetToRiskRatio',
         'trading-revenue-to-VaR-ratio': 'getTradingRevenueToVarRatio'
-      };
-      const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      }
+      const base = 'http://127.0.0.1:5000/' + dictBase[id]
       axios
         .get(base, {
           params: {
@@ -162,34 +162,34 @@ export default {
           }
         })
         .then(function (response) {
-          let data = response.data;
-          let itemNames = [];
-          let itemSet = new Set();
-          let series = [];
-          let legendList = [];
+          let data = response.data
+          let itemNames = []
+          let itemSet = new Set()
+          let series = []
+          let legendList = []
           for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               legendList.push(key)
-              let chartItem = {};
-              chartItem.name = key;
-              chartItem.type = 'bar';
-              chartItem.data = [];
+              let chartItem = {}
+              chartItem.name = key
+              chartItem.type = 'bar'
+              chartItem.data = []
               for (let itemName in data[key]) {
                 if (data[key].hasOwnProperty(itemName)) {
-                  chartItem.data.push(data[key][itemName]);
+                  chartItem.data.push(data[key][itemName])
                   if (!itemSet.has(itemName)) {
-                    itemSet.add(itemName);
-                    itemNames.push(itemName);
+                    itemSet.add(itemName)
+                    itemNames.push(itemName)
                   }
                 }
               }
               series.push(chartItem)
             }
           }
-          console.log(itemNames);
-          console.log(series);
-          that.barChartData.legendData = legendList;
-          that.barChartData.xAxisData = itemNames;
+          console.log(itemNames)
+          console.log(series)
+          that.barChartData.legendData = legendList
+          that.barChartData.xAxisData = itemNames
           that.barChartData.yAxis = [
             {
               type: 'value',
@@ -200,8 +200,8 @@ export default {
               }
             }
           ]
-          that.barChartData.series = series;
-          that.DrawBarChart(id);
+          that.barChartData.series = series
+          that.DrawBarChart(id)
         })
     }
   }
