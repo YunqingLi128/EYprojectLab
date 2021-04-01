@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import * as echarts from 'echarts';
+import axios from 'axios'
+import * as echarts from 'echarts'
 
 export default {
   name: 'StackBarChart',
@@ -24,9 +24,9 @@ export default {
   },
   methods: {
     drawStackBarChart (id) {
-      let that = this;
-      let chartDom = document.getElementById(id);
-      let myChart = echarts.init(chartDom);
+      let that = this
+      let chartDom = document.getElementById(id)
+      let myChart = echarts.init(chartDom)
       let option = {
         tooltip: {
           trigger: 'axis',
@@ -61,16 +61,16 @@ export default {
         yAxis: that.barChartData.yAxis,
         series: that.barChartData.series
       }
-      myChart.setOption(option);
+      myChart.setOption(option)
     },
     getData (id, quarter, selected) {
-      let that = this;
-      that.chartData = {};
+      let that = this
+      that.chartData = {}
       let dictBase = {
         'standardized-market-risk-weighted-assets-breakdown-by-bank': 'getStandardizedRiskWeightedAssets',
         'VaR-by-asset-class-and-diversification-effect': 'getVaRByAssetClassDiversification'
-      };
-      const base = 'http://127.0.0.1:5000/' + dictBase[id];
+      }
+      const base = 'http://127.0.0.1:5000/' + dictBase[id]
       axios
         .get(base, {
           params: {
@@ -86,7 +86,6 @@ export default {
           let data = response.data
           let companies = []
           let series = []
-          let checker = 0
           for (let key in data) {
             if (data.hasOwnProperty(key)) {
               let chartItem = {}
@@ -105,7 +104,6 @@ export default {
                     flag = 1
                   }
                 }
-                checker = 1
                 if (flag === 0) {
                   chartItem.data.push(0)
                 }
@@ -137,12 +135,12 @@ export default {
                 }
               }
             ]
-          };
+          }
           that.barChartData.xAxisData = selected
           that.barChartData.yAxis = yAxisMap[id]
           that.barChartData.series = series
           that.drawStackBarChart(id)
-        });
+        })
     }
   }
 }
