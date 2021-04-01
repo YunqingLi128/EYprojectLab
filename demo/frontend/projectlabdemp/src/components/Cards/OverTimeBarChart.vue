@@ -149,4 +149,3 @@ export default {
 }
 
 </style>
-
