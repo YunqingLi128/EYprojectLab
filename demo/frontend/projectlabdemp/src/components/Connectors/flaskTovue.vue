@@ -60,15 +60,15 @@
 <script>
 import LineChart from '@/components/Cards/LineChart'
 import OverTimeBarChart from '@/components/Cards/OverTimeBarChart'
-import OverTimeTable from '@/components/Cards/OverTimeTable';
+import OverTimeTable from '@/components/Cards/OverTimeTable'
 import DataSetting from '../../../../../backend/data_setting.json'
 
 export default {
   created () {
     let keylist = []
-    let optionCatcher = DataSetting['institutions'];
+    let optionCatcher = DataSetting['institutions']
     for (let instituions in optionCatcher) {
-      if (optionCatcher.hasOwnProperty(instituions)){
+      if (optionCatcher.hasOwnProperty(instituions)) {
         keylist.push(instituions)
       }
     }
@@ -84,18 +84,18 @@ export default {
     this.options = options
   },
   computed: {
-    validationQ1(){
+    validationQ1 () {
       return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1)
     },
-    validationQ2(){
+    validationQ2 () {
       return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter2)
     },
-    validationDate(){
+    validationDate () {
       return /^[0-9]{4}[Qq][1-4]$/.test(this.quarter1) && /^[0-9]{4}[Qq][1-4]$/.test(this.quarter2) && this.quarter1 < this.quarter2
     },
-    validationSelection(){
-      console.log("1111111", this.selected.length)
-      return this.selected.length != 0
+    validationSelection () {
+      console.log('1111111', this.selected.length)
+      return this.selected.length !== 0
     }
   },
   name: 'overtime-charts',
