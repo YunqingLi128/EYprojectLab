@@ -102,7 +102,11 @@ export default {
                 let flag = 0
                 for (const item of data[key]) {
                   if (selectComp === item[0]) {
-                    chartItem.data.push(Math.round(item[1]))
+                    if (id === 'standardized-market-risk-weighted-assets-breakdown-by-bank') {
+                      chartItem.data.push(Math.round(item[1] * 12.5 / 1000))
+                    } else {
+                      chartItem.data.push(Math.round(item[1]))
+                    }
                     companies.push(item[0])
                     flag = 1
                   }
