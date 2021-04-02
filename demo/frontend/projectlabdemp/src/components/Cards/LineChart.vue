@@ -111,7 +111,11 @@ export default {
               chartItem.type = 'line'
               chartItem.data = []
               for (const item of data[key]) {
-                chartItem.data.push(item[1].toFixed(2))
+                if (id === 'change-in-VaR-measure-overtime' || id === 'market-risk-weighted-assets-overtime') {
+                  chartItem.data.push((item[1] / 1000).toFixed(2))
+                } else {
+                  chartItem.data.push(item[1].toFixed(2))
+                }
               }
               series.push(chartItem)
             }
@@ -126,7 +130,7 @@ export default {
                 formatter: function (value) {
                   // Original Amount: Dollar Amounts in Thousands
                   // show tick with comma
-                  return (value / 1000).toLocaleString()
+                  return (value).toLocaleString()
                 }
               }
             }
