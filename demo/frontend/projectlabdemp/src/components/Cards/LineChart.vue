@@ -38,7 +38,10 @@ export default {
     drawLineChart (id) {
       let that = this
       let chartDom = document.getElementById(id)
-      let myChart = echarts.init(chartDom)
+      let myChart = echarts.getInstanceByDom(chartDom)
+      if (myChart == null) {
+        myChart = echarts.init(chartDom)
+      }
       let option = {
         legend: {
           bottom: 0,
@@ -67,7 +70,7 @@ export default {
         },
         series: that.lineChartData.series
       }
-      myChart.setOption(option)
+      myChart.setOption(option, true)
     },
     getData (id, quarter1, quarter2, selected) {
       let that = this
@@ -168,7 +171,7 @@ export default {
               }
             ]
           }
-          that.chartData.legend = companies
+          that.lineChartData.legend = companies
           that.lineChartData.xAxisData = xString
           that.lineChartData.yAxis = yAxisMap[id]
           that.lineChartData.series = series
