@@ -215,7 +215,7 @@ def get_standardized_risk_weighted_assets_by_quarter(quarter, comp_dict):
     item_names = ['MRRRS343', 'MRRRH327', 'MRRRS313', 'MRRRS311', 'MRRRS303', 'MRRRS301']
     data = raw_data.query('Item_ID in @item_names and Quarter == @quarter')
     data = data.reset_index()
-    data['Item'] = data['Item'].astype(float).multiply(12.5).div(1000)
+    data['Item'] = data['Item'].astype(float)
     data = data.replace({'Company': comp_dict})
     total_data = data.groupby('Item_ID')[['Company', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((asset_dict[key], total_data[key]) for key in total_data)
