@@ -129,7 +129,7 @@ export default {
                   formatter: function (value) {
                     // Original Amount: Dollar Amounts in Thousands
                     // show tick with comma
-                    return (value / 1000).toLocaleString()
+                    return (value).toLocaleString()
                   }
                 }
               }
