@@ -113,7 +113,7 @@ export default {
           for (let key of selected) {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
-              groupOne.push(data[key][0][0]/1000)
+              groupOne.push(data[key][0][0] / 1000)
               groupTwo.push(data[key][0][1])
             }
           }
