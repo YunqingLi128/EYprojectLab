@@ -38,7 +38,7 @@ export default {
         .then(function (response) {
           let data = response.data
           let quarterList = that.getQuarterList(quarterStart, quarterEnd)
-          console.log(quarterList)
+          // console.log(quarterList)
           let items = []
           for (const quarter of quarterList) {
             items.push({'Quarter': quarter})

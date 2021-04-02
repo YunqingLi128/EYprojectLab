@@ -85,24 +85,6 @@ export default {
       const start = quarter1
       const end = quarter2
       const base = 'http://127.0.0.1:5000/' + dictBase[id]
-      // let listStart = [];
-      // let listEnd = [];
-      // listStart = start.split(/[Q]/);
-      // listEnd = end.split(/[Q]/);
-      // let quarters = parseInt(listStart[1]);
-      // let years = parseInt(listStart[0]);
-      // let xString = [];
-      // while (years <= listEnd[0]) {
-      //   xString.push(years.toString() + 'Q' + quarters.toString())
-      //   if (years === parseInt(listEnd[0]) && quarters === parseInt(listEnd[1])) {
-      //     break
-      //   }
-      //   quarters += 1
-      //   if (quarters > 4) {
-      //     quarters = 1
-      //     years += 1
-      //   }
-      // }
       let xString = that.getQuarterList(start, end)
       axios
         .get(base, {

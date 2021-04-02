@@ -35,7 +35,10 @@ export default {
     DrawBarChart (id) {
       let that = this
       let chartDom = document.getElementById(id)
-      let myChart = echarts.init(chartDom)
+      let myChart = echarts.getInstanceByDom(chartDom)
+      if (myChart == null) {
+        myChart = echarts.init(chartDom)
+      }
       let option = {
         title: {
           show: false
@@ -73,7 +76,7 @@ export default {
         yAxis: that.barChartData.yAxis,
         series: that.barChartData.series
       }
-      myChart.setOption(option)
+      myChart.setOption(option, true)
     },
     getData (id, quarter, selected) {
       let that = this
