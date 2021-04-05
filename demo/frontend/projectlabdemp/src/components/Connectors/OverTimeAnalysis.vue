@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="OA_header_layout">
+      <h3 class="OA_header">
+        <span class="OA_header_span">Overtime Analysis</span>
+      </h3>
+    </div>
     <b-form id="main-input" inline>
       <b-form-group inline id="input-group-1" label="Start Quarter: " label-for="input-quarter-1">
         <b-form-input id="input-quarter-1" name="input-quarter" v-model.trim="quarter1"
@@ -147,5 +152,19 @@ export default {
 #error-catcher {
   margin: 5px;
 }
-
+.OA_header_span{
+  font-family: 'Poppins', sans-serif;
+  color: #323030;
+  font-weight: bold;
+}
+.OA_header{
+  margin-bottom: 10px;
+}
+.OA_header_layout{
+  border-bottom: 1px solid;
+  border-bottom-color: #CACACA;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
 </style>
