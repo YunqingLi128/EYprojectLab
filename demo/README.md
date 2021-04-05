@@ -2,11 +2,11 @@
 
 ### Prerequisite
 1. Python3
-  * Download: https://www.python.org/downloads/
+   * Download: https://www.python.org/downloads/
 2. virtualenv
-  * Install: https://virtualenv.pypa.io/en/latest/installation.html
+   * Install: https://virtualenv.pypa.io/en/latest/installation.html
 3. npm
-  * Download: https://www.npmjs.com/get-npm
+   * Download: https://www.npmjs.com/get-npm
 ### Installing dependencies:
 * On macOS and Linux:
   * Flask backend
