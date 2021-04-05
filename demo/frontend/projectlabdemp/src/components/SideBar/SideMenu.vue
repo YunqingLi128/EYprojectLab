@@ -10,10 +10,10 @@
             <a href= "http://localhost:8080/#/home" data-toggle="collapse" aria-expanded="false">Home</a>
           </li>
           <li>
-            <a href= "http://localhost:8080/#/flaskTovue2" data-toggle="collapse" aria-expanded="false">Quarterly Highlights</a>
+            <a href= "http://localhost:8080/#/QuarterlyHighlight" data-toggle="collapse" aria-expanded="false">Quarterly Highlights</a>
           </li>
           <li>
-            <a href= "http://localhost:8080/#/flaskTovue" data-toggle="collapse" aria-expanded="false">Overtime Analysis</a>
+            <a href= "http://localhost:8080/#/OverTimeAnalysis" data-toggle="collapse" aria-expanded="false">Overtime Analysis</a>
           </li>
         </ul>
       </nav>
@@ -89,7 +89,7 @@ export default {
     background: #5A5858;
     color: #fff;
     transition: all 0.6s cubic-bezier(0.945, 0.020, 0.270, 0.665);
-    transform-origin: center; /* Set the transformed position of sidebar to center left side. */
+    transform-origin: center;
 }
 
 #sidebar.active {
