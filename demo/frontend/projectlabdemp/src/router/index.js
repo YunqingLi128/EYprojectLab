@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import flaskTovue from '@/components/Connectors/flaskTovue'
-import flaskTovue2 from '@/components/Connectors/flaskTovue2'
+import OverTimeAnalysis from '@/components/Connectors/OverTimeAnalysis'
+import QuarterlyHighlight from '@/components/Connectors/QuarterlyHighlight'
 import home from '@/components/Connectors/home'
 
 Vue.use(Router)
@@ -17,17 +17,17 @@ export default new Router({
       }
     },
     {
-      path: '/flaskTovue',
-      name: 'flaskTovue',
-      component: flaskTovue,
+      path: '/OverTimeAnalysis',
+      name: 'OverTimeAnalysis',
+      component: OverTimeAnalysis,
       meta: {
         keepalive: true
       }
     },
     {
-      path: '/flaskTovue2',
-      name: 'flaskTovue2',
-      component: flaskTovue2,
+      path: '/QuarterlyHighlight',
+      name: 'QuarterlyHighlight',
+      component: QuarterlyHighlight,
       meta: {
         keepalive: true
       }
