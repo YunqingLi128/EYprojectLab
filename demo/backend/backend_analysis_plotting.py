@@ -203,16 +203,16 @@ def get_standardized_risk_weighted_assets_by_quarter(quarter, comp_dict):
     """
     return the amount of standardized market risk-weighted assets breakdown by bank in specific quarter
     """
-    asset_dict = {'MRRRS343': 'De Minimis',
-                  'MRRRH327': 'Std Comprehensive Risk',
-                  'MRRRS313': 'Incremental Risk',
+    asset_dict = {'MRRRS345': 'De Minimis',
+                  'MRRRS341': 'Std Comprehensive Risk',
+                  'MRRRS315': 'Incremental Risk',
                   'MRRRS311': 'Add-Ons',
-                  'MRRRS303': 'sVaR',
+                  'MRRRS304': 'sVaR',
                   'MRRRS301': 'VaR'}
 
     raw_data = get_data('FFIEC102')
     raw_data.update(raw_data.groupby('Company').ffill())
-    item_names = ['MRRRS343', 'MRRRH327', 'MRRRS313', 'MRRRS311', 'MRRRS303', 'MRRRS301']
+    item_names = ['MRRRS345', 'MRRRS341', 'MRRRS315', 'MRRRS311', 'MRRRS304', 'MRRRS301']
     data = raw_data.query('Item_ID in @item_names and Quarter == @quarter')
     data = data.reset_index()
     data['Item'] = data['Item'].astype(float)
