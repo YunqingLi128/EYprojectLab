@@ -1,6 +1,11 @@
 <template>
   <div id="home">
     <!-- {{dataInfo}} -->
+    <div class="home_header_layout">
+      <h3 class="home_header">
+        <span class="home_header_span">Welcome to FFIEC 102 Forms Dashboard</span>
+      </h3>
+    </div>
     <div v-if="loading">
       <b-spinner small label="Loading..."></b-spinner> <strong>Data In Loading</strong>
     </div>
@@ -167,6 +172,21 @@ export default {
 #nick-input{
   margin: 10px;
   width: 280px;
+}
+.home_header_span{
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  color: #323030;
+}
+.home_header{
+  margin-bottom: 10px;
+}
+.home_header_layout{
+  border-bottom: 1px solid;
+  border-bottom-color: #CACACA;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  box-sizing: border-box;
 }
 
 </style>
