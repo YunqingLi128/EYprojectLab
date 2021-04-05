@@ -12,6 +12,24 @@
         <strong>It may cost about several seconds...</strong>
       </div>
     </b-modal>
+    <b-alert
+      variant="danger"
+      dismissible
+      fade
+      :show= "errorCatch_notfound"
+      @dismissed="errorCatch_notfound=false"
+    >
+      Institution not found
+    </b-alert>
+    <b-alert
+      variant="warning"
+      dismissible
+      fade
+      :show= "errorCatch_alreadyhave"
+      @dismissed="errorCatch_alreadyhave=false"
+    >
+      {{ error }}
+    </b-alert>
     <b-form id = 'homeBForm' inline @submit="onSubmit">
       <b-form-group id="id-input-group" label="New Company ID:" label-for="id-input">
         <b-form-input id="id-input" v-model="compId" placeholder="Enter the new company RSSD ID" required></b-form-input>
@@ -42,7 +60,10 @@ export default {
       compId: '',
       compName: '',
       compNickName: '',
-      loading: false
+      loading: false,
+      error: '',
+      errorCatch_notfound: false,
+      errorCatch_alreadyhave: false
     }
   },
   mounted () {
@@ -72,7 +93,16 @@ export default {
         })
         .then(function (response) {
           let data = response.data
-          console.log(data)
+          console.log(data['message'])
+          if (data['message'] === 'The institution does not exist') {
+            that.error = data['message']
+            that.errorCatch_notfound = true
+          } else if (data['message'] === 'The institution ' + that.compId + ' already exists') {
+            that.error = data['message']
+            that.errorCatch_alreadyhave = true
+          } else {
+            that.errorCatch = false
+          }
           that.items = []
           that.getData()
         })
