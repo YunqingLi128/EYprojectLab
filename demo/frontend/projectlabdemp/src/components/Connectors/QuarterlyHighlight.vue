@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="QH_header_layout">
+      <h3 class="QH_header">
+        <span class="QH_header_span">Quarterly Highlights</span>
+      </h3>
+    </div>
     <b-form id="main-input" inline>
       <b-form-group inline id="input-group" label="Please input the quarter:" label-for="input-quarter">
         <b-form-input id="input-quarter" name="input-quarter" v-model.trim="quarter"
@@ -117,6 +122,21 @@ export default {
 
 #error-catcher {
   margin: 5px;
+}
+.QH_header_span{
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  color: #323030;
+}
+.QH_header{
+  margin-bottom: 10px;
+}
+.QH_header_layout{
+  border-bottom: 1px solid;
+  border-bottom-color: #CACACA;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  box-sizing: border-box;
 }
 
 </style>
