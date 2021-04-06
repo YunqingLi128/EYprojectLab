@@ -1,4 +1,16 @@
 export default {
+  getLatestQuarter () {
+    // TODO: hard-coded currently
+    return '2020Q4'
+  },
+  getDefaultStartQuarter () {
+    // Use latest year - 1 as the default start year
+    let latest = this.getLatestQuarter()
+    let parts = latest.split(/[Q]/)
+    let year = parseInt(parts[0])
+    let quarter = parseInt(parts[1])
+    return (year - 1).toString() + 'Q' + quarter.toString()
+  },
   getQuarterList: function (quarterStart, quarterEnd) {
     let listStart = quarterStart.split(/[Q]/)
     let listEnd = quarterEnd.split(/[Q]/)

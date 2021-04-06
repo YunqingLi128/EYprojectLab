@@ -48,23 +48,25 @@ import BarChart from '@/components/Cards/BarChart'
 import StackBarChart from '@/components/Cards/StackBarChart'
 import BarLineCharts from '@/components/Cards/BarPlusLineChart'
 import DataSetting from '../../../../../backend/data_setting.json'
+import helper from '../../helper'
 
 export default {
   created () {
-    let keylist = []
+    let keyList = []
     let optionCatcher = DataSetting['institutions']
-    for (let instituions in optionCatcher) {
-      if (optionCatcher.hasOwnProperty(instituions)) {
-        keylist.push(instituions)
+    for (let institution in optionCatcher) {
+      if (optionCatcher.hasOwnProperty(institution)) {
+        keyList.push(institution)
       }
     }
     let options = []
-    for (let key in keylist) {
-      if (keylist.hasOwnProperty(key)) {
+    for (let key in keyList) {
+      if (keyList.hasOwnProperty(key)) {
         let option = {}
-        option.text = optionCatcher[keylist[key]]['Nick']
-        option.value = optionCatcher[keylist[key]]['Nick']
+        option.text = optionCatcher[keyList[key]]['Nick']
+        option.value = optionCatcher[keyList[key]]['Nick']
         options.push(option)
+        this.selected.push(option.value)
       }
     }
     this.options = options
@@ -84,7 +86,7 @@ export default {
     return {
       selected: [],
       options: [],
-      quarter: ''
+      quarter: helper.getLatestQuarter()
     }
   },
   methods: {

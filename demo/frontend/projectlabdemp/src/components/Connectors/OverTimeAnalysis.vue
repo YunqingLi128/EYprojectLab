@@ -67,23 +67,25 @@ import LineChart from '@/components/Cards/LineChart'
 import OverTimeBarChart from '@/components/Cards/OverTimeBarChart'
 import OverTimeTable from '@/components/Cards/OverTimeTable'
 import DataSetting from '../../../../../backend/data_setting.json'
+import helper from '../../helper'
 
 export default {
   created () {
-    let keylist = []
+    let keyList = []
     let optionCatcher = DataSetting['institutions']
-    for (let instituions in optionCatcher) {
-      if (optionCatcher.hasOwnProperty(instituions)) {
-        keylist.push(instituions)
+    for (let institution in optionCatcher) {
+      if (optionCatcher.hasOwnProperty(institution)) {
+        keyList.push(institution)
       }
     }
     let options = []
-    for (let key in keylist) {
-      if (keylist.hasOwnProperty(key)) {
+    for (let key in keyList) {
+      if (keyList.hasOwnProperty(key)) {
         let option = {}
-        option.text = optionCatcher[keylist[key]]['Nick']
-        option.value = optionCatcher[keylist[key]]['Nick']
+        option.text = optionCatcher[keyList[key]]['Nick']
+        option.value = optionCatcher[keyList[key]]['Nick']
         options.push(option)
+        this.selected.push(option.value)
       }
     }
     this.options = options
@@ -109,8 +111,8 @@ export default {
     return {
       selected: [],
       options: [],
-      quarter1: '',
-      quarter2: ''
+      quarter1: helper.getDefaultStartQuarter(),
+      quarter2: helper.getLatestQuarter()
     }
   },
   methods: {
