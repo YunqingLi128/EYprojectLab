@@ -15,8 +15,11 @@ CORS(bp, supports_credentials=True)
 
 @bp.route('/home', methods=('GET', 'POST'))
 def index():
-    # TODO: check data config file, not updating each time
-    # need improvement
+    """
+    Currently if 'data_status' is in data config file, no to update, which needs to be improved
+    So we need to add the logic to call init_data() to update the current data
+    """
+    # TODO: Add conditions to check when to update and call init_data()
     config_info = load_data_config_file()
     institution_info = config_info["institutions"]
     need_update = False

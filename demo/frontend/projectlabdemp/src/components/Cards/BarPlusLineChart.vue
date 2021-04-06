@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAPI from '../../api'
 import * as echarts from 'echarts'
 
 export default {
@@ -80,8 +80,7 @@ export default {
     },
     getData (id, quarter, selected) {
       let that = this
-      that.chartData = {}
-      let dictBase = {
+      let endpointDict = {
         'trading-asset': 'getTradingAssetsAndChangeByQuarter',
         'trading-liabilities': 'getTradingLiabilitiesAndChangeByQuarter',
         'net-trading-asset': 'getNetTradingAssetAndPercentChange',
@@ -93,18 +92,8 @@ export default {
         'net-trading-asset': ['Net Trading Asset', 'Net Trading Asset Change from Last Quarter'],
         'gross-trading-asset': ['Gross Trading Asset', 'Gross Trading Asset Change from Last Quarter']
       }
-      const base = 'http://127.0.0.1:5000/' + dictBase[id]
-      axios
-        .get(base, {
-          params: {
-            'quarter': quarter
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataByQuarter(endpointDict[id], quarter)
         .then(function (response) {
           let data = response.data
           let companies = []

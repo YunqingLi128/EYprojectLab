@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAPI from '../../api'
 
 export default {
   name: 'home',
@@ -77,25 +77,12 @@ export default {
   },
   methods: {
     onSubmit (event) {
-      var that = this
+      let that = this
       that.loading = true
       that.$refs['loadingModal'].show()
       event.preventDefault()
-      // alert(this.compId)
-      const path = 'http://127.0.0.1:5000/addDataByID'
-      axios
-        .get(path, {
-          params: {
-            'rssd_id': this.compId,
-            'name': this.compName,
-            'nickName': this.compNickName
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .addData('addDataByID', that.compId, that.compName, that.compNickName)
         .then(function (response) {
           let data = response.data
           console.log(data['message'])
@@ -117,23 +104,19 @@ export default {
         })
     },
     getData () {
-      var that = this
+      let that = this
       that.loading = true
       that.$refs['loadingModal'].show()
-      // root route to init data
-      const path = 'http://127.0.0.1:5000/home'
-      axios
-        .get(path, {
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': 'http://127.0.0.1:5000'
-          }
-        })
+      myAPI
+        .initData('home') // root route to init data
         .then(function (response) {
           that.dataInfo = response.data
           for (let key in that.dataInfo['institutions']) {
-            let temp = {'ID': key, 'Name': that.dataInfo['institutions'][key]['Name'], 'Nickname': that.dataInfo['institutions'][key]['Nick']}
+            let temp = {
+              'ID': key,
+              'Name': that.dataInfo['institutions'][key]['Name'],
+              'Nickname': that.dataInfo['institutions'][key]['Nick']
+            }
             that.items.push(temp)
           }
         })

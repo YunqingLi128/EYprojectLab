@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAPI from '../../api'
+import helper from '../../helper'
 import * as echarts from 'echarts'
-import helper from '@/helper'
 
 export default {
   name: 'OverTimeBarChart',
@@ -70,25 +70,14 @@ export default {
     getData (id, quarter1, quarter2, selected) {
       let that = this
       that.chartData = {}
-      let dictBase = {
+      let endpointDict = {
         'number-of-VaR-breach': 'getVaRBreachOvertime'
       }
       const start = quarter1
       const end = quarter2
-      const base = 'http://127.0.0.1:5000/' + dictBase[id]
       let xString = that.getQuarterList(quarter1, quarter2)
-      axios
-        .get(base, {
-          params: {
-            'start': start,
-            'end': end
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataOvertime(endpointDict[id], start, end)
         .then(function (response) {
           let data = response.data
           let companies = []

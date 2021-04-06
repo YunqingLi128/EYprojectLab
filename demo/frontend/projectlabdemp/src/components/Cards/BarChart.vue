@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAPI from '../../api'
 import * as echarts from 'echarts'
 
 export default {
@@ -81,22 +81,12 @@ export default {
     getData (id, quarter, selected) {
       let that = this
       that.chartData = {}
-      let dictBase = {
+      let endpointDict = {
         'VaR-SVaR-comparison': 'getVaRsVarRComparison',
         'trading-asset-comparison': 'getTradingAssetComparison'
       }
-      const base = 'http://127.0.0.1:5000/' + dictBase[id]
-      axios
-        .get(base, {
-          params: {
-            'quarter': quarter
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataByQuarter(endpointDict[id], quarter)
         .then(function (response) {
           let data = response.data
           let companies = []
@@ -148,22 +138,12 @@ export default {
     },
     getAggData (id, quarter, selected) {
       let that = this
-      let dictBase = {
+      let endpointDict = {
         'trading-asset-to-risk-ratio': 'getTradingAssetToRiskRatio',
         'trading-revenue-to-VaR-ratio': 'getTradingRevenueToVarRatio'
       }
-      const base = 'http://127.0.0.1:5000/' + dictBase[id]
-      axios
-        .get(base, {
-          params: {
-            'quarter': quarter
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataByQuarter(endpointDict[id], quarter)
         .then(function (response) {
           let data = response.data
           let itemNames = []

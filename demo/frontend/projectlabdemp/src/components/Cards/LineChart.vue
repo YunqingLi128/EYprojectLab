@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAPI from '../../api'
+import helper from '../../helper'
 import * as echarts from 'echarts'
-import helper from '@/helper'
 
 export default {
   name: 'LineChart',
@@ -74,9 +74,7 @@ export default {
     },
     getData (id, quarter1, quarter2, selected) {
       let that = this
-      that.chartData = {}
-      // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
-      let dictBase = {
+      let endpointDict = {
         'change-in-VaR-measure-overtime': 'getChangeInVaRBasedMeasureOvertime',
         'market-risk-weighted-assets-overtime': 'getAdvancedMarketRiskWeightedAssets',
         'sVaR-VaR-ratio-overtime': 'getVaRsVaRRatioOvertime',
@@ -84,20 +82,9 @@ export default {
       }
       const start = quarter1
       const end = quarter2
-      const base = 'http://127.0.0.1:5000/' + dictBase[id]
       let xString = that.getQuarterList(start, end)
-      axios
-        .get(base, {
-          params: {
-            'start': start,
-            'end': end
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataOvertime(endpointDict[id], start, end)
         .then(function (response) {
           let data = response.data
           console.log(data)

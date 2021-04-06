@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAPI from '../../api'
 import * as echarts from 'echarts'
 
 export default {
@@ -69,22 +69,12 @@ export default {
     getData (id, quarter, selected) {
       let that = this
       that.chartData = {}
-      let dictBase = {
+      let endpointDict = {
         'standardized-market-risk-weighted-assets-breakdown-by-bank': 'getStandardizedRiskWeightedAssets',
         'VaR-by-asset-class-and-diversification-effect': 'getVaRByAssetClassDiversification'
       }
-      const base = 'http://127.0.0.1:5000/' + dictBase[id]
-      axios
-        .get(base, {
-          params: {
-            'quarter': quarter
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataByQuarter(endpointDict[id], quarter)
         .then(function (response) {
           let data = response.data
           let companies = []

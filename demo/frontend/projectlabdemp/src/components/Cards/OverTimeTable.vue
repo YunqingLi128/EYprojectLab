@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import helper from '@/helper'
+import myAPI from '../../api'
+import helper from '../../helper'
 
 export default {
   name: 'OverTimeTable',
@@ -22,19 +22,8 @@ export default {
   methods: {
     getData (id, quarterStart, quarterEnd, selected) {
       let that = this
-      const url = 'http://127.0.0.1:5000/getStressWindowOvertime'
-      axios
-        .get(url, {
-          params: {
-            'start': quarterStart,
-            'end': quarterEnd
-          },
-          withCredentials: true,
-          headers: {
-            'secret-key': 'super secret key',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+      myAPI
+        .getDataOvertime('getStressWindowOvertime', quarterStart, quarterEnd)
         .then(function (response) {
           let data = response.data
           let quarterList = that.getQuarterList(quarterStart, quarterEnd)
