@@ -103,3 +103,10 @@
    # run the batch file
    dashboardRun.bat
    ```  
+## Future todo list:
+ * Although our project lab has finished, there are still many areas need to be improved. The following list ia a series of potential improvement that can be made in the future.
+   ```Shell
+   1. The stack bar's item shall be able rearrange in a way that user wants.
+   2. The system shall be able to display all the data view from graphs in one click.
+   3. The graphs and data can be able to output to excel directly.
+   ``` 
