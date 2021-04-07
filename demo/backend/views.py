@@ -13,6 +13,13 @@ bp = Blueprint("views", __name__)
 CORS(bp, supports_credentials=True)
 
 
+def updateCompDict(data_info):
+    comp_dict = {rssd_id: info['Nick'] for rssd_id, info in data_info['institutions'].items()}
+    session["comp_dict"] = comp_dict
+    session['data_loaded'] = True
+    session.permanent = True
+
+
 @bp.route('/home', methods=('GET', 'POST'))
 def index():
     """
@@ -29,10 +36,7 @@ def index():
     if not os.path.exists(path):
         need_update = True
     data_info = init_data() if need_update else config_info
-    comp_dict = {rssd_id: info['Nick'] for rssd_id, info in data_info['institutions'].items()}
-    session['data_loaded'] = True
-    session["comp_dict"] = comp_dict
-    session.permanent = True
+    updateCompDict(data_info)
     response = jsonify(data_info)
     return response
 
@@ -44,10 +48,7 @@ def updateData():
     """
     data_info = init_data()
     response = jsonify(data_info)
-    comp_dict = {rssd_id: info['Nick'] for rssd_id, info in data_info['institutions'].items()}
-    session['data_loaded'] = True
-    session["comp_dict"] = comp_dict
-    session.permanent = True
+    updateCompDict(data_info)
     return response
 
 
@@ -58,6 +59,8 @@ def addData():
     name = args['name']
     nick_name = args['nickName']
     res = add_data(rssd_id, name, nick_name)
+    data_info = load_data_config_file()
+    updateCompDict(data_info)
     return jsonify(res)
 
 

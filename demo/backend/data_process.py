@@ -221,6 +221,8 @@ def add_institution_to_data_config_file(csv_file_info, rssd_id, name, nick_name)
     institution_info[rssd_id]["Nick"] = nick_name
     institution_info[rssd_id]["data_status"] = csv_file_info[rssd_id]
     save_data_config_file(data_info)
+    logging.info("updated data config info: %s", data_info)
+    return data_info
 
 
 def get_preprocess_data(reports, institutions, mode):
@@ -258,8 +260,9 @@ def add_data(rssd_id, name, nick_name):
     :param nick_name: institution nick name from user input
     :return: operation status and message
 
-    testing example:
-    rssd_id: '2277860', name: 'Capital One', nick_name: 'COF'
+    testing examples:
+    rssd_id: '2277860', name: 'Capital One', nick_name: 'COF',
+    rssd_id: '1119794', name: 'U.S. BANCORP', nick_name: 'USB'
     """
     # TODO: find a better way to check whether RSSD ID is valid
     # Maybe deal with:
@@ -279,9 +282,10 @@ def add_data(rssd_id, name, nick_name):
             raise Exception("The institution {} already exists".format(rssd_id))
         institutions = [rssd_id]
         csv_file_info = get_preprocess_data(reports, institutions, mode='a')
-        add_institution_to_data_config_file(csv_file_info, rssd_id, name, nick_name)
+        data_info = add_institution_to_data_config_file(csv_file_info, rssd_id, name, nick_name)
         res["status"] = 200
-        res["message"] = csv_file_info
+        res["message"] = "success"
+        res["data_info"] = data_info
     except Exception as e:
         logging.error("%s", e)
         res["message"] = str(e)

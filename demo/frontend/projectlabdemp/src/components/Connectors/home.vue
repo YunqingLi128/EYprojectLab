@@ -77,6 +77,21 @@ export default {
     this.getData()
   },
   methods: {
+    processInfo (data) {
+      let that = this
+      that.items = []
+      that.dataInfo = data
+      for (let key in that.dataInfo['institutions']) {
+        if (that.dataInfo['institutions'].hasOwnProperty(key)) {
+          let temp = {
+            'ID': key,
+            'Name': that.dataInfo['institutions'][key]['Name'],
+            'Nickname': that.dataInfo['institutions'][key]['Nick']
+          }
+          that.items.push(temp)
+        }
+      }
+    },
     onSubmit (event) {
       let that = this
       that.loading = true
@@ -95,30 +110,15 @@ export default {
             that.errorCatch_alreadyhave = true
           } else {
             that.errorCatch = false
+            that.processInfo(data['data_info'])
           }
-          that.items = []
-          that.getData()
         })
         .finally(function () {
           that.loading = false
           that.$refs['loadingModal'].hide()
         })
     },
-    processInfo (data) {
-      let that = this
-      that.items = []
-      that.dataInfo = data
-      for (let key in that.dataInfo['institutions']) {
-        if (that.dataInfo['institutions'].hasOwnProperty(key)) {
-          let temp = {
-            'ID': key,
-            'Name': that.dataInfo['institutions'][key]['Name'],
-            'Nickname': that.dataInfo['institutions'][key]['Nick']
-          }
-          that.items.push(temp)
-        }
-      }
-    },
+
     getData () {
       let that = this
       that.loading = true
