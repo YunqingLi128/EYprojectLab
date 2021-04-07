@@ -48,8 +48,9 @@
       <b-button type="submit" variant="primary" :disabled="loading">Submit</b-button>
     </b-form>
     <div>
-    <b-table striped hover :items="items"></b-table>
+      <b-table striped hover :items="items"></b-table>
     </div>
+    <b-button @click="updateData()" variant="primary">Update data</b-button>
   </div>
 </template>
 
@@ -103,6 +104,21 @@ export default {
           that.$refs['loadingModal'].hide()
         })
     },
+    processInfo (data) {
+      let that = this
+      that.items = []
+      that.dataInfo = data
+      for (let key in that.dataInfo['institutions']) {
+        if (that.dataInfo['institutions'].hasOwnProperty(key)) {
+          let temp = {
+            'ID': key,
+            'Name': that.dataInfo['institutions'][key]['Name'],
+            'Nickname': that.dataInfo['institutions'][key]['Nick']
+          }
+          that.items.push(temp)
+        }
+      }
+    },
     getData () {
       let that = this
       that.loading = true
@@ -110,15 +126,24 @@ export default {
       myAPI
         .initData('home') // root route to init data
         .then(function (response) {
-          that.dataInfo = response.data
-          for (let key in that.dataInfo['institutions']) {
-            let temp = {
-              'ID': key,
-              'Name': that.dataInfo['institutions'][key]['Name'],
-              'Nickname': that.dataInfo['institutions'][key]['Nick']
-            }
-            that.items.push(temp)
-          }
+          that.processInfo(response.data)
+        })
+        .catch(function (error) {
+          alert('Error ' + error)
+        })
+        .finally(function () {
+          that.loading = false
+          that.$refs['loadingModal'].hide()
+        })
+    },
+    updateData () {
+      let that = this
+      that.loading = true
+      that.$refs['loadingModal'].show()
+      myAPI
+        .updateData()
+        .then(function (response) {
+          that.processInfo(response.data)
         })
         .catch(function (error) {
           alert('Error ' + error)

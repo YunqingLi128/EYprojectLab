@@ -19,6 +19,10 @@ export default {
       headers: corsHeaders
     })
   },
+  updateData () {
+    let reqUrl = baseUrl + 'updateData'
+    return axios.get(reqUrl, reqConfig)
+  },
   addData (endpoint, id, name, nickName) {
     let reqUrl = baseUrl + endpoint
     reqConfig.params = {

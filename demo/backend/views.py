@@ -16,10 +16,9 @@ CORS(bp, supports_credentials=True)
 @bp.route('/home', methods=('GET', 'POST'))
 def index():
     """
-    Currently if 'data_status' is in data config file, no to update, which needs to be improved
-    So we need to add the logic to call init_data() to update the current data
+    Currently if 'data_status' is in data config file and data folder exists,
+    no need to update data each time we visit the homepage
     """
-    # TODO: Add conditions to check when to update and call init_data()
     config_info = load_data_config_file()
     institution_info = config_info["institutions"]
     need_update = False
@@ -38,29 +37,28 @@ def index():
     return response
 
 
-@bp.route('/getMsg', methods=['GET', 'POST'])
-def home():
-    response = {
-        'msg':'Hello, This is a simple demo!'
-    }
-    return jsonify(response)
+@bp.route('/updateData', methods=('GET', 'POST'))
+def updateData():
+    """
+    Update all data for companies in the data_setting.json file
+    """
+    data_info = init_data()
+    response = jsonify(data_info)
+    comp_dict = {rssd_id: info['Nick'] for rssd_id, info in data_info['institutions'].items()}
+    session['data_loaded'] = True
+    session["comp_dict"] = comp_dict
+    session.permanent = True
+    return response
 
-@bp.route('/getDataByCompanyID/<int:id>')
-def getDataByCompanyID(id):
-    # response = {
-    #     # TODO: replace with the real data.
-    #     'name': "Sample Company name",
-    #     'companyID' : id,
-    #     'length': 5,
-    #     'xdata': [1,2,3,4,5],
-    #     'ydata': [11,22,33,44,55]
-    # }
-    data = test_VaR_sVarR_query('2017Q4')
-    response = {
-        'item': ['Company', 'VaR', 'SVaR'],
-        'data': data
-    }
-    return jsonify(response)
+
+@bp.route('/addDataByID', methods=['GET', 'POST'])
+def addData():
+    args = request.args
+    rssd_id = args['rssd_id']
+    name = args['name']
+    nick_name = args['nickName']
+    res = add_data(rssd_id, name, nick_name)
+    return jsonify(res)
 
 
 def response_processing(result):
@@ -192,14 +190,4 @@ def getStressWindowOvertime():
     start_quarter = args['start']
     end_quarter = args['end']
     res = get_stress_window_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
-    return jsonify(res)
-
-
-@bp.route('/addDataByID', methods=['GET', 'POST'])
-def addData():
-    args = request.args
-    rssd_id = args['rssd_id']
-    name = args['name']
-    nick_name = args['nickName']
-    res = add_data(rssd_id, name, nick_name)
     return jsonify(res)
