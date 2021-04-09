@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+// TODO: use proxyTable in config/index.js and set the backend url?
+//  Currently having CORS problem
 const baseUrl = 'http://127.0.0.1:5000/'
 const corsHeaders = {
   'secret-key': 'super secret key',

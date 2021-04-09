@@ -290,5 +290,3 @@ def add_data(rssd_id, name, nick_name):
         logging.error("%s", e)
         res["message"] = str(e)
     return res
-
-# testing institutions = '1069778'

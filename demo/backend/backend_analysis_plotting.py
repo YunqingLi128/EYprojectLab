@@ -163,6 +163,7 @@ def get_asset_to_var_ratio_item_by_quarter(quarter, comp_dict):
     return res
 
 
+# TODO: remove SettingWithCopyWarning in pandas
 def get_revenue_to_var_ratio_item_by_quarter(quarter, comp_dict):
     """
     return trading revenue to VaR and sVaR ratios in specific quarters,
@@ -352,6 +353,10 @@ def get_gross_trading_asset_and_percent_change_by_quarter(quarter, comp_dict):
 # 4. Change in diversification as a percentage of VaR over time
 # 5. Change in number of VaR Breaches overtime
 
+# TODO: The returned JSON only contains data in valid quarters
+#   for example: quarter_from=2010Q4, quarter_to=2020Q4
+#   the overtime analysis functions will only return list data from 2015Q3 to 2020Q4
+#   Therefore, the frontend should add NaN values to the series data in echarts option
 
 def get_item_overtime(item_id, quarter_from, quarter_to):
     """

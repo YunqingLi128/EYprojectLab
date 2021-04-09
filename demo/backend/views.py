@@ -1,6 +1,6 @@
 import logging
 import urllib3
-from flask import jsonify, request, Blueprint, session, current_app, redirect, url_for
+from flask import jsonify, request, Blueprint, session, current_app
 from flask_cors import CORS
 from backend.data_process import load_data_config_file, init_data, add_data
 from backend.backend_analysis_plotting import *
@@ -20,6 +20,9 @@ def updateCompDict(data_info):
     session.permanent = True
 
 
+# TODO: When visiting the homepage, we may add some logic to update the data periodically
+#   instead of clicking the update button to update the data manually.
+#   For example, updating the data every quarter
 @bp.route('/home', methods=('GET', 'POST'))
 def index():
     """
@@ -64,6 +67,9 @@ def addData():
     return jsonify(res)
 
 
+# TODO: better implementation using CORS and session at the same time
+#   Currently, we need to add request and response headers to make session works under CORS
+#   And the frontend host should be specified in the config.py and used in the response header
 def response_processing(result):
     response = jsonify(result)
     response.headers.add('Access-Control-Allow-Origin', current_app.config['FRONT_END_HOST'])
