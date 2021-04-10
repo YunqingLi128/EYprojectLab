@@ -109,3 +109,4 @@ Although our project lab has finished, there are still many areas need to be imp
 - [ ] The stack bar's item shall be able to rearrange in a way that user wants.
 - [ ] The system shall be able to display all the data view from graphs in one click.
 - [ ] The graphs and data can be able to output to excel directly.
+- [ ] We have captured several potential problems in our codes and we have documented them in the code TODO notation. Please review the todo list before implementing new features.
