@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source env/bin/activate
+export FLASK_APP=backend
+export FLASK_ENV=development
+flask run & pids=$!
+
+cd frontend/projectlabdemp || exit
+npm run dev & pids+=" $!"
+
+trap "kill $pids" SIGTERM SIGINT SIGHUP
+wait $pids
