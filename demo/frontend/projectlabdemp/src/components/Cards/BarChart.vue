@@ -111,7 +111,17 @@ export default {
             let chartItem = {}
             chartItem.name = key
             chartItem.type = 'bar'
-            chartItem.data = groups[key]
+            chartItem.data = []
+            for (let itemName in groups[key]) {
+              if (groups[key].hasOwnProperty(itemName)) {
+                if (id === 'VaR-SVaR-comparison') {
+                  chartItem.data.push((groups[key][itemName] / 1000).toFixed(2))
+                } else {
+                  chartItem.data.push((groups[key][itemName] / 1000))
+                }
+              }
+            }
+            chartItem.label = {show: true}
             series.push(chartItem)
             legendList.push(key)
           }
@@ -127,7 +137,7 @@ export default {
                 formatter: function (value) {
                   // Original Amount: Dollar Amounts in Thousands
                   // show tick with comma
-                  return (value / 1000).toLocaleString()
+                  return (value).toLocaleString()
                 }
               }
             }
@@ -157,9 +167,12 @@ export default {
               chartItem.name = key
               chartItem.type = 'bar'
               chartItem.data = []
+              if (id === 'trading-revenue-to-VaR-ratio') {
+                chartItem.label = {show: true}
+              }
               for (let itemName in data[key]) {
                 if (data[key].hasOwnProperty(itemName)) {
-                  chartItem.data.push(data[key][itemName])
+                  chartItem.data.push(data[key][itemName].toFixed(2))
                   if (!itemSet.has(itemName)) {
                     itemSet.add(itemName)
                     itemNames.push(itemName)
@@ -176,6 +189,7 @@ export default {
           that.barChartData.yAxis = [
             {
               type: 'value',
+              name: 'Ratio',
               axisLabel: {
                 formatter: function (value) {
                   return value.toFixed(2) // show two decimals for ratio
