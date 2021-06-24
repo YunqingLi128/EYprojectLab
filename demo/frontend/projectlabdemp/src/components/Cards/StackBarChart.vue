@@ -93,9 +93,9 @@ export default {
                 for (const item of data[key]) {
                   if (selectComp === item[0]) {
                     if (id === 'standardized-market-risk-weighted-assets-breakdown-by-bank') {
-                      chartItem.data.push(Math.round(item[1] * 12.5 / 1000))
+                      chartItem.data.push((item[1] * 12.5 / 1000).toFixed(2))
                     } else {
-                      chartItem.data.push(Math.round(item[1]))
+                      chartItem.data.push((item[1]).toFixed(2))
                     }
                     companies.push(item[0])
                     flag = 1
@@ -127,6 +127,7 @@ export default {
             'VaR-by-asset-class-and-diversification-effect': [
               {
                 type: 'value',
+                name: 'Percentage',
                 axisLabel: {
                   formatter: '{value} %'
                 }
