@@ -103,7 +103,7 @@ export default {
             if (data.hasOwnProperty(key)) {
               companies.push(key)
               groupOne.push(data[key][0][0] / 1000)
-              groupTwo.push(data[key][0][1])
+              groupTwo.push((data[key][0][1]).toFixed(2))
             }
           }
           let series = []
@@ -117,11 +117,13 @@ export default {
           chartItemOne.name = legendBase[id][0]
           chartItemOne.type = 'bar'
           chartItemOne.data = groupOne
+          chartItemOne.label = {fontSize: 10, show: true, autoSkip: true}
 
           chartItemTwo.name = legendBase[id][1]
           chartItemTwo.type = 'line'
           chartItemTwo.data = groupTwo
           chartItemTwo.yAxisIndex = 1
+          chartItemTwo.label = {fontSize: 10, show: true, autoSkip: true}
 
           yAxisOne.name = 'Millions'
           yAxisOne.scale = true
