@@ -135,6 +135,22 @@ def raw_csv_consolidation(report, csv_path):
     df = df[["Institution", "Date", "ItemName", "Value"]]  # change the order
     return df
 
+def raw_csv_consolidation_for_excel(report, csv_path):
+    report, institution, date = parse_csv_path(csv_path)
+    data_info = load_data_config_file()
+    comp_dict = {rssd_id: info['Nick'] for rssd_id, info in data_info['institutions'].items()}
+    date = format_date(date)
+    df = pd.read_csv(csv_path, header=0)
+    item_prefix = {"FFIEC102": "M", "FRY9C": "B"}  # drop the rows which ItemName is not "M*" or "B*"
+    index_names = df[~df["ItemName"].str.startswith(item_prefix[report])].index
+    df.drop(index_names, inplace=True)
+    df["Institution"] = comp_dict[institution]
+    df["Date"] = date
+    df["Source"] = report
+    df.drop("Description", axis=1, inplace=True)  # drop the Description
+    df = df[["Source", "ItemName", "Institution", "Date",  "Value"]]  # change the order
+    return df
+
 
 def walk_through_institution_folder_files(reports, institutions, mode):
     """
@@ -150,9 +166,13 @@ def walk_through_institution_folder_files(reports, institutions, mode):
     data_dir_path = os.path.join(path, "data", "raw_data")
     data_info = {}
     report_df_dict = {report: [] for report in reports}
+    report_df_dict_for_excel = {report: [] for report in reports}  # Exclusive use for EY PowerPoint Construction
+
     for rssd_id in institutions:
         folder_path = os.path.join(data_dir_path, rssd_id)
         report_info = {report: [] for report in reports}
+        report_info_for_excel = {report: [] for report in reports}  # Exclusive use for EY PowerPoint Construction
+
         for root, dirs, files in os.walk(folder_path):
             if len(files) == 0:
                 continue
@@ -163,8 +183,13 @@ def walk_through_institution_folder_files(reports, institutions, mode):
                 csv_file_path = os.path.join(root, file)
                 report, institution, date = parse_csv_path(csv_file_path)
                 df = raw_csv_consolidation(report, csv_file_path)
+                df_for_excel = raw_csv_consolidation_for_excel(report, csv_file_path)  # Exclusive use for EY PowerPoint Construction
+
                 report_df_dict[report].append(df)
+                report_df_dict_for_excel[report].append(df_for_excel)
+
                 report_info[report].append(date)
+                report_info_for_excel[report].append(date)
 
             # find start date and end date and update config object
             for report, dates in report_info.items():
@@ -184,6 +209,18 @@ def walk_through_institution_folder_files(reports, institutions, mode):
             full_csv_path = os.path.join(get_cur_path(), "data", report + ".csv")
             full_df.to_csv(full_csv_path, header=False, index=False, mode=mode)
             logging.info("full csv for %s is constructed", report)
+
+    for report, df_list in report_df_dict_for_excel.items():
+        header_list = ['Source', 'Column_Code', 'Bank', 'Date', 'Value']
+        if len(df_list) > 0:
+            if report == 'FFIEC102':
+                full_df_FFIEC102 = pd.concat(df_list)
+            else:
+                full_df_FRY9C = pd.concat(df_list)
+                full_df = pd.concat([full_df_FFIEC102, full_df_FRY9C])
+                full_csv_path = os.path.join(get_cur_path(), "data", "Exclusive_Use_For_Excel" + ".csv")
+                full_df.to_csv(full_csv_path, header=header_list, index=False, mode=mode)
+                logging.info("full csv exclusive use for excel for %s is constructed", report)
     return data_info
 
 
