@@ -96,12 +96,58 @@ def construct_urls(reports, institutions, dates):
     return urls
 
 
+def construct_urls_fred(source, seriesid, date_st, date_ed):
+    """
+    :param source:
+    :param seriesid:
+    :param date_st:
+    :param date_ed
+    :return: (csv_file_path, web_url) pair list
+    """
+    path = get_cur_path()
+    data_dir_path = os.path.join(path, "data/fred_data")
+    urls = []
+    base_url = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={}&cosd={}&coed={}"
+    for ser_id in seriesid:
+        csv_file_name = ser_id + ".csv"
+        csv_file_path = os.path.join(data_dir_path, csv_file_name)
+        url = base_url.format(ser_id, date_st, date_ed)
+        urls.append((csv_file_path, url))
+    return urls
+
+
 def download_raw_csv_files(reports, institutions, dates):
     """
     Downloading raw csv files
     """
     # parallel downloading using threads
     urls = construct_urls(reports, institutions, dates)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
+        # Start the load operations and mark each future with its URL
+        future_to_url = {executor.submit(load_url, pair[1], 60): pair for pair in urls}
+        for future in concurrent.futures.as_completed(future_to_url):
+            path, url = future_to_url[future]
+            try:
+                res = future.result()
+                if res is None:
+                    raise Exception("invalid csv url")
+                data = res.decode('utf-8')
+                if "<body>" in data:
+                    raise Exception("not a csv file")
+                with open(path, "w") as f:
+                    f.write(data)
+            except Exception as exc:
+                logging.info('%r generated an exception: %s' % (url, exc))
+            else:
+                logging.info("%s is downloaded", path)
+
+
+def download_raw_csv_files_fred(source, seriesid, date_st, date_ed):
+    """
+    Downloading raw csv files
+    """
+    # parallel downloading using threads
+    urls = construct_urls_fred(source, seriesid, date_st, date_ed)
     with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
         # Start the load operations and mark each future with its URL
         future_to_url = {executor.submit(load_url, pair[1], 60): pair for pair in urls}
@@ -224,9 +270,58 @@ def walk_through_institution_folder_files(reports, institutions, mode):
     return data_info
 
 
+def walk_through_fred_folder_files(sources, seriesid, mode):
+    """
+    Raw csv consolidation for downloaded csv files
+
+    :param mode: if mode='w', overwrite the full csv, elif mode='a', append to the full csv
+    :param institutions: institution RSSD ID list
+    :param reports: report list
+
+    :return data info for input institutions
+    """
+    path = get_cur_path()
+    data_dir_path = os.path.join(path, "data", "fred_data")
+    data_info = {}
+
+    for ser_id in seriesid:
+        report_info = {source: [] for source in sources}
+        for root, dirs, files in os.walk(data_dir_path):
+            if len(files) == 0:
+                continue
+            sorted_files = sorted(files)
+            for file in sorted_files:
+                if not file.endswith(".csv"):
+                    continue
+                csv_file_path = os.path.join(root, file)
+                report_info["FRED"] = {
+                    "start_quarter": "1986Q1",
+                    "end_quarter": "NOW"
+                }
+            data_info[ser_id] = report_info
+        logging.info("data config info for %s: %s", ser_id, report_info)
+    return data_info
+
+
 def load_data_config_file():
     path = get_cur_path()
     json_file_path = os.path.join(path, "data_setting.json")
+    with open(json_file_path, 'r') as f:
+        data_info = json.loads(f.read())
+    return data_info
+
+
+def load_data_config_file_fred():
+    path = get_cur_path()
+    json_file_path = os.path.join(path, "data_setting_fred.json")
+    with open(json_file_path, 'r') as f:
+        data_info = json.loads(f.read())
+    return data_info
+
+
+def load_data_config_file_fred():
+    path = get_cur_path()
+    json_file_path = os.path.join(path, "data_setting_fred.json")
     with open(json_file_path, 'r') as f:
         data_info = json.loads(f.read())
     return data_info
@@ -238,6 +333,12 @@ def save_data_config_file(data_info):
     with open(json_file_path, 'w') as f:
         json.dump(data_info, f, indent=4)
 
+def save_data_config_file_fred(data_info):
+    path = get_cur_path()
+    json_file_path = os.path.join(path, "data_setting_fred.json")
+    with open(json_file_path, 'w') as f:
+        json.dump(data_info, f, indent=4)
+
 
 def update_data_config_file(csv_file_info):
     # update the info of all institution in the data config file
@@ -246,6 +347,16 @@ def update_data_config_file(csv_file_info):
     for rssd_id in institutions:
         institutions[rssd_id]["data_status"] = csv_file_info[rssd_id]
     save_data_config_file(data_info)
+    logging.info("updated data config info: %s", data_info)
+    return data_info
+
+def update_data_config_file_fred(csv_file_info):
+    # update the info of all institution in the data config file
+    data_info = load_data_config_file_fred()
+    series_id = data_info["seriesID"]
+    for sid in series_id:
+        series_id[sid]["data_status"] = csv_file_info[sid]
+    save_data_config_file_fred(data_info)
     logging.info("updated data config info: %s", data_info)
     return data_info
 
@@ -276,6 +387,17 @@ def get_preprocess_data(reports, institutions, mode):
     csv_file_info = walk_through_institution_folder_files(reports, institutions, mode)
     return csv_file_info
 
+def get_preprocess_data_fred(source, seriesid, mode):
+    date_st = '1900-01-01'
+    date_ed = '2300-01-01'
+    path = get_cur_path()
+    create_dir(path, "data/fred_data")  # create data folder
+
+    download_raw_csv_files_fred(source, seriesid, date_st, date_ed)
+    # combine raw csv files to full csv file
+    csv_file_info = walk_through_fred_folder_files(source, seriesid, mode)
+    return csv_file_info
+
 
 def init_data():
     """
@@ -286,6 +408,16 @@ def init_data():
     reports, institutions = data_info["reports"], data_info["institutions"].keys()
     csv_file_info = get_preprocess_data(reports, institutions, mode='w')
     return update_data_config_file(csv_file_info)
+
+def init_data_fred():
+    """
+    Data initialization (update) for all institutions in the data config file
+    :return: current data info
+    """
+    data_info = load_data_config_file_fred()
+    source, seriesid = data_info["source"], data_info["seriesID"].keys()
+    csv_file_info = get_preprocess_data_fred(source, seriesid, mode='w')
+    return update_data_config_file_fred(csv_file_info)
 
 
 def add_data(rssd_id, name, nick_name):
