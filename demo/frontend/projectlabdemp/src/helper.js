@@ -1,7 +1,7 @@
 export default {
   getLatestQuarter () {
     // TODO: hard-coded currently
-    return '2020Q4'
+    return '2021Q1'
   },
   getDefaultStartQuarter () {
     // Use latest year - 1 as the default start year
@@ -31,5 +31,13 @@ export default {
       }
     }
     return quarterList
+  },
+  getDefaultMarketEnvStartDate () {
+    // TODO: hard-coded currently
+    return '2020-10-01'
+  },
+  getDefaultMarketEnvEndDate () {
+    // TODO: hard-coded currently
+    return '2020-12-31'
   }
 }
