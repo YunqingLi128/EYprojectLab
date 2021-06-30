@@ -2,7 +2,7 @@ import logging
 import urllib3
 from flask import jsonify, request, Blueprint, session, current_app
 from flask_cors import CORS
-from backend.data_process import load_data_config_file, init_data, add_data
+from backend.data_process import load_data_config_file, init_data, add_data, load_data_config_file_fred, init_data_fred
 from backend.backend_analysis_plotting import *
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -30,15 +30,34 @@ def index():
     no need to update data each time we visit the homepage
     """
     config_info = load_data_config_file()
+    config_info_fred = load_data_config_file_fred()
+
     institution_info = config_info["institutions"]
+    source_info = config_info_fred["seriesID"]
+
     need_update = False
+    need_update_fred = False
+
     for rssd_id in institution_info:
         if 'data_status' not in institution_info[rssd_id]:
             need_update = True
+
+    for sr_id in source_info:
+        if 'data_status' not in source_info[sr_id]:
+            need_update_fred = True
+
     path = os.path.join(get_cur_path(), 'data/raw_data')
+    path_fred = os.path.join(get_cur_path(), 'data/fred_data')
+
     if not os.path.exists(path):
         need_update = True
+
+    if not os.path.exists(path_fred):
+        need_update_fred = True
+
     data_info = init_data() if need_update else config_info
+    data_info_fred = init_data_fred() if need_update_fred else config_info_fred
+
     updateCompDict(data_info)
     response = jsonify(data_info)
     return response
@@ -199,4 +218,37 @@ def getStressWindowOvertime():
     start_quarter = args['start']
     end_quarter = args['end']
     res = get_stress_window_item_overtime(start_quarter, end_quarter, session.get("comp_dict"))
+    return jsonify(res)
+
+## Market Environment Data Analysis
+@bp.route('/getInterestRateOvertime', methods=['GET'])
+def getInterestRateOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = get_interest_rate_overtime(start_quarter, end_quarter)
+    return jsonify(res)
+
+@bp.route('/getWTIOvertime', methods=['GET'])
+def getWTIOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = get_wti_overtime(start_quarter, end_quarter)
+    return jsonify(res)
+
+@bp.route('/getCreditSpreadOvertime', methods=['GET'])
+def getCreditSpreadOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = get_credit_spread_overtime(start_quarter, end_quarter)
+    return jsonify(res)
+
+@bp.route('/getEquityMarketOvertime', methods=['GET'])
+def getEquityMarketOvertime():
+    args = request.args
+    start_quarter = args['start']
+    end_quarter = args['end']
+    res = get_equity_market_overtime(start_quarter, end_quarter)
     return jsonify(res)
