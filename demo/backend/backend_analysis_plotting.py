@@ -483,3 +483,98 @@ def get_stress_window_item_overtime(quarter_date_from, quarter_date_to, comp_dic
     total_data = data.groupby('Company')[['Item_ID', 'Item']].apply(lambda x: x.values.tolist()).to_dict()
     res = dict((comp_dict[key], total_data[key]) for key in total_data)
     return res
+
+
+## Fred data analysis section
+def get_fred_data(seriesid):
+    path = get_cur_path()
+    csv_path = os.path.join(path, "data/fred_data", seriesid + ".csv")
+    df = pd.read_csv(csv_path, dtype=str)
+    df.columns = ['Date', seriesid]
+    df = df.set_index(['Date'])
+    return df
+
+# Interest rate
+def get_interest_rate_overtime(date_from, date_to):
+    """
+    return the interest rate overtime
+    USD3MTD156N: USD Libor 3 Month
+    DGS1: US 1-Year Treasury
+    """
+    USD3M = get_fred_data('USD3MTD156N')
+    USD3M = USD3M.reset_index()
+
+    DGS1 = get_fred_data('DGS1')
+    DGS1 = DGS1.reset_index()
+
+    total_data = USD3M.join(DGS1.set_index('Date'), on='Date', how='left')
+
+    data = total_data.query('Date <= @date_to and Date >= @date_from')
+    data.replace('.', np.nan, inplace=True)
+    data = data.dropna()
+    data['USD3MTD156N'] = data['USD3MTD156N'].astype(float)
+    data['DGS1'] = data['DGS1'].astype(float)
+    res = {'Date': data.Date.tolist(), 'USD LIBOR 3 Month': data.USD3MTD156N.tolist(), 'US 1-Year Treasury': data.DGS1.tolist()}
+    return res
+
+# WTI
+def get_wti_overtime(date_from, date_to):
+    """
+    return the interest rate overtime
+    DCOILWTICO: USD Libor 3 Month
+    """
+    WTI = get_fred_data('DCOILWTICO')
+    WTI = WTI.reset_index()
+
+    data = WTI.query('Date <= @date_to and Date >= @date_from')
+    data.replace('.', np.nan, inplace=True)
+    data = data.dropna()
+    data['DCOILWTICO'] = data['DCOILWTICO'].astype(float)
+    res = {'Date': data.Date.tolist(), 'WTI': data.DCOILWTICO.tolist()}
+    return res
+
+# Credit Spread
+def get_credit_spread_overtime(date_from, date_to):
+    """
+    return the interest rate overtime
+    BAMLH0A0HYM2: ICE BofA US High Yield Index Option-Adjusted Spread
+    BAMLC0A0CM: ICE BofA US Corporate Index Option-Adjusted Spread
+    """
+    HYSPREAD = get_fred_data('BAMLH0A0HYM2')
+    HYSPREAD = HYSPREAD.reset_index()
+
+    IGSPREAD = get_fred_data('BAMLC0A0CM')
+    IGSPREAD = IGSPREAD.reset_index()
+
+    total_data = HYSPREAD.join(IGSPREAD.set_index('Date'), on='Date', how='left')
+
+    data = total_data.query('Date <= @date_to and Date >= @date_from')
+    data.replace('.', np.nan, inplace=True)
+    data = data.dropna()
+    data['BAMLH0A0HYM2'] = data['BAMLH0A0HYM2'].astype(float)
+    data['BAMLC0A0CM'] = data['BAMLC0A0CM'].astype(float)
+    res = {'Date': data.Date.tolist(), 'HY Spread': data.BAMLH0A0HYM2.tolist(), 'IG Spread': data.BAMLC0A0CM.tolist()}
+    return res
+
+# Equity Market
+def get_equity_market_overtime(date_from, date_to):
+    """
+    return the interest rate overtime
+    SP500: S&P 500
+    VIXCLS: CBOE Volatility Index
+    """
+    SP500 = get_fred_data('SP500')
+    SP500 = SP500.reset_index()
+
+    VIX = get_fred_data('VIXCLS')
+    VIX = VIX.reset_index()
+
+    total_data = SP500.join(VIX.set_index('Date'), on='Date', how='left')
+
+    data = total_data.query('Date <= @date_to and Date >= @date_from')
+    data.replace('.', np.nan, inplace=True)
+    data = data.dropna()
+    data['SP500'] = data['SP500'].astype(float)
+    data['VIXCLS'] = data['VIXCLS'].astype(float)
+    res = {'Date': data.Date.tolist(), 'S&P 500': data.SP500.tolist(), 'VIX': data.VIXCLS.tolist()}
+    return res
