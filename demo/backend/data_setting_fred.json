@@ -1,0 +1,35 @@
+{
+    "source": [
+        "FRED"
+    ],
+    "seriesID": {
+        "USD3MTD156N": {
+            "Name": "USD Libor 3 Month",
+            "Nick": "LIBOR3M"
+        },
+        "DGS1": {
+            "Name": "US 1-Year Treasury",
+            "Nick": "US1YT"
+        },
+        "DCOILWTICO": {
+            "Name": "WTI",
+            "Nick": "WTI"
+        },
+        "BAMLH0A0HYM2": {
+            "Name": "ICE BofA US High Yield Index Option-Adjusted Spread",
+            "Nick": "HY Spread"
+        },
+        "BAMLC0A0CM": {
+            "Name": "ICE BofA US Corporate Index Option-Adjusted Spread",
+            "Nick": "IG Spread"
+        },
+        "SP500": {
+            "Name": "S&P 500",
+            "Nick": "SP500"
+        },
+        "VIXCLS": {
+            "Name": "CBOE Volatility Index",
+            "Nick": "VIX"
+        }
+    }
+}
