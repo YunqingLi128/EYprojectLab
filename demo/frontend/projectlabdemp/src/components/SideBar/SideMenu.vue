@@ -15,6 +15,9 @@
         <li>
           <a href= "/#/OverTimeAnalysis" data-toggle="collapse" aria-expanded="false">Overtime Analysis</a>
         </li>
+        <li>
+          <a href= "/#/MarketEnvironment" data-toggle="collapse" aria-expanded="false">Market Environment</a>
+        </li>
       </ul>
     </nav>
     <div id="content">
